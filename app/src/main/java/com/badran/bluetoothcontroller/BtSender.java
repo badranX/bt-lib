@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 
 
-public class BtSender  {
+ class BtSender  {
 	private BufferedOutputStream outBufferStream = null;
 	private PrintWriter writer = null;
 	private BtSenderThread SENDER;

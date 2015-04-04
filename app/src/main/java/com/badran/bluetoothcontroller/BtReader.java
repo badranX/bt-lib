@@ -8,7 +8,7 @@ import android.bluetooth.BluetoothSocket;
 
 import com.unity3d.player.UnityPlayer;
 
-public class BtReader {
+ class BtReader {
 	
 private BtReceiver RECEIVER;
 	
@@ -156,7 +156,7 @@ private BtReceiver RECEIVER;
 		
 		
 		}
-public void listen (boolean start, int length,byte stopByte){// read chars
+    public void listen (boolean start, int length,byte stopByte){// read chars
 		
 			
 			this.startListen = start;

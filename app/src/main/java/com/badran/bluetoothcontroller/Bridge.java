@@ -114,7 +114,8 @@ public class Bridge  {
          			B.defaultValues(mode0,mode2,mode3,lengthB,stopByteB,stopListen);
          		
          			B.connect(trialsNumber);
-         		 B.start();
+         		    B.start();
+
          		 
          		
             

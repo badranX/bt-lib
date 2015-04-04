@@ -49,7 +49,7 @@ public class BtInterface extends Thread {
 	private final  MessagesThread messagesThread = new MessagesThread();
 	
 	private BluetoothDevice device = null;
-	 private BluetoothSocket socket ;
+	private BluetoothSocket socket ;
 	private BluetoothAdapter mBluetoothAdapter = null;
 	private InputStream receiveStream = null;
 	private BufferedReader receiveReader = null;
@@ -101,6 +101,8 @@ public class BtInterface extends Thread {
 	public void connect(int trialsNumber){
 		this.connectionTrials = trialsNumber;
 		socket = createSocket();
+
+
 	}
 	private BluetoothSocket createSocket(){
 		
@@ -109,7 +111,7 @@ public class BtInterface extends Thread {
 		if(!this.isDevicePicked){
 		Set<BluetoothDevice> setpairedDevices = mBluetoothAdapter.getBondedDevices();
 		
-    	BluetoothDevice[] pairedDevices = (BluetoothDevice[]) setpairedDevices.toArray(new BluetoothDevice[setpairedDevices.size()]);
+    	BluetoothDevice[] pairedDevices = setpairedDevices.toArray(new BluetoothDevice[setpairedDevices.size()]);
     	
 		
 		
@@ -123,7 +125,7 @@ public class BtInterface extends Thread {
 				foundModule = pairedDevices[i].getName().equals(Bridge.ModuleName);
 
 					if(foundModule) {device = pairedDevices[i];break;}
-		}setpairedDevices = null; setpairedDevices = null;
+		}setpairedDevices = null;
 		} else foundModule = true;
 		
 		
@@ -161,7 +163,7 @@ public class BtInterface extends Thread {
 				 
 				 
 			} catch (IOException mainError) {
-						Log.v("yahya","yahya 2: " + mainError.getMessage());
+						Log.v("TEST","message : " + mainError.getMessage());
 						close();     
 						Bridge.controlMessage(-1);
 						
@@ -246,58 +248,55 @@ public class BtInterface extends Thread {
  }
  
 	public void run() {
-		boolean tryAgain,failed ;
-		int counter = 1;
-		do{
-			tryAgain = false;
-			failed = false;
-			inetializeStreams(true, true);
-				mBluetoothAdapter.cancelDiscovery();
-				try {
-					
-					socket.connect();
-				} 
-				catch (IOException e) {
-					Log.v("yahya","yahya : " + String.valueOf(isChineseMobile) + " : " + e.getMessage());
-					if(counter < connectionTrials){
-						chineseMobile();
-						tryAgain = true;
-						counter++;
-					}
-					else{
-					close();
-					failed = true;
-					Bridge.controlMessage(-3);
-					}
-				}
-					
-	               
-	               
-				
-				if(tryAgain){
-					try {
-						Thread.sleep(100);
-						Log.v("yahya", "again");
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-				}
-				if(!tryAgain && !failed) {	
-					isConnected = true;
-					UnityPlayer.UnitySendMessage("BtConnector", "connection","1");
-				
-					 Bridge.controlMessage(1);
-		                if(control.startListen){
-		                RECEIVER.startListeningThread(socket,receiveStream);
-		                  }
-		               
-						
-				}
-		
-		}while (tryAgain);
-		
+        if(socket != null) {
+            boolean tryAgain, failed;
+            int counter = 1;
+            do {
+                tryAgain = false;
+                failed = false;
+                inetializeStreams(true, true);
+                mBluetoothAdapter.cancelDiscovery();
+                try {
+
+                    socket.connect();
+                } catch (IOException e) {
+                    Log.v("yahya", "yahya : " + String.valueOf(isChineseMobile) + " : " + e.getMessage());
+                    if (counter < connectionTrials) {
+                        chineseMobile();
+                        tryAgain = true;
+                        counter++;
+                    } else {
+                        close();
+                        failed = true;
+                        Bridge.controlMessage(-3);
+                    }
+                }
+
+
+                if (tryAgain) {
+                    try {
+                        Thread.sleep(100);
+                        Log.v("yahya", "again");
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                }
+                if (!tryAgain && !failed) {
+                    isConnected = true;
+                    UnityPlayer.UnitySendMessage("BtConnector", "connection", "1");
+
+                    Bridge.controlMessage(1);
+                    if (control.startListen) {
+                        RECEIVER.startListeningThread(socket, receiveStream);
+                    }
+
+
+                }
+
+            } while (tryAgain);
+        }
 	}
 	
 	
@@ -392,7 +391,7 @@ public class BtInterface extends Thread {
 			
 		   
 			
-			public boolean mode(){return RECEIVER.mode();}
+
 			
 			public void listen (boolean start, int length, boolean byteLimit){// read chars
 			
