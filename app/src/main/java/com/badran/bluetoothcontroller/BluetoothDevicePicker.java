@@ -6,11 +6,9 @@ public interface BluetoothDevicePicker {
     public static final String EXTRA_LAUNCH_PACKAGE = "android.bluetooth.devicepicker.extra.LAUNCH_PACKAGE";
     public static final String EXTRA_LAUNCH_CLASS = "android.bluetooth.devicepicker.extra.DEVICE_PICKER_LAUNCH_CLASS";
 
-    /**
-     * Broadcast when one BT device is selected from BT device picker screen.
-     * Selected {@link BluetoothDevice} is returned in extra data named
-     * {@link BluetoothDevice#EXTRA_DEVICE}.
-     */
+
+
+
     public static final String ACTION_DEVICE_SELECTED = "android.bluetooth.devicepicker.action.DEVICE_SELECTED";
 
     /**

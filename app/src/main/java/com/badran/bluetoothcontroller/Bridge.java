@@ -4,7 +4,7 @@ package com.badran.bluetoothcontroller;
  * By Tech Tweaking
  */
 
-import java.util.ArrayList;
+
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -26,22 +26,29 @@ public class Bridge  {
 	private static BluetoothAdapter mBluetoothAdapter =  BluetoothAdapter.getDefaultAdapter();
 	
 	private static BtInterface B = null;
-	private static ArrayList<BtInterface> deviceInterfaces = new ArrayList<BtInterface>();
-	public static String ModuleName = "HC-05";
-	public static boolean mac = false;
-	public static String ModuleMac = "";
+
+	static String ModuleName = "HC-05";
+	static boolean mac = false;
+	static String ModuleMac = "";
 	
 	
 	private static int CMessage = 0;
 	
-	private static boolean mode0 = true;
-	private static boolean mode2 = false;
-	private static boolean mode3 = false;
+
+
+     static enum MODES {
+        mode0,mode1,mode2,mode3
+
+    }
+
+    static MODES MODE = MODES.mode0;
+
+
+
+    static int lengthB = 0;
+	static byte stopByteB = 0;
 	
-	private static int lengthB = 0;
-	private static byte stopByteB = 0;
-	
-	private static boolean stopListen = false;
+	static boolean enableReading = true;
 	public static void askEnableBluetooth(){
 		Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 		
@@ -87,7 +94,7 @@ public class Bridge  {
   
 
     public static int  connect(int trialsNumber) {
-        if(deviceInterfaces.size() < trialsNumber){
+
          //mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
          if (mBluetoothAdapter == null) {
          	return -2;
@@ -111,7 +118,7 @@ public class Bridge  {
          		else
          			B = new BtInterface(mBluetoothAdapter);
          			
-         			B.defaultValues(mode0,mode2,mode3,lengthB,stopByteB,stopListen);
+
          		
          			B.connect(trialsNumber);
          		    B.start();
@@ -119,12 +126,12 @@ public class Bridge  {
          		 
          		
             
-         }
+
         
         return 1;
      }
-    
-    public static int  connect(int trialsNumber, int deviceOrder) {
+
+    /*public static int  connect(int trialsNumber, int deviceOrder) {
         if(!isConnected()){
          //mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
          if (mBluetoothAdapter == null) {
@@ -149,7 +156,7 @@ public class Bridge  {
          		else
          			B = new BtInterface(mBluetoothAdapter);
          			
-         			B.defaultValues(mode0,mode2,mode3,lengthB,stopByteB,stopListen);
+
          		
          			B.connect(trialsNumber);
          		 B.start();
@@ -159,8 +166,8 @@ public class Bridge  {
          }
         
         return 1;
-     }
-	
+     }*/
+
 		public static void close(){
 			if(B != null) {
     			B.interrupt();
@@ -246,57 +253,51 @@ public class Bridge  {
 		
 		//is there a bytelimit
 		public static void listen(boolean start,int length,boolean byteLimit){
-			
-			if(B != null) 
-			B.listen(start,length,byteLimit);
+
+            if(B != null)
+                B.listen();
 			
 				
 				
 				lengthB = length;
-				mode0 = false;
-				mode2 = false;
-				mode3 = byteLimit;
-				stopListen = start;
+
+                MODE = ((byteLimit) ? MODES.mode2 : MODES.mode3);
+				enableReading = start;
 				
 			
 		}
 public static void listen(boolean start,int length,byte stopByte){
-			
-			if(B != null) 
-			B.listen(start,length,stopByte);
+
+    if(B != null)
+        B.listen();
 			
 				
 				
 				lengthB = length;
 				stopByteB = stopByte;
-				stopListen = start;
-				mode0 = false;
-				mode2 = true;
-				mode3 = false;
+				enableReading = start;
+
+                MODE = MODES.mode1;
 		}
 		
 		public static void listen(boolean start){
 			if(B != null) 
-			B.listen(start);
+			    B.listen();
 			
 				
 				
-				stopListen = start;
+				enableReading = start;
 				
-				mode0 = true;
-				mode2 = false;
-				mode3 = false;
+				MODE = MODES.mode0;
 			
 			
 		}
 		
 		public static void stopListen(){
 			
-			if(B != null){
-				B.stopListen();
-			} 
+
 				
-				stopListen = false;
+				enableReading = false;
 				
 			
 		}

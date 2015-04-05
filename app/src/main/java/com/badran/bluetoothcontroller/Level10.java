@@ -5,6 +5,7 @@ import java.util.UUID;
 import android.annotation.TargetApi;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.util.Log;
 
 public class Level10 {
 	
@@ -23,9 +24,10 @@ public class Level10 {
 		  @TargetApi(10) public  BluetoothSocket createRfcommSocket(BluetoothDevice device,UUID uuid){
 			  BluetoothSocket tmp = null;
 			   try{
-				  
+
 				   tmp = device.createInsecureRfcommSocketToServiceRecord(uuid);
-			   }catch(IOException e){ }
+			   }catch(IOException e){
+                   Log.v("PLUGIN","Chinese connection failed"); }
 			   return tmp;
 		   }
 		 

@@ -17,7 +17,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import java.util.ArrayList;
+
 
 import java.util.Set;
 import java.util.UUID;
@@ -39,14 +39,8 @@ public class BtInterface extends Thread {
 	
 	
 	
-	class MessagesThread {
-		public volatile ArrayList<Object []> outMessages = new ArrayList<Object []>();
-		
-		public volatile char charMessage = (char)0;
-		public volatile String stringMessage = "";
-		public volatile byte[] bytesMessage  = new byte []{};
-	  }
-	private final  MessagesThread messagesThread = new MessagesThread();
+
+
 	
 	private BluetoothDevice device = null;
 	private BluetoothSocket socket ;
@@ -58,13 +52,13 @@ public class BtInterface extends Thread {
 	private PrintWriter writer = null;
 	private BufferedOutputStream outBufferStream = null;
 	
+	private final String TAG = "PLUGIN";
 	
-	
-	private BtReader RECEIVER = new BtReader();  /////must change
+	private BtReader RECEIVER = null;  /////must change
 
 	
 	
-	private BtSender SENDER;
+	private BtSender SENDER = null;
 		private boolean isChineseMobile = false;
 	
 	
@@ -72,17 +66,14 @@ public class BtInterface extends Thread {
 	
 	
 	private int connectionTrials = 2;
-	volatile int modeIndex2 = 0;
+	
 	
 	class ControlThread {
-	    public volatile boolean MODE = true;
-	    public volatile boolean MODE2 = false;
-	    public volatile boolean MODE3 = false;
-	    public volatile boolean startListen = true;
+
+
 	   
 	    public volatile boolean listening = false;
-	    public volatile byte stopByte ;
-	    public volatile int length = 0;
+	    
 	    public volatile boolean isSending = false;
 	  }
 	private boolean isDevicePicked = false;
@@ -109,23 +100,26 @@ public class BtInterface extends Thread {
 		final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 		boolean foundModule = false;
 		if(!this.isDevicePicked){
-		Set<BluetoothDevice> setpairedDevices = mBluetoothAdapter.getBondedDevices();
-		
-    	BluetoothDevice[] pairedDevices = setpairedDevices.toArray(new BluetoothDevice[setpairedDevices.size()]);
-    	
-		
-		
-		
-		for(int i=0;i<pairedDevices.length;i++) {
-			
-			
-			if(Bridge.mac)
-				foundModule = pairedDevices[i].getAddress().equals(Bridge.ModuleMac);
-			else 
-				foundModule = pairedDevices[i].getName().equals(Bridge.ModuleName);
+		Set<BluetoothDevice> setPairedDevices;
+            setPairedDevices = mBluetoothAdapter.getBondedDevices();
 
-					if(foundModule) {device = pairedDevices[i];break;}
-		}setpairedDevices = null;
+            BluetoothDevice[] pairedDevices = setPairedDevices.toArray(new BluetoothDevice[setPairedDevices.size()]);
+
+
+            for (BluetoothDevice pairedDevice : pairedDevices) {
+
+
+                if (Bridge.mac)
+                    foundModule = pairedDevice.getAddress().equals(Bridge.ModuleMac);
+                else
+                    foundModule = pairedDevice.getName().equals(Bridge.ModuleName);
+
+                if (foundModule) {
+                    device = pairedDevice;
+                    break;
+                }
+            }
+            setPairedDevices = null;
 		} else foundModule = true;
 		
 		
@@ -134,28 +128,28 @@ public class BtInterface extends Thread {
 				
 
 			
-			String TAG = "yahya";
+
 			try {
-				
+
 				 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
 					 tmpSocket = Level10.getInstance().createRfcommSocket(device, SPP_UUID);
 					
 				 } else if (isChineseMobile){
-					 
+
 					 Method m;
 					   try {
 					    	m = device.getClass().getMethod("createRfcommSocket", new Class[] {int.class         });
 					    	tmpSocket = (BluetoothSocket) m.invoke(device, 1);  
 					        } catch (SecurityException e) {
-					    	Log.v(TAG, "create() failed" + e.getMessage());
+					    	Log.v(TAG,  e.getMessage());
 					    	} catch (NoSuchMethodException e) {
-					    	Log.v(TAG, "create() failed" + e.getMessage());
+					    	Log.v(TAG, e.getMessage());
 					    	} catch (IllegalArgumentException e) {
-					    	Log.v(TAG, "create() failed" + e.getMessage());
+					    	Log.v(TAG, e.getMessage());
 					    	} catch (IllegalAccessException e) {
-					    	Log.v(TAG, "create() failed" + e.getMessage());
+					    	Log.v(TAG,  e.getMessage());
 					    	} catch (InvocationTargetException e) {
-					    	Log.v(TAG, "create() failed" + e.getMessage());
+					    	Log.v(TAG,  e.getMessage());
 					    	}         
 				 }
 				 
@@ -163,7 +157,7 @@ public class BtInterface extends Thread {
 				 
 				 
 			} catch (IOException mainError) {
-						Log.v("TEST","message : " + mainError.getMessage());
+						Log.v(TAG, mainError.getMessage());
 						close();     
 						Bridge.controlMessage(-1);
 						
@@ -188,18 +182,13 @@ public class BtInterface extends Thread {
 	
 	void chineseMobile(){
 		
-		if(receiveStream != null) {try{receiveStream.close();}  catch (Exception e) {receiveStream = null;}}
-		if(receiveReader != null) {try{receiveReader.close();}catch (Exception e) {receiveReader = null;}}
-		if(sendStream != null)  {try{sendStream.flush();sendStream.close();}catch (Exception e) {sendStream = null;}}
-		if(writer != null) { try{writer.flush();writer.close();}catch (Exception e) {writer = null;}}
-		if(outBufferStream != null) {try{outBufferStream.flush();outBufferStream.close();}catch (Exception e3) {outBufferStream = null;}}
-		messagesThread.outMessages.clear();
+
 		
 			if(socket != null){
 				try {
 			socket.close();
-				}catch(IOException e){};
-			socket = null;
+				}catch(IOException ignored){}
+                socket = null;
 			}
 			isConnected = false;
 		isChineseMobile = !isChineseMobile;
@@ -209,7 +198,7 @@ public class BtInterface extends Thread {
 		
 		
 	}
- void inetializeStreams(boolean input,boolean output){
+ private void inetializeStreams(boolean input, boolean output){
 	 if(input){
 	 try{
 		 
@@ -220,8 +209,10 @@ public class BtInterface extends Thread {
 		 
 		 Log.v("yahya", "inFailed" + e.getMessage());
 	 }
-	 receiveReader = new BufferedReader(new InputStreamReader(receiveStream)); //it's not used 
-	 
+	        receiveReader = new BufferedReader(new InputStreamReader(receiveStream)); //it's not used
+
+         RECEIVER = new BtReader(socket, receiveStream,receiveReader);
+         RECEIVER.startListeningThread();
 	 
 	 }
 	 if(output){
@@ -235,7 +226,7 @@ public class BtInterface extends Thread {
 	 
 	 }
 		 
-		 outBufferStream =  new BufferedOutputStream(sendStream);
+		    outBufferStream =  new BufferedOutputStream(sendStream);
 			writer = new PrintWriter(sendStream,true);
 			SENDER = new BtSender(outBufferStream,writer);
 	 }
@@ -254,13 +245,13 @@ public class BtInterface extends Thread {
             do {
                 tryAgain = false;
                 failed = false;
-                inetializeStreams(true, true);
+
                 mBluetoothAdapter.cancelDiscovery();
                 try {
 
                     socket.connect();
                 } catch (IOException e) {
-                    Log.v("yahya", "yahya : " + String.valueOf(isChineseMobile) + " : " + e.getMessage());
+                    Log.v(TAG, "TRYING TO CONNECT AGAIN : " + String.valueOf(isChineseMobile) + " : " + e.getMessage());
                     if (counter < connectionTrials) {
                         chineseMobile();
                         tryAgain = true;
@@ -273,24 +264,21 @@ public class BtInterface extends Thread {
                 }
 
 
-                if (tryAgain) {
-                    try {
-                        Thread.sleep(100);
-                        Log.v("yahya", "again");
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                if (tryAgain) try {
+                    Thread.sleep(100);
 
+                } catch (InterruptedException e) {
+
+                    Log.v(TAG,"Sleep Thread Interrupt Exception");
                 }
                 if (!tryAgain && !failed) {
+
+                    inetializeStreams(Bridge.enableReading, true);
                     isConnected = true;
                     UnityPlayer.UnitySendMessage("BtConnector", "connection", "1");
 
                     Bridge.controlMessage(1);
-                    if (control.startListen) {
-                        RECEIVER.startListeningThread(socket, receiveStream);
-                    }
+
 
 
                 }
@@ -308,14 +296,15 @@ public class BtInterface extends Thread {
 	public void close() {
 	
 		
-		control.startListen = false;
-		
+            RECEIVER.stop();
+            SENDER.stop();
+
 			if(receiveStream != null) {try{receiveStream.close();}  catch (Exception e) {receiveStream = null;}}
 			if(receiveReader != null) {try{receiveReader.close();}catch (Exception e) {receiveReader = null;}}
 			if(sendStream != null)  {try{sendStream.flush();sendStream.close();}catch (Exception e) {sendStream = null;}}
 			if(writer != null) { try{writer.flush();writer.close();}catch (Exception e) {writer = null;}}
 			if(outBufferStream != null) {try{outBufferStream.flush();outBufferStream.close();}catch (Exception e3) {outBufferStream = null;}}
-			messagesThread.outMessages.clear();
+
 			try {
 				if(socket != null){
 				socket.close();
@@ -332,14 +321,7 @@ public class BtInterface extends Thread {
 			
 			UnityPlayer.UnitySendMessage("BtConnector", "connection","");}
 	}
-		public void defaultValues(boolean tempMode0,boolean tempMode2,boolean tempMode3,int tempLength,byte tempStopByte,boolean stop){
-			
-			control.startListen = stop;
-			
-			
-			RECEIVER.defaultValues(tempMode0, tempMode2, tempMode3, tempLength, tempStopByte, stop);
-		
-		}
+
 		
 		
 		
@@ -377,33 +359,19 @@ public class BtInterface extends Thread {
 		    
 		
 		    
-		    public void listen (boolean start){ // read lines
-				RECEIVER.listen(start);
-					
-				
 
-			}
-			public void stopListen(){
-				
-				RECEIVER.stopListen();
-			}
+
 			
 			
 		   
 			
 
 			
-			public void listen (boolean start, int length, boolean byteLimit){// read chars
+
+	public void listen (){// read chars
 			
 				
-				RECEIVER.listen(start,length,byteLimit);
-			
-			
-			}
-	public void listen (boolean start, int length,byte stopByte){// read chars
-			
-				
-		RECEIVER.listen(start,length,stopByte);
+		RECEIVER.listen();
 			
 			
 			}
