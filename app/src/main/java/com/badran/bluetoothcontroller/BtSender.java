@@ -69,7 +69,9 @@ class BtSender {
 
             Job job;
             while (true) {
+
                 synchronized (lock1) {
+                    Log.v("unity","acquired thread lock");
                     if (outMessages.size() <= 0) {
                         isSending = false;
                         break;
@@ -77,8 +79,9 @@ class BtSender {
                 }
                 try {
                     job.bufferedOutputStream.write(job.msg);
+                    job.bufferedOutputStream.flush();
                 } catch (IOException e) {
-
+                    Log.v("unity","failed to write");
                     PluginToUnity.ControlMessages.SENDING_ERROR.send(1);
                 }
 
