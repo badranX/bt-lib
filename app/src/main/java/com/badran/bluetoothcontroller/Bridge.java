@@ -5,7 +5,6 @@ package com.badran.bluetoothcontroller;
  */
 
 
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
@@ -18,374 +17,103 @@ import android.content.Context;
 import android.content.IntentFilter;
 
 
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+public class Bridge {
 
 
-public class Bridge  {
-	
-	
-	private static BluetoothAdapter mBluetoothAdapter =  BluetoothAdapter.getDefaultAdapter();
-	
-	private static BtInterface B = null;
+    private static BluetoothAdapter mBluetoothAdapter;
 
-	static String ModuleName = "HC-05";
-	static boolean mac = false;
-	static String ModuleMac = "";
-	
-	
-	private static int CMessage = 0;
-	
+    private static Map<Integer, BluetoothConnection> map = new HashMap<Integer, BluetoothConnection>();
+
+    private static Bridge instance = null;
 
 
-     static enum MODES {
-        mode0,mode1,mode2,mode3
+    protected Bridge() {
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        // Exists only to defeat instantiation.
 
     }
 
-    static MODES MODE = MODES.mode0;
-
-
-
-    static int lengthB = 0;
-	static byte stopByteB = 0;
-	
-	static boolean enableReading = true;
-	public static void askEnableBluetooth(){
-		Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-		
-		UnityPlayer.currentActivity.startActivity(enableBtIntent);
-		
-	    
-
-	}
-	
-	
-	
-    public static synchronized void controlMessage(int message){
-    	
-      CMessage = message;
-        	
-        	
+    public static Bridge getInstance() {
+        if (instance == null) {
+            instance = new Bridge();
+        }
+        return instance;
     }
-   
-   
-    public static void moduleName(String Module ){
-    	mac = false;
-    	ModuleName = Module;
+
+    private static Set<BluetoothConnection> noUse = new HashSet<BluetoothConnection>();
+
+    public static BluetoothConnection createBlutoothConnectionObject( String name, boolean isUsingMac) {
+
+
+        BluetoothConnection btConnection = new BluetoothConnection();
+        noUse.add(btConnection);
+
+        if (isUsingMac)
+            btConnection.setupData.mac = name;
+        else btConnection.setupData.name = name;
+
+        btConnection.setupData.isUsingMac = isUsingMac;
+
+        return  btConnection;
     }
-    public static void moduleMac (String Mac){
-    	mac = true;
-    	ModuleMac = Mac;
+
+
+
+
+
+
+
+
+    //FROM UNITY
+
+    public static void askEnableBluetooth() {
+
+        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+
+        UnityPlayer.currentActivity.startActivity(enableBtIntent);
+
+
     }
-    
-  
-    
-  public static boolean enableBluetooth(){
-	  if(mBluetoothAdapter != null) { return mBluetoothAdapter.enable(); } else return false;
-	  
-	  
-  }
-  
-  
-    
-	 public static boolean  isBluetoothEnabled(){
-		 
-    	if(mBluetoothAdapter != null) {return mBluetoothAdapter.isEnabled();} else return false;
+
+    public static boolean enableBluetooth() {
+        if (mBluetoothAdapter != null) {
+            return mBluetoothAdapter.enable();
+        } else return false;
+
+
     }
-  
 
-    public static int  connect(int trialsNumber) {
 
-         //mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-         if (mBluetoothAdapter == null) {
-         	return -2;
-         }
-         
-         	if (!mBluetoothAdapter.isEnabled()){
-         		return -1;
-         	} 
-         	
-         		
-         		if(B != null) {
-         			B.interrupt();
-         			B.close();
-         			
-         			B=null;
-         			
-         		}	
-         		
-         		if(isDevicePicked)
-         			B = new BtInterface(mBluetoothAdapter,BtDevice);
-         		else
-         			B = new BtInterface(mBluetoothAdapter);
-         			
+    public static boolean disableBluetooth() {
+        if (mBluetoothAdapter != null) {
+            return mBluetoothAdapter.disable();
+        } else return false;
 
-         		
-         			B.connect(trialsNumber);
-         		    B.start();
 
-         		 
-         		
-            
+    }
 
-        
-        return 1;
-     }
+    public static boolean isBluetoothEnabled() {
 
-    /*public static int  connect(int trialsNumber, int deviceOrder) {
-        if(!isConnected()){
-         //mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-         if (mBluetoothAdapter == null) {
-         	return -2;
-         }
-         
-         	if (!mBluetoothAdapter.isEnabled()){
-         		return -1;
-         	} 
-         	
-         		
-         		if(B != null) {
-         			B.interrupt();
-         			B.close();
-         			
-         			B=null;
-         			
-         		}	
-         		
-         		if(isDevicePicked)
-         			B = new BtInterface(mBluetoothAdapter,BtDevice);
-         		else
-         			B = new BtInterface(mBluetoothAdapter);
-         			
+        if (mBluetoothAdapter != null) {
+            return mBluetoothAdapter.isEnabled();
+        } else return false;
+    }
 
-         		
-         			B.connect(trialsNumber);
-         		 B.start();
-         		 
-         		
-            
-         }
-        
-        return 1;
-     }*/
 
-		public static void close(){
-			if(B != null) {
-    			B.interrupt();
-    			B.close();
-    			B=null;
-    		}
-					
-			
-		
-		}
-		public static void sendString(String message){
-			//CMessage("Move Forward");
-			if( isConnected())
-			B.sendString(message);
-		}
-		
-		public static void sendChar(char message){
-			if( isConnected())
-			B.sendChar(message);
-		}
-		public static void sendBytes(byte [] message){
-			if( isConnected()){
-				
-			B.sendBytes(message);
-			
-			}
-		}
-		
-		public static String read(){
-			
-				listen(true);
-			if(!isConnected()) return "";
-			return B.readLine();
-				
-		}
-		
-		public static byte [] readBuffer(int length){
-				
-				listen(true,length,false);
-			if( !isConnected()) return new byte [] {};
-			
-			
-			return B.readBuffer();
-			
-		}
-		
-		public static byte [] readBuffer(){
-			
-			
-		if( !isConnected()) return new byte [] {};
-		
-		
-		return B.readBuffer();
-		
-	}
-		public static byte [] readBuffer(int length,byte stopByte){
-			listen(true,length,stopByte);
-			if( !isConnected()) return new byte [] {};
-			
-			
-			return B.readBuffer();
-			
-		}
-		
-		public static boolean available(){
-			if(!isConnected()) return false;
-			else return B.available();
-		
-		}
-		
-		public static int controlData(){
-			return CMessage;
-		}
-		
-		public static boolean isSending(){
-			if( B == null) return false;
-		return B.isSending();
-		}
-		public static boolean isConnected(){
-			if(B == null) return false;
-			return B.isConnected();
-		}
-		
-		//is there a bytelimit
-		public static void listen(boolean start,int length,boolean byteLimit){
-
-            if(B != null)
-                B.listen();
-			
-				
-				
-				lengthB = length;
-
-                MODE = ((byteLimit) ? MODES.mode2 : MODES.mode3);
-				enableReading = start;
-				
-			
-		}
-public static void listen(boolean start,int length,byte stopByte){
-
-    if(B != null)
-        B.listen();
-			
-				
-				
-				lengthB = length;
-				stopByteB = stopByte;
-				enableReading = start;
-
-                MODE = MODES.mode1;
-		}
-		
-		public static void listen(boolean start){
-			if(B != null) 
-			    B.listen();
-			
-				
-				
-				enableReading = start;
-				
-				MODE = MODES.mode0;
-			
-			
-		}
-		
-		public static void stopListen(){
-			
-
-				
-				enableReading = false;
-				
-			
-		}
-		public static boolean isListening(){
-			if(B == null) return false;
-			else return B.isListening();
-				
-		}
-		public static void doneReading(){
-			
-			if(B != null) 
-			  B.doneReading();
-		}
-	/*
-		public static boolean TESTING (){
-			return BtInterface.TESTINGvariable;
-		}
-		*/
-		
-		// show devices
-		static BluetoothDevicePickerReceiver mBluetoothPickerReceiver = new BluetoothDevicePickerReceiver();
-	    public static void showDevices () {
-	    	
-			IntentFilter deviceSelectedFilter = new IntentFilter();
-			deviceSelectedFilter.addAction(BluetoothDevicePicker.ACTION_DEVICE_SELECTED);
-
-			UnityPlayer.currentActivity.registerReceiver(mBluetoothPickerReceiver, deviceSelectedFilter);
-			
-	        UnityPlayer.currentActivity.startActivity(new Intent(BluetoothDevicePicker.ACTION_LAUNCH)
-	                .putExtra(BluetoothDevicePicker.EXTRA_NEED_AUTH, false)
-	                .putExtra(BluetoothDevicePicker.EXTRA_FILTER_TYPE, BluetoothDevicePicker.FILTER_TYPE_ALL)
-	                .setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS));
-	
+    //connection setup and control methods
 
 
 
-	    }
-
-	   static private class BluetoothDevicePickerReceiver extends BroadcastReceiver implements  BluetoothDevicePicker  {
-
-	        /*
-	         * (non-Javadoc)
-	         * @see android.content.BroadcastReceiver#onReceive(android.content.Context,
-	         * android.content.Intent)
-	         */
-	        @Override
-	        public void onReceive(Context context, Intent intent) {
-	            if (ACTION_DEVICE_SELECTED.equals(intent.getAction())) {
-	                // context.unregisterReceiver(this);
-	                BluetoothDevice device = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-	                BtDevice= device;
-	                UnityPlayer.UnitySendMessage("BtConnector", "devicePicked","");
-	            }
-
-	            }
-	        }
 
 
-
-	    public static BluetoothDevice  BtDevice;
-	    public static BluetoothDevice getPickedDevice (){
-	        if(BtDevice != null)
-	        return BtDevice;
-	        return  null;
-	    }
-	    
-	    private static boolean isDevicePicked = false;
-	    public static boolean setBluetoothDevice(BluetoothDevice B){
-	    	if(B == null || !(B instanceof BluetoothDevice))
-	    		return false;
-	    	BtDevice = B;
-	    	isDevicePicked = true;
-	    	return true;
-	    	
-	    	
-	    }
-	    public static String BluetoothDeviceName (BluetoothDevice B) {
-	        return B.getName();
-
-	    }
-	    
-	    public static String BluetoothDeviceMac (BluetoothDevice B) {
-	        return B.getAddress();
-
-	    }
-
-
-	    //end show devices
-		
 }
 
