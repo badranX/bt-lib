@@ -22,37 +22,40 @@ public final class PluginToUnity {
 
 
     public enum ControlMessages {
-        CONNECTED (1), //"Connected"
-        DISCONNECTED (2) , //"Disconnected"
-        UNABLE_TO_CONNECT (-1), //"found your Bluetooth Module but unable to connect to it"
-        NOT_FOUND (-2), //"Bluetooth module with the name or the MAC you provided can't be found"
-        MODULE_OFF (-3),//"Connection Failed, usually because your Bluetooth module is off "
-        CLOSING_ERROR (-4), //"error while closing"
-        SENDING_ERROR (-5), //"error while writing"
-        READING_ERROR (-6),//error while reading
+        CONNECTED ("1"), //"Connected"
+        DISCONNECTED ("2") , //"Disconnected"
+        UNABLE_TO_CONNECT ("-1"), //"found your Bluetooth Module but unable to connect to it"
+        NOT_FOUND ("-2"), //"Bluetooth module with the name or the MAC you provided can't be found"
+        MODULE_OFF ("-3"),//"Connection Failed, usually because your Bluetooth module is off "
+        CLOSING_ERROR ("-4"), //"error while closing"
+        SENDING_ERROR ("-5"), //"error while writing"
+        READING_ERROR ("-6"),//error while reading
 
         //added after version 3.6
-        DATA_AVAILABLE (3);
+        DATA_AVAILABLE ("3"),
 
 
-
-        private final int value;
+            DEVICE_PICKED ("devicePicked");
+        private final String value;
 
         private static final String UNITY_GAME_OBJECT_NAME = "BtConnector";
-        private static final String UNITY_CONNECTION_STATUS = "connectionStatus";
-        private static final String UNITY_DATA_AVAILABLE = "dataAvailable";
-        private static final String EMPTY_STRING = "";
-        private static final String UNITY_METHOD = "controlMessagesReceiver";
-        private ControlMessages(final int newValue) {
+        private static final String UNITY_METHOD = "OnDisconnect";
+        private ControlMessages(final String newValue) {
             value = newValue;
         }
 
-        public int getValue() { return value; }
+        public String getValue() { return value; }
 
         public void send(int id){ //send Control Message in the Name of THE CONNECTION [id]
-            UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, UNITY_METHOD, Integer.toString(value));
+            UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, UNITY_METHOD, Integer.toString(id));
 
         }
+
+        public void send(){ //send Control Message in the Name of THE CONNECTION [id]
+            UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, UNITY_METHOD, "");
+
+        }
+
     }
 
 

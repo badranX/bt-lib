@@ -19,6 +19,8 @@ public class ConnectionSetupData {
     public  String name;
     public  String mac;
 
+
+    public int bufferLength;
     public boolean isUsingMac;
 
     public String SPP_UUID = UUID_SERIAL;
@@ -40,6 +42,13 @@ public class ConnectionSetupData {
     public boolean enableReading = false;
 
 
+    public enum ConnectionMode {
+        UsingMac , UsingName, UsingBluetoothDeviceReference,NotSet
+    } public ConnectionMode connectionMode= ConnectionMode.NotSet;
+
+    public enum ReadingMode {
+        STRINGS , ENDBYTE, LENGTH
+    } public ReadingMode readMode;
 
 
 

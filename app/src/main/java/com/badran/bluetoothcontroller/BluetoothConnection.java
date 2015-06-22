@@ -1,9 +1,12 @@
 package com.badran.bluetoothcontroller;
 
 
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
+
+import com.unity3d.player.UnityPlayer;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -16,6 +19,12 @@ import java.io.PrintWriter;
 
 public class BluetoothConnection {
 
+    public final int id;
+    public static volatile int counter;
+    public BluetoothConnection (int id) {
+        this.id = id;
+        this.counter = id;
+    }
     public final ConnectionSetupData setupData = new ConnectionSetupData();
 
 
@@ -41,47 +50,26 @@ public class BluetoothConnection {
     public BufferedReader bufferReadder = null;
 
 
+    public void setBluetoothDevice(BluetoothDevice bt) {
+        setupData.device =bt;
+        setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingBluetoothDeviceReference;
+
+    }
+
+    public boolean isDataAvailable(){
+        if(READER != null)
+            return READER.available();
 
 
 
-
-//    public void close() {
-//
-//
-//        READER.close();
-//        SENDER.close();
-//
-//        READER = null;
-//        SENDER = null;
-//
-//        //
-//        if (outStream != null) {
-//            try {
-//                outStream.flush();
-//                outStream.close();
-//            } catch (Exception e) {
-//                outStream = null;
-//            }
-//        }
-//
-//
-//        try {
-//            if (socket != null) {
-//                socket.close();
-//                socket = null;
-//            }
-//            isConnected = false;
-//            Bridge.controlMessage(2);
-//
-//        } catch (IOException e) {
-//
-//            Bridge.controlMessage(-4);
-//        } finally {
-//            Bridge.UnityEvents.connectionClosed(setupData.id);
-//
-//
-//        }
-//    }
+        return false;
+    }
+    public byte[] getBuffer(){
+        Log.v("unity","getBuffer Called");
+        if(READER != null)
+            return  READER.readBuffer();
+        return  null;
+    }
 
     public  int connect( int trialsNumber) {
 
@@ -91,9 +79,15 @@ public class BluetoothConnection {
 
     }
 
-    public void close() {
 
+    public void close() {
+        Log.v("unity","closing");
+        Log.v("unity"," Device ID IS : " + Integer.toString(this.id));
+        PluginToUnity.ControlMessages.DISCONNECTED.send(this.id);
+        UnityPlayer.UnitySendMessage("BtConnector","OnDisconnect","0");
         try {
+            READER.close();
+
             if (socket != null) {
                 Log.v("unity","socket is not null");
                 socket.close();
@@ -105,6 +99,9 @@ public class BluetoothConnection {
                 bufferedOutputStream.close();
 
             }
+
+
+
             isConnected = false;
 
 
@@ -118,11 +115,22 @@ public class BluetoothConnection {
         }
     }
 
+
+
     public void setUUID (String SPP_UUID){
 
         setupData.SPP_UUID = SPP_UUID;
     }
 
+    public void setMac (String mac){
+        setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingMac;
+        setupData.mac = mac;
+    }
+
+    public void setName (String name){
+        setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingName;
+        setupData.name = name;
+    }
 
 
     public void sendString(String msg) {

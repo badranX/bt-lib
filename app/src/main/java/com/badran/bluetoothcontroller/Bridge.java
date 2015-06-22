@@ -51,17 +51,10 @@ public class Bridge {
 
     private static Set<BluetoothConnection> noUse = new HashSet<BluetoothConnection>();
 
-    public static BluetoothConnection createBlutoothConnectionObject( String name, boolean isUsingMac) {
+    public static BluetoothConnection createBlutoothConnectionObject( int id) {
 
 
-        BluetoothConnection btConnection = new BluetoothConnection();
-        noUse.add(btConnection);
-
-        if (isUsingMac)
-            btConnection.setupData.mac = name;
-        else btConnection.setupData.name = name;
-
-        btConnection.setupData.isUsingMac = isUsingMac;
+        BluetoothConnection btConnection = new BluetoothConnection(id);
 
         return  btConnection;
     }
@@ -109,7 +102,60 @@ public class Bridge {
     }
 
 
-    //connection setup and control methods
+    // show devices
+    static BluetoothDevicePickerReceiver mBluetoothPickerReceiver = new BluetoothDevicePickerReceiver();
+    public static void showDevices () {
+
+        IntentFilter deviceSelectedFilter = new IntentFilter();
+        deviceSelectedFilter.addAction(BluetoothDevicePicker.ACTION_DEVICE_SELECTED);
+
+        UnityPlayer.currentActivity.registerReceiver(mBluetoothPickerReceiver, deviceSelectedFilter);
+
+        UnityPlayer.currentActivity.startActivity(new Intent(BluetoothDevicePicker.ACTION_LAUNCH)
+                .putExtra(BluetoothDevicePicker.EXTRA_NEED_AUTH, false)
+                .putExtra(BluetoothDevicePicker.EXTRA_FILTER_TYPE, BluetoothDevicePicker.FILTER_TYPE_ALL)
+                .setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS));
+
+
+
+
+    }
+
+    static private class BluetoothDevicePickerReceiver extends BroadcastReceiver implements  BluetoothDevicePicker  {
+
+        /*
+         * (non-Javadoc)
+         * @see android.content.BroadcastReceiver#onReceive(android.content.Context,
+         * android.content.Intent)
+         */
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (ACTION_DEVICE_SELECTED.equals(intent.getAction())) {
+                // context.unregisterReceiver(this);
+                BluetoothDevice device = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                BluetoothConnection btConnection = new BluetoothConnection(BluetoothConnection.counter +1);
+
+                btConnection.setBluetoothDevice (device);
+
+                BtDevice = btConnection;
+                UnityPlayer.UnitySendMessage("BtConnector", "devicePicked","");
+                UnityPlayer.currentActivity.unregisterReceiver(this);
+            }
+
+        }
+    }
+
+
+
+    private static BluetoothConnection  BtDevice;
+    public static BluetoothConnection getPickedDevice (){
+        if(BtDevice != null)
+            return BtDevice;
+        return  null;
+    }
+
+
 
 
 
