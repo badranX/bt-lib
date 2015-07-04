@@ -78,7 +78,9 @@ public class BtInterface {
 
     Queue<ConnectionTrial> btConnectionsQueue = new ConcurrentLinkedQueue<ConnectionTrial>();
 
+
     Map<String, ConnectionSetupData> waitingDiscoveryDevices = new ConcurrentHashMap<String, ConnectionSetupData>();
+
 
 
     private Object lock1 = new Object();
@@ -93,6 +95,7 @@ public class BtInterface {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+
         IntentFilter filter2 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
         IntentFilter filter3 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         IntentFilter filter4 = new IntentFilter(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -175,7 +178,7 @@ public class BtInterface {
 
                 if (foundModule) {
                     setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingBluetoothDeviceReference;
-                    setupData.device = pairedDevice;
+                    setupData.setDevice(pairedDevice);
                     break;
                 }
             }
@@ -201,12 +204,10 @@ public class BtInterface {
 
                         if (setupData.mac.equals(device.getAddress())) {
 
-                            setupData.device = device;
-
+                            setupData.setDevice(device);
                             foundIt = true;
                         } else if (setupData.name.equals(device.getName())) {
-                            setupData.device = device;
-
+setupData.setDevice(device);
                             foundIt = true;
                         }
 
@@ -226,7 +227,9 @@ public class BtInterface {
                 }
 
             } else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
-                Log.v("unity", device.getName() + " : is connected");
+                Log.v("unity", device.getName() + " : is CONECTED X");
+                PluginToUnity.ControlMessages.CONNECTED.send(ConnectionSetupData.getIdFromDevice(device));
+
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 Log.v("unity", device.getName() + " : discovery finished");
                 if(btConnectionForDiscovery != null) { //using null to tell if we did found the device or not
@@ -243,14 +246,18 @@ public class BtInterface {
 
                 }
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
+
                 Log.v("unity", device.getName() + " : Disconnect requist");
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
+                PluginToUnity.ControlMessages.CONNECTED.send(ConnectionSetupData.getIdFromDevice(device));
                 Log.v("unity", device.getName() + " : Disconnected");
             }else if (BluetoothAdapter.ACTION_REQUEST_ENABLE.equals(action)) {
                 Log.v("unity","BLUETOOTH Requested to be enabled");
             }
         }
     };
+
+
 
     private void startDiscoveryForConnection(ConnectionTrial btConnectionTrial){
         Log.v("unity","discovery Started");
@@ -272,7 +279,7 @@ public class BtInterface {
             final UUID SPP_UUID = UUID.fromString(setupData.SPP_UUID);
 
 
-            BluetoothDevice tmpDevice = btConnection.setupData.device;
+            BluetoothDevice tmpDevice = setupData.getDevice();
 
             if (tmpDevice != null) {
                 Log.v("unity", "Found Device and trying to create socket");
@@ -285,7 +292,7 @@ public class BtInterface {
                         Method m;
                         try {
                             m = tmpDevice.getClass().getMethod(CREATE_RFcomm_Socket, new Class[]{int.class});
-                            tmpSocket = (BluetoothSocket) m.invoke(btConnection.setupData.device, 1);
+                            tmpSocket = (BluetoothSocket) m.invoke(btConnection.setupData.getDevice(), 1);
                         } catch (Exception e) {
                             Log.v(TAG, e.getMessage());
 
@@ -335,8 +342,7 @@ public class BtInterface {
                 }
 
                 btConnection.bufferReadder = new BufferedReader(new InputStreamReader(btConnection.inputStream));
-
-                btConnection.READER = new BtReader(btConnection);
+                BtReader.getInstance().enableReading(btConnection);
                 //btConnection.READER.startListeningThread();
 
             }
@@ -429,12 +435,12 @@ public class BtInterface {
 
                         if (sucess) {
 
-                            initializeStreams(true, true);
+                            initializeStreams(btConnection.willRead, true);
                             btConnection.sendChar((byte) 55);
-                            btConnection.isConnected = true;
+
 
                             Log.v("unity", "Connection Sucess");
-                            PluginToUnity.ControlMessages.CONNECTED.send(0);
+                            PluginToUnity.ControlMessages.CONNECTED.send(btConnection.id);
 
                             break; //success no need for trials
 

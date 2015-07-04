@@ -15,28 +15,31 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class BluetoothConnection {
 
     public final int id;
-    public static volatile int counter;
+
+
+
     public BluetoothConnection (int id) {
         this.id = id;
-        this.counter = id;
+
+        setupData = new ConnectionSetupData(id);
     }
-    public final ConnectionSetupData setupData = new ConnectionSetupData();
+
+    public final ConnectionSetupData setupData ;
 
 
 
 
     //control data
-    public boolean isConnected;
-    public boolean isSending;
-    public boolean isReading;
+    boolean willRead = false;
 
 
-    public BtReader READER;
 
 
 
@@ -49,26 +52,31 @@ public class BluetoothConnection {
     public InputStream inputStream = null;
     public BufferedReader bufferReadder = null;
 
+    public int readingThreadID;
+
+    public void enableReading(int readingThreadID){
+        Log.v("unity","Plugin ENable Reading");
+        this.readingThreadID = readingThreadID;
+        this.willRead = true;
+
+    }
+
 
     public void setBluetoothDevice(BluetoothDevice bt) {
-        setupData.device =bt;
+        setupData.setDevice(bt);
         setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingBluetoothDeviceReference;
 
     }
 
-    public boolean isDataAvailable(){
-        if(READER != null)
-            return READER.available();
 
-
-
-        return false;
+    public byte[] read(int size){
+        Log.v("unity","getBuffer Called with size");
+            return  BtReader.getInstance().readArray(this.id,this.readingThreadID,size);
     }
-    public byte[] getBuffer(){
+
+    public byte[] read(){//must change to PACKETIZTION
         Log.v("unity","getBuffer Called");
-        if(READER != null)
-            return  READER.readBuffer();
-        return  null;
+        return  BtReader.getInstance().readPacket(this.id,this.readingThreadID);
     }
 
     public  int connect( int trialsNumber) {
@@ -79,14 +87,13 @@ public class BluetoothConnection {
 
     }
 
-
     public void close() {
         Log.v("unity","closing");
         Log.v("unity"," Device ID IS : " + Integer.toString(this.id));
         PluginToUnity.ControlMessages.DISCONNECTED.send(this.id);
         UnityPlayer.UnitySendMessage("BtConnector","OnDisconnect","0");
         try {
-            READER.close();
+            BtReader.getInstance().close(id,readingThreadID);
 
             if (socket != null) {
                 Log.v("unity","socket is not null");
@@ -102,7 +109,7 @@ public class BluetoothConnection {
 
 
 
-            isConnected = false;
+
 
 
         } catch (IOException e) {
@@ -160,15 +167,5 @@ public class BluetoothConnection {
 
 
 
-    public boolean isConnected() {
-        return isConnected;
-    }
 
-    public boolean isSending() {
-        return isSending;
-    }
-
-    public boolean isListening() {
-        return isReading;
-    }
 }

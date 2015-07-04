@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -132,14 +133,14 @@ public class Bridge {
         public void onReceive(Context context, Intent intent) {
             if (ACTION_DEVICE_SELECTED.equals(intent.getAction())) {
                 // context.unregisterReceiver(this);
-                BluetoothDevice device = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                BtDevice = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-                BluetoothConnection btConnection = new BluetoothConnection(BluetoothConnection.counter +1);
 
-                btConnection.setBluetoothDevice (device);
 
-                BtDevice = btConnection;
-                UnityPlayer.UnitySendMessage("BtConnector", "devicePicked","");
+
+
+
+                PluginToUnity.ControlMessages.DEVICE_PICKED.send();
                 UnityPlayer.currentActivity.unregisterReceiver(this);
             }
 
@@ -148,10 +149,14 @@ public class Bridge {
 
 
 
-    private static BluetoothConnection  BtDevice;
-    public static BluetoothConnection getPickedDevice (){
-        if(BtDevice != null)
-            return BtDevice;
+    private static BluetoothDevice  BtDevice;
+    public static BluetoothConnection getPickedDevice (int id){
+        if(BtDevice != null) {
+            BluetoothConnection btConnection = new BluetoothConnection(id);
+            btConnection.setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingBluetoothDeviceReference;
+            btConnection.setupData.setDevice(BtDevice);
+            return btConnection;
+        }
         return  null;
     }
 
