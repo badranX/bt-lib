@@ -61,12 +61,6 @@ public class Bridge {
     }
 
 
-
-
-
-
-
-
     //FROM UNITY
 
     public static void askEnableBluetooth() {

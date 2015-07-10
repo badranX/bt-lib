@@ -22,20 +22,19 @@ import java.util.*;
 public class CircularArrayList {
 
     private final int n; // buffer length
-    private final byte[] buf; // a List implementing RandomAccess
-    private final ByteBuffer buffer;
-    private int head = 0;
-    private int tail = 0;
+
+
+    private int  head = 0;
+    private int  tail = 0;
 
     private int lengthPacketsCounter = 0;
     private int counter = 0;
     private int packetSize = 0;
 
+    private byte [] buf;
 
     private enum MODES {
         LENGTH_PACKET,END_BYTE_PACKET,NO_PACKETIZATION
-
-
 
     } private MODES mode = MODES.NO_PACKETIZATION;
 
@@ -46,19 +45,21 @@ public class CircularArrayList {
 
 
     public CircularArrayList(int capacity) {
-
-
         n = capacity ;
-        buf = new byte[capacity];
-        buffer = ByteBuffer.wrap(buf);
+        buf = new byte[n];
+
         marks = new LinkedList<Integer>();
     }
 
 
 
+
+
     public int capacity() {
-        return n - 1;
+        return n ;
     }
+
+
 
     private int wrapIndex(int i) {
         int m = i % n;
@@ -67,9 +68,19 @@ public class CircularArrayList {
         }
         return m;
     }
+    public synchronized boolean isDataAvailable(){
+        switch (mode){
+            case LENGTH_PACKET :
+                return lengthPacketsCounter > 0;
 
+            case END_BYTE_PACKET :
+               return !marks.isEmpty();
+            case NO_PACKETIZATION: return size() > 0;
+            default: return false;
+        }
+    }
 
-    public int size() {
+    public synchronized int size() {
         return tail - head + (tail < head ? n : 0);
     }
 
@@ -102,19 +113,25 @@ public class CircularArrayList {
         }
 
     }
+    private void adjustSize(int size){
+
+
+    }
     public synchronized boolean add(byte e) {//returns true if packet/data available for the first time after was no packets
 
         int s = size();
-        if (s == n - 1) {
+        if (s == n) {
             throw new IllegalStateException("Cannot add element."
                     + " CircularArrayList is filled to capacity.");
 
         }
+
         boolean isFirstTimeData = false;
         switch (mode){
             case LENGTH_PACKET :
                 if (counter < packetSize) {
                     counter++;
+
                 } else {
                     counter = 0;
                     if(lengthPacketsCounter == 0)
@@ -123,24 +140,29 @@ public class CircularArrayList {
                     lengthPacketsCounter++;
 
 
+
                 }break;
 
             case END_BYTE_PACKET :
-                if (!endBytes.isEmpty())
+                    boolean isFound = false;
                     for (byte byt : endBytes) {
                         if (byt == e) {
                             if(marks.isEmpty()) isFirstTimeData = true;
                             marks.add(tail);
-
+                            isFound = true;
+                            break;
                         }
+
+
                     }
                 break;
             case NO_PACKETIZATION: if(s == 0) isFirstTimeData = true;
         }
 
-        tail = wrapIndex(tail + 1);
-        buf[tail] = e;
 
+
+        buf[tail] = e;
+        tail = wrapIndex(tail + 1); //
 
         return isFirstTimeData;
     }
@@ -157,14 +179,18 @@ public class CircularArrayList {
         return e;
     }
 
-    public synchronized byte[] pollArray (int endIndex,int id) {
+    public synchronized byte[] pollArray (int size,int id) {//endIndex or Size of Array
         if(mode != MODES.NO_PACKETIZATION) return pollPacket(id);
-        int s = size();
-        if (s == 0) return null;
+
 
         boolean readAllData = false;
 
-        if (endIndex >= s ) {
+        int s = size();
+        if (s == 0) return null;
+
+        int endIndex = size -1;
+
+        if (size > s ) {
             endIndex = s - 1;
             readAllData = true;
         }
@@ -176,12 +202,19 @@ public class CircularArrayList {
         }
 
 
-        byte[] e = Arrays.copyOfRange(buf, head, wrapIndex(head + endIndex ));
+        int end = wrapIndex(head + endIndex );
 
+        byte[] e;
+        if(end >= head)
+            e = Arrays.copyOfRange(buf, head, end);
+        else {
+            e = new byte[size];
+            System.arraycopy(buf, head, e, 0, n - head - 1);
+            System.arraycopy(buf, 0, e, 0, end +1 );
+        }
         head = wrapIndex(head + endIndex + 1);
 
-        if(readAllData){Log.v("unity","Buffer empty");
-
+        if(readAllData){
             PluginToUnity.ControlMessages.EMPTIED_DATA.send(id);
         }
         return e;

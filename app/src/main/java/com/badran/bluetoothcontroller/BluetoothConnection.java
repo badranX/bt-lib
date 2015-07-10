@@ -55,7 +55,6 @@ public class BluetoothConnection {
     public int readingThreadID;
 
     public void enableReading(int readingThreadID){
-        Log.v("unity","Plugin ENable Reading");
         this.readingThreadID = readingThreadID;
         this.willRead = true;
 
@@ -70,8 +69,11 @@ public class BluetoothConnection {
 
 
     public byte[] read(int size){
-        Log.v("unity","getBuffer Called with size");
             return  BtReader.getInstance().readArray(this.id,this.readingThreadID,size);
+    }
+
+    public boolean isDataAvailable(){
+        return  BtReader.getInstance().isDataAvailable(this.id,this.readingThreadID);
     }
 
     public byte[] read(){//must change to PACKETIZTION
@@ -101,6 +103,8 @@ public class BluetoothConnection {
                 socket = null;
             }
 
+
+
             if(bufferedOutputStream != null) {
                 bufferedOutputStream.flush();
                 bufferedOutputStream.close();
@@ -113,12 +117,7 @@ public class BluetoothConnection {
 
 
         } catch (IOException e) {
-
-
-        } finally {
-
-
-
+            e.printStackTrace();
         }
     }
 

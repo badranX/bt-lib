@@ -35,7 +35,7 @@ public final class PluginToUnity {
         DATA_AVAILABLE ("TrDataAvailable"),
 
 
-            DEVICE_PICKED ("TriggerPicked");
+        DEVICE_PICKED ("TriggerPicked");
 
 
 
@@ -55,18 +55,9 @@ public final class PluginToUnity {
 
         public void send(){ //send Control Message in the Name of THE CONNECTION [id]
             UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, value, "");
-
         }
 
     }
-
-
-
-
-
-
-
-
 
 
 }
