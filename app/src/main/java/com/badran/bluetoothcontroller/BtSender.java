@@ -48,7 +48,7 @@ class BtSender {
 
     void addJob(BufferedOutputStream bufferedOutputStream, byte[] msg) {
 
-
+        Log.v("unity","addJob called");
         synchronized (lock1) {
             outMessages.add(new Job(bufferedOutputStream, msg));
             Log.v("unity", "Acquired Lock for Sending");

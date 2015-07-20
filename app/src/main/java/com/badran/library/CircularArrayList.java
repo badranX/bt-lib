@@ -24,8 +24,8 @@ public class CircularArrayList {
     private final int n; // buffer length
 
 
-    private int  head = 0;
-    private int  tail = 0;
+    private volatile int  head = 0;
+    private volatile int  tail = 0;
 
     private int lengthPacketsCounter = 0;
     private int counter = 0;
@@ -205,13 +205,17 @@ public class CircularArrayList {
         int end = wrapIndex(head + endIndex );
 
         byte[] e;
-        if(end >= head)
+        Log.v("unity","copy test");
+        if(end >= head) {
+            Log.v("unity", "copy test1");
             e = Arrays.copyOfRange(buf, head, end);
-        else {
+        }else {
+            Log.v("unity","copy test2");
             e = new byte[size];
             System.arraycopy(buf, head, e, 0, n - head - 1);
             System.arraycopy(buf, 0, e, 0, end +1 );
         }
+        Log.v("unity","copy test passed");
         head = wrapIndex(head + endIndex + 1);
 
         if(readAllData){

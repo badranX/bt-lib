@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 
 public class BluetoothConnection {
@@ -28,8 +29,9 @@ public class BluetoothConnection {
     public BluetoothConnection (int id) {
         this.id = id;
 
-        setupData = new ConnectionSetupData(id);
+        setupData = new ConnectionSetupData();
     }
+
 
     public final ConnectionSetupData setupData ;
 
@@ -62,9 +64,8 @@ public class BluetoothConnection {
 
 
     public void setBluetoothDevice(BluetoothDevice bt) {
-        setupData.setDevice(bt);
+        setupData.setDevice(bt,this.id);
         setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingBluetoothDeviceReference;
-
     }
 
 
@@ -89,36 +90,14 @@ public class BluetoothConnection {
 
     }
 
+
+
     public void close() {
-        Log.v("unity","closing");
-        Log.v("unity"," Device ID IS : " + Integer.toString(this.id));
-        PluginToUnity.ControlMessages.DISCONNECTED.send(this.id);
-        UnityPlayer.UnitySendMessage("BtConnector","OnDisconnect","0");
-        try {
-            BtReader.getInstance().close(id,readingThreadID);
-
-            if (socket != null) {
-                Log.v("unity","socket is not null");
-                socket.close();
-                socket = null;
-            }
 
 
 
-            if(bufferedOutputStream != null) {
-                bufferedOutputStream.flush();
-                bufferedOutputStream.close();
+        BtReader.getInstance().close(id,readingThreadID);
 
-            }
-
-
-
-
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 
@@ -133,11 +112,24 @@ public class BluetoothConnection {
         setupData.mac = mac;
     }
 
-    public void setName (String name){
+    public void setName (String name){//return data from the founded device
         setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingName;
         setupData.name = name;
     }
 
+    public String getName (){//return data from the founded device
+        BluetoothDevice d = setupData.getDevice();
+        if(d != null)
+            return setupData.getDevice().getName();
+        return setupData.name;
+    }
+
+    public String getAddress (){
+        BluetoothDevice d = setupData.getDevice();
+        if(d != null)
+            return setupData.getDevice().getAddress();
+        return setupData.mac;
+    }
 
     public void sendString(String msg) {
 
@@ -159,12 +151,56 @@ public class BluetoothConnection {
 
 
     public void sendBytes(byte[] msg) {
+        Log.v("unity","sendBytes called");
         if(this.socket != null && this.bufferedOutputStream != null)
-        BtSender.getInstance().addJob(bufferedOutputStream, msg);
+            BtSender.getInstance().addJob(bufferedOutputStream, msg);
 
     }
 
+    public void initializeStreams() {
 
+
+        if (this.willRead) {
+            try {
+
+                this.inputStream = this.socket.getInputStream();
+
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
+            }
+
+            this.bufferReadder = new BufferedReader(new InputStreamReader(this.inputStream));
+            BtReader.getInstance().enableReading(this);
+            //btConnection.READER.startListeningThread();
+
+        }
+
+        if (true) {//add check for Sending
+            Log.v("unity", "Initializing streams");
+            try {
+
+
+                this.outStream = this.socket.getOutputStream();
+            } catch (IOException e) {
+                Log.v("unity", "can't get input stream");
+
+
+            }
+
+            if (this.outStream != null) {
+
+                this.bufferedOutputStream = new BufferedOutputStream(this.outStream);
+                Log.v("unity", "bufferedOutputStream created and ready");
+            }
+            if (this.socket == null) Log.v("unity", " connect socket is null");
+            if (this.bufferedOutputStream == null)
+                Log.v("unity", "connect bufferedOutputStream is null");
+        }
+
+
+    }
 
 
 }

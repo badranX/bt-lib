@@ -3,19 +3,11 @@ package com.badran.bluetoothcontroller;
 import java.io.IOException;
 import java.io.InputStream;
 
-import java.util.HashMap;
-
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-
-
 import android.bluetooth.BluetoothSocket;
 
 //import android.util.Log;
 import android.util.Log;
-
-
+import android.util.SparseArray;
 
 
 import com.badran.library.CircularArrayList;
@@ -24,15 +16,10 @@ class BtReader {
 
 //    private BtReceiver RECEIVER;
 
-
     private static BtReader instance = null;
 
-
     protected BtReader() {
-        Byte[] x;
-
         // Exists only to defeat instantiation.
-
     }
 
     public static BtReader getInstance() {
@@ -45,18 +32,13 @@ class BtReader {
     public volatile boolean isListening = false;
 
 
-
-
-
-
-
     private class BtElement {
         BluetoothSocket socket;
         InputStream inputStream;
 
         int id;
         boolean stopReading = false;
-        CircularArrayList buffer = new CircularArrayList(1024);
+        CircularArrayList buffer = new CircularArrayList(128);
 
         public BtElement(BluetoothSocket socket, InputStream inputStream) {
 
@@ -66,9 +48,7 @@ class BtReader {
         }
 
         public BtElement(BluetoothSocket socket, InputStream inputStream, int id) {
-
-            this.socket = socket;
-            this.inputStream = inputStream;
+            this(socket,inputStream);
             this.id = id;
         }
 
@@ -77,19 +57,19 @@ class BtReader {
     private class ReadingThreadData {
         volatile boolean isReading = false;
         public BtReceiver thread;
-        public Map<Integer, BtElement> map = new HashMap<Integer, BtElement>();
+        public SparseArray< BtElement> map = new SparseArray< BtElement>();
 
     }
 
 
-    Map<Integer, ReadingThreadData> dictionary = new Hashtable<Integer, ReadingThreadData>();
+    SparseArray<ReadingThreadData> dictionary = new SparseArray <ReadingThreadData>();
 
-    public void enableReading(BluetoothConnection btConnection) {
+    public synchronized void enableReading(BluetoothConnection btConnection) {
 
         ReadingThreadData rtd;
         if(btConnection.readingThreadID == 0){
             rtd = new ReadingThreadData();
-            BtElement element = new BtElement(btConnection.socket, btConnection.inputStream);
+            BtElement element = new BtElement(btConnection.socket, btConnection.inputStream,btConnection.id);
             rtd.map.put(btConnection.id, element);
             dictionary.put(btConnection.readingThreadID, rtd);
             new Thread(new SingleBtReceiver(element)).start();
@@ -115,25 +95,22 @@ class BtReader {
     }
 
 
-    public void close(int id, int threadID) {//need adjusting
+    public synchronized void close(int id, int threadID) {//need adjusting
+        ReadingThreadData rtd = dictionary.get(threadID);
+        BtElement element;
+        if(rtd != null)
+            element = rtd.map.get(id);
+        else return;
 
-        if (dictionary.containsKey(threadID))//removing key
-            if (dictionary.get(threadID).map.containsKey(id)) {
-                synchronized (this) {
-                    BtElement btElement = dictionary.get(threadID).map.get(id);
-                    try {
-                        if (btElement.inputStream != null) btElement.inputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    dictionary.get(threadID).map.get(id).stopReading = true;
-                    dictionary.get(threadID).map.remove(id);
 
-                }
+            if (element != null) {
+                    PluginToUnity.ControlMessages.DISCONNECTED.send(element.id);
+                    element.stopReading = true;
+
             }
     }
 
-    public boolean isDataAvailable(int id, int threadID) {//need adjusting
+    public synchronized boolean isDataAvailable(int id, int threadID) {//need adjusting
 
         ReadingThreadData rtd = dictionary.get(threadID);
 
@@ -151,24 +128,23 @@ class BtReader {
     }
 
 
-    public byte[] readArray(int id, int threadId, int size) {
+    public synchronized byte[] readArray(int id, int threadId, int size) {
 
         ReadingThreadData rtd = dictionary.get(threadId);
-
         BtElement e;
+        if(rtd != null)
+            e = rtd.map.get(id);
+        else return null;
 
-        if (rtd != null) {
-            synchronized (this) {
-                e = rtd.map.get(id);
-                if (e != null) {
-                    Log.v("unity", "test pollingArray");
-                    byte[] tempBytes = e.buffer.pollArray(size, id);
-                    Log.v("unity", "pollingArray test Passed");
 
-                    return tempBytes;
-                }
-            }
+        if (e != null) {
+            Log.v("unity", "test pollingArray");
+            byte[] tempBytes = e.buffer.pollArray(size, id);
+            Log.v("unity", "pollingArray test Passed");
+
+            return tempBytes;
         }
+
         return null;
     }
 
@@ -179,8 +155,8 @@ class BtReader {
             synchronized (this) {
                 e = rtd.map.get(id);
                 if (e != null) {
-                    byte[] tempBytes = e.buffer.pollPacket(id);
-                    return tempBytes;
+
+                    return e.buffer.pollPacket(id);
                 }
             }
         }
@@ -199,83 +175,86 @@ class BtReader {
         /////////////////////////////////////////String dataToSend = "";
         @Override
         public void run() {
+                BtElement element;
+                for (int i = 0;;i++) {
+                    synchronized (BtReader.this) {
+                        int size = rtd.map.size();
+                        if(size <= 0)
+                            break;
+                        if (i >= size)
+                            i=0;
 
-
-            BtElement element;
-            Iterator it;
-            int id;
-            Map.Entry pair;
-            synchronized (BtReader.this) {
-                it = rtd.map.entrySet().iterator();
-            }
-
-
-            while (true) {
-
-                synchronized (BtReader.this) {
-                    if (!it.hasNext()) {
-                        it = rtd.map.entrySet().iterator();
-                        if (!it.hasNext()) break;
+                        int key = rtd.map.keyAt(i);
+                        element = rtd.map.get(key);
                     }
-                }
+                    if (element.socket != null) {
+                        try {
+                            if (element.inputStream.available() > 0) {
 
-                pair = (Map.Entry) it.next();
-                element = (BtElement) pair.getValue();
-                id = (Integer) pair.getKey();
+                                byte ch;
+                                    while ((ch = (byte) element.inputStream.read()) >= 0) {
+                                        synchronized (BtReader.this) {
+                                            if (element.buffer.size() < element.buffer.capacity())
+                                                if (element.buffer.add(ch)) {
 
-                if (element.socket != null) {
-                    try {
-                        if (element.inputStream.available() > 0) {
-
-                            byte ch;
-                            while (true) {
-
-                                if ((ch = (byte) element.inputStream.read()) >= 0) {
-                                    synchronized (BtReader.this) {
-                                        if (element.buffer.size() < element.buffer.capacity())
-                                            if (element.buffer.add(ch)) {
-
-                                                PluginToUnity.ControlMessages.DATA_AVAILABLE.send(id);
-                                            } else break;
+                                                    PluginToUnity.ControlMessages.DATA_AVAILABLE.send(element.id);
+                                                } else break;
+                                        }
                                     }
-                                } else break;
+
+                            }
+                        } catch (IOException e) {
+                            isListening = false;
+                            PluginToUnity.ControlMessages.SENDING_ERROR.send(element.id);//-6
+                        }
+
+
+                    }
+                    //perform closing for one element
+
+                        if (element.stopReading) {
+                            try {
+                                if (element.socket != null) element.socket.close();
+                                if (element.inputStream != null) element.inputStream.close();
+                            }catch(IOException e){
+                                e.printStackTrace();
+                            }
+                            synchronized (BtReader.this) {
+                                rtd.map.remove(element.id);
+                                dictionary.remove(element.id);
                             }
                         }
-                    } catch (IOException e) {
-                        isListening = false;
-                        PluginToUnity.ControlMessages.SENDING_ERROR.send(id);//-6
-                    }
+            }
+
+            performStreamsClosing(rtd);
+
+        }
+
+        private synchronized void performStreamsClosing(ReadingThreadData rtd) {
+
+            for(int i = 0; i < rtd.map.size(); i++) {
+                int key = rtd.map.keyAt(i);
+                // get the object by the key.
+                BtElement element = rtd.map.get(key);
+                try {
+                    if (element.inputStream != null) element.inputStream.close();
+
+                    dictionary.remove(element.id);
 
 
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-            performClosing(rtd);
-        }
-
-
-    }
-
-    private void performClosing(ReadingThreadData rtd) {
-
-        Iterator it = rtd.map.entrySet().iterator();
-        BtElement element;
-
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            element = (BtElement) pair.getValue();
-
-            try {
-                if (element.inputStream != null) element.inputStream.close();
-
-
-            } catch (IOException e) {
-            }
         }
     }
+
+
+
 
     private class SingleBtReceiver implements Runnable {
         BtElement element;
-
+        ReadingThreadData rtd;
         public SingleBtReceiver(BtElement element) {
             this.element = element;
         }
@@ -306,6 +285,19 @@ class BtReader {
                     PluginToUnity.ControlMessages.SENDING_ERROR.send(element.id);//-6
                 }
 
+            }
+            if (element.stopReading) {
+                try {
+                    if (element.socket != null) element.socket.close();
+                    if (element.inputStream != null) element.inputStream.close();
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+
+                synchronized (BtReader.this) {
+                    rtd.map.remove(0);
+                    dictionary.remove(element.id);
+                }
             }
             try {
                 if (element.inputStream != null) element.inputStream.close();

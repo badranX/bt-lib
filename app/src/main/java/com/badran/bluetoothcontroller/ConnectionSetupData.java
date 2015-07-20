@@ -11,28 +11,31 @@ import java.util.Map;
  */
 public class ConnectionSetupData {
     private final String UUID_SERIAL = "00001101-0000-1000-8000-00805F9B34FB";
-    private final int id;
 
-    public ConnectionSetupData(int id){
-        this.id = id;
-
-    }
-
+//    private final int id;
 
 
 
 
     private static Map<BluetoothDevice,Integer> map = new HashMap<BluetoothDevice, Integer>();
 
-    public static int getIdFromDevice(BluetoothDevice device){
-        return map.get(device);
+    public static Integer getIdFromDevice(BluetoothDevice device){
+        if(map.containsKey(device))
+            return map.get(device);
+        return null;
 
     }
-    public void setDevice(BluetoothDevice device){
+    public void setDevice(BluetoothDevice device,int id){
 
         this.device = device;
         this.connectionMode = ConnectionMode.UsingBluetoothDeviceReference;
-        map.put(device,this.id);
+        map.put(device,id);
+    }
+    public void setSucket(BluetoothSocket socket,int id){
+
+        this.device = socket.getRemoteDevice();
+        this.connectionMode = ConnectionMode.UsingSocket;
+        map.put(device,id);
     }
     public BluetoothDevice getDevice(){
         return this.device;
@@ -64,7 +67,7 @@ public class ConnectionSetupData {
 
 
     public enum ConnectionMode {
-        UsingMac , UsingName, UsingBluetoothDeviceReference,NotSet
+        UsingMac , UsingName, UsingBluetoothDeviceReference,UsingSocket,NotSet
     } public ConnectionMode connectionMode= ConnectionMode.NotSet;
 
     public enum ReadingMode {

@@ -32,7 +32,7 @@ dependencies {
 //def UnityProjectPath = '/Users/a/Delete/Assets/Plugins/Android'
 //def UnityProjectPath = '/Users/a/Desktop/Main Terminal/Assets/Plugins/Android'
 //def UnityProjectPath = '/Users/a/UnityProjects/TERMINAL/Assets/Plugins/Android'
-def UnityProjectPath = '/Users/a/UnityProjects/Terminal 3/Assets/Plugins/Android'
+def UnityProjectPath = '/Users/a/UnityProjects/deleteTest/Assets/Plugins/Android'
 
 
 def aarPathReleased = project.buildDir.toString() +"/outputs/aar/app-release.aar"

@@ -1,5 +1,7 @@
 package com.badran.bluetoothcontroller;
 
+import android.bluetooth.BluetoothSocket;
+
 import com.unity3d.player.UnityPlayer;
 
 /**
@@ -35,10 +37,10 @@ public final class PluginToUnity {
         DATA_AVAILABLE ("TrDataAvailable"),
 
 
-        DEVICE_PICKED ("TriggerPicked");
+        DEVICE_PICKED ("TriggerPicked"),
+       DEVICE_DISCOVERED("TriggerDiscovered");
 
-
-
+        public static BluetoothSocket socket;
         private static final String UNITY_GAME_OBJECT_NAME = "BtConnector";
 
         private final String value;
@@ -56,6 +58,8 @@ public final class PluginToUnity {
         public void send(){ //send Control Message in the Name of THE CONNECTION [id]
             UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, value, "");
         }
+
+
 
     }
 

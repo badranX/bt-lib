@@ -15,6 +15,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 //import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 
 import java.sql.Connection;
@@ -26,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class Bridge {
 
@@ -50,8 +52,10 @@ public class Bridge {
         return instance;
     }
 
-    private static Set<BluetoothConnection> noUse = new HashSet<BluetoothConnection>();
+    public static void test (){
 
+        com.badran.library.NativeBuffer.add();
+    }
     public static BluetoothConnection createBlutoothConnectionObject( int id) {
 
 
@@ -62,6 +66,7 @@ public class Bridge {
 
 
     //FROM UNITY
+
 
     public static void askEnableBluetooth() {
 
@@ -135,23 +140,42 @@ public class Bridge {
 
 
                 PluginToUnity.ControlMessages.DEVICE_PICKED.send();
+                PluginToUnity.ControlMessages.DEVICE_DISCOVERED.send();
                 UnityPlayer.currentActivity.unregisterReceiver(this);
             }
 
         }
     }
 
+    public static void startServer( String unityUUID) {
 
+        Log.v("unity","Server Starting Called");
+
+        BtInterface.getInstance().initServer(unityUUID);
+
+
+    }
 
     private static BluetoothDevice  BtDevice;
     public static BluetoothConnection getPickedDevice (int id){
         if(BtDevice != null) {
             BluetoothConnection btConnection = new BluetoothConnection(id);
             btConnection.setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingBluetoothDeviceReference;
-            btConnection.setupData.setDevice(BtDevice);
+            btConnection.setupData.setDevice(BtDevice,id);
             return btConnection;
         }
         return  null;
+    }
+
+    public static BluetoothConnection getDiscoveredDevice (int id){
+        Log.v("Accepting","get DiscoveredDevice Called");
+        if(PluginToUnity.ControlMessages.socket != null) {
+            BluetoothConnection btConnection = new BluetoothConnection(id);
+            btConnection.socket = PluginToUnity.ControlMessages.socket;
+            btConnection.setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingSocket;
+            btConnection.setupData.setSucket(PluginToUnity.ControlMessages.socket, id);
+            return btConnection;
+        }return null;
     }
 
 
