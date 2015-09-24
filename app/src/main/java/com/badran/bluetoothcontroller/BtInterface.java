@@ -100,11 +100,15 @@ public class BtInterface {
         IntentFilter filter2 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
         IntentFilter filter3 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         IntentFilter filter4 = new IntentFilter(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        IntentFilter filter5 = new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+
 
         UnityPlayer.currentActivity.registerReceiver(mReceiver, filter1);
         UnityPlayer.currentActivity.registerReceiver(mReceiver, filter2);
         UnityPlayer.currentActivity.registerReceiver(mReceiver, filter3);
         UnityPlayer.currentActivity.registerReceiver(mReceiver, filter4);
+        UnityPlayer.currentActivity.registerReceiver(mReceiver, filter5);
+
         // Exists only to defeat instantiation.
 
     }
@@ -200,10 +204,10 @@ public class BtInterface {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
+           if(getResultCode() == 100) Log.v("unity","YES ITs 100");
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 if(btConnectionForDiscovery != null) {
+                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     Log.v("unity", device.getName() + " : is found");
 
                     ConnectionSetupData setupData = btConnectionForDiscovery.btConnection.setupData;
@@ -235,13 +239,17 @@ public class BtInterface {
                 }
 
             } else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
-                Log.v("unity", device.getName() + " : is CONECTED X");
-                if(ConnectionSetupData.getIdFromDevice(device) != null) {
-                    Log.v("unity", "Accepting : " + ConnectionSetupData.getIdFromDevice(device));
-                    PluginToUnity.ControlMessages.CONNECTED.send(ConnectionSetupData.getIdFromDevice(device));
-                }
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                Log.v("unity", device.getName() + " : Brodcasted as CONECTED X");
+//                if(ConnectionSetupData.getIdFromDevice(device) != null) {
+//                   Log.v("unity", "Accepting : " + ConnectionSetupData.getIdFromDevice(device));
+//                    PluginToUnity.ControlMessages.CONNECTED.send(ConnectionSetupData.getIdFromDevice(device));
+//                }
 
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
                 Log.v("unity", device.getName() + " : discovery finished");
                 if(btConnectionForDiscovery != null) { //using null to tell if we did found the device or not
                     Log.v("unity", device.getName() + " : discovery finished and will try to complete connection for others");
@@ -253,19 +261,28 @@ public class BtInterface {
                         }else isConnecting = false;
                     }
 
-
-
                 }
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                 Log.v("unity", device.getName() + " : Disconnect requist");
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
                 if(ConnectionSetupData.getIdFromDevice(device) != null) {
                     PluginToUnity.ControlMessages.DISCONNECTED.send(ConnectionSetupData.getIdFromDevice(device));
                 }
                     Log.v("unity", device.getName() + " : Disconnected");
             }else if (BluetoothAdapter.ACTION_REQUEST_ENABLE.equals(action)) {
                 Log.v("unity","BLUETOOTH Requested to be enabled");
+            }else if(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED.equals(action)){
+                int scan_mode = intent.getIntExtra(BluetoothAdapter.EXTRA_SCAN_MODE, BluetoothAdapter.ERROR);
+
+                Log.v("unity","DIscoverable STARTED");
+                if(scan_mode == BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+                    Log.v("unity", "XYXYXYX 300");
+                    BtInterface.getInstance().startServer();
+                }
             }
         }
     };
@@ -399,6 +416,7 @@ public class BtInterface {
                             sucess = false;
                             //btConnection.controlMessage(-3);
                             PluginToUnity.ControlMessages.MODULE_OFF.send(0);
+                            //also UUID COULD BE DIFFERENT .MODULE_UUID_WRONG
                         }
 
 
@@ -442,24 +460,40 @@ public class BtInterface {
 
     AcceptThread acceptThread;
 
+
+
+    private String serverUUID;
     public void initServer(String serverUUID){
+        this.serverUUID = serverUUID;
         boolean allowToRun = false;
         if(acceptThread != null) {
             if (!acceptThread.isRunning()) {
                 allowToRun = true;
             }
         }else allowToRun = true;
+
         if(allowToRun) {
-            acceptThread = new AcceptThread(serverUUID);
-            new Thread(acceptThread).run();
+            Log.v("unity", "INTENTING");
+
+            Intent discoverableIntent = new
+                    Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 100);
+                UnityPlayer.currentActivity.startActivity(discoverableIntent);
+
         }
     }
+    public void startServer(){
+        if ( acceptThread == null || !acceptThread.isRunning()) {
+            acceptThread = new AcceptThread(serverUUID);
+            Log.v("unity","ACCEPTING");
 
+            ( new Thread(acceptThread)).start();
+        }
+    }
     private class AcceptThread implements Runnable {
         private  BluetoothServerSocket mmServerSocket;
-        private final String STRING_UNITY_UUID ;
         private volatile boolean isAccepting = true;
-
+        private UUID UNITY_UUID;
         public synchronized boolean isRunning(){
             return isAccepting;
         }
@@ -467,18 +501,19 @@ public class BtInterface {
         public AcceptThread(String UNITY_UUID) {
             // Use a temporary object that is later assigned to mmServerSocket,
             // because mmServerSocket is final
-            this.STRING_UNITY_UUID = UNITY_UUID;
-
-        }
-
-        public void run() {
-            UUID UNITY_UUID = UUID.fromString(STRING_UNITY_UUID);
+            this.UNITY_UUID  = UUID.fromString(UNITY_UUID);
             BluetoothServerSocket tmp = null;
             try {
                 // MY_UUID is the app's UUID string, also used by the client code
-                tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("Server", UNITY_UUID);
-            } catch (IOException e) {e.printStackTrace(); }
+                tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("Server", this.UNITY_UUID);
+            } catch (IOException e) { }
             mmServerSocket = tmp;
+        }
+
+        public void run() {
+
+
+
             BluetoothSocket socket = null;
             // Keep listening until exception occurs or a socket is returned
             while (true) {
@@ -488,6 +523,7 @@ public class BtInterface {
                     socket = mmServerSocket.accept();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Log.v("unity", "ACCEPTING FCk");
                     break;
                 }
                 // If a connection was accepted

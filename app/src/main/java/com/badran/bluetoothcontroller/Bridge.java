@@ -5,6 +5,7 @@ package com.badran.bluetoothcontroller;
  */
 
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
@@ -42,7 +43,6 @@ public class Bridge {
     protected Bridge() {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         // Exists only to defeat instantiation.
-
     }
 
     public static Bridge getInstance() {
@@ -52,15 +52,12 @@ public class Bridge {
         return instance;
     }
 
-    public static void test (){
-
-        com.badran.library.NativeBuffer.add();
+    public  String test (){
+        return "XXXXXXXXXXXXXYYYYYYYYYYYYYYYYXIIIIIII";
+        //com.badran.library.NativeBuffer.add();
     }
     public static BluetoothConnection createBlutoothConnectionObject( int id) {
-
-
         BluetoothConnection btConnection = new BluetoothConnection(id);
-
         return  btConnection;
     }
 
@@ -68,16 +65,13 @@ public class Bridge {
     //FROM UNITY
 
 
-    public static void askEnableBluetooth() {
-
+    public  void askEnableBluetooth() {
         Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-
         UnityPlayer.currentActivity.startActivity(enableBtIntent);
-
 
     }
 
-    public static boolean enableBluetooth() {
+    public  boolean enableBluetooth() {
         if (mBluetoothAdapter != null) {
             return mBluetoothAdapter.enable();
         } else return false;
@@ -86,7 +80,7 @@ public class Bridge {
     }
 
 
-    public static boolean disableBluetooth() {
+    public  boolean disableBluetooth() {
         if (mBluetoothAdapter != null) {
             return mBluetoothAdapter.disable();
         } else return false;
@@ -94,7 +88,7 @@ public class Bridge {
 
     }
 
-    public static boolean isBluetoothEnabled() {
+    public  boolean isBluetoothEnabled() {
 
         if (mBluetoothAdapter != null) {
             return mBluetoothAdapter.isEnabled();
@@ -103,12 +97,11 @@ public class Bridge {
 
 
     // show devices
-    static BluetoothDevicePickerReceiver mBluetoothPickerReceiver = new BluetoothDevicePickerReceiver();
-    public static void showDevices () {
+     BluetoothDevicePickerReceiver mBluetoothPickerReceiver = new BluetoothDevicePickerReceiver();
+    public  void showDevices () {
 
         IntentFilter deviceSelectedFilter = new IntentFilter();
         deviceSelectedFilter.addAction(BluetoothDevicePicker.ACTION_DEVICE_SELECTED);
-
         UnityPlayer.currentActivity.registerReceiver(mBluetoothPickerReceiver, deviceSelectedFilter);
 
         UnityPlayer.currentActivity.startActivity(new Intent(BluetoothDevicePicker.ACTION_LAUNCH)
@@ -116,12 +109,9 @@ public class Bridge {
                 .putExtra(BluetoothDevicePicker.EXTRA_FILTER_TYPE, BluetoothDevicePicker.FILTER_TYPE_ALL)
                 .setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS));
 
-
-
-
     }
 
-    static private class BluetoothDevicePickerReceiver extends BroadcastReceiver implements  BluetoothDevicePicker  {
+     private class BluetoothDevicePickerReceiver extends BroadcastReceiver implements  BluetoothDevicePicker  {
 
         /*
          * (non-Javadoc)
@@ -134,20 +124,19 @@ public class Bridge {
                 // context.unregisterReceiver(this);
                 BtDevice = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-
-
-
-
-
                 PluginToUnity.ControlMessages.DEVICE_PICKED.send();
-                PluginToUnity.ControlMessages.DEVICE_DISCOVERED.send();
+                //PluginToUnity.ControlMessages.DEVICE_DISCOVERED.send();
                 UnityPlayer.currentActivity.unregisterReceiver(this);
             }
+
 
         }
     }
 
-    public static void startServer( String unityUUID) {
+
+
+
+    public  void startServer( String unityUUID) {
 
         Log.v("unity","Server Starting Called");
 
@@ -156,33 +145,32 @@ public class Bridge {
 
     }
 
-    private static BluetoothDevice  BtDevice;
-    public static BluetoothConnection getPickedDevice (int id){
+    private  BluetoothDevice  BtDevice;
+    public  BluetoothConnection getPickedDevice (int id){
         if(BtDevice != null) {
             BluetoothConnection btConnection = new BluetoothConnection(id);
             btConnection.setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingBluetoothDeviceReference;
-            btConnection.setupData.setDevice(BtDevice,id);
+            btConnection.setupData.setDevice(BtDevice, id);
             return btConnection;
         }
         return  null;
     }
 
-    public static BluetoothConnection getDiscoveredDevice (int id){
+    public  BluetoothConnection getDiscoveredDevice (int id){
         Log.v("Accepting","get DiscoveredDevice Called");
         if(PluginToUnity.ControlMessages.socket != null) {
+
             BluetoothConnection btConnection = new BluetoothConnection(id);
             btConnection.socket = PluginToUnity.ControlMessages.socket;
             btConnection.setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingSocket;
             btConnection.setupData.setSucket(PluginToUnity.ControlMessages.socket, id);
+
+
+            Boolean s = btConnection == null;
+            Log.v("Accepting",s.toString());
             return btConnection;
         }return null;
     }
-
-
-
-
-
-
 
 }
 

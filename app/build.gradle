@@ -32,24 +32,26 @@ dependencies {
 //def UnityProjectPath = '/Users/a/Delete/Assets/Plugins/Android'
 //def UnityProjectPath = '/Users/a/Desktop/Main Terminal/Assets/Plugins/Android'
 //def UnityProjectPath = '/Users/a/UnityProjects/TERMINAL/Assets/Plugins/Android'
-def UnityProjectPath = '/Users/a/UnityProjects/deleteTest/Assets/Plugins/Android'
-
+def UnityProjectPath = 'D:\\Personal\\UnityWorkSpace\\BluetoothTerminlDev\\Assets\\Plugins\\Android'
+def comndStr = 'C:\\Python27\\python.exe'
+//def pythonFile = 'C:\\Users\\hp\\Desktop\\ASunity.py'
+def pythonFile = getProjectDir().toString() + "/ASunity.py";
 
 def aarPathReleased = project.buildDir.toString() +"/outputs/aar/app-release.aar"
 def aarPathDebug = project.buildDir.toString() +"/outputs/aar/app-debug.aar"
 task runPythonRelease(type: Exec,dependsOn: 'assembleRelease') {
+    println(pythonFile)
 
+//    workingDir '/Users/a/DEV'
 
-    workingDir '/Users/a/DEV'
-
-    commandLine 'python' , 'ASunity.py', UnityProjectPath,aarPathReleased
+    commandLine comndStr ,pythonFile, UnityProjectPath,aarPathReleased
 }
 
 task runPythonDebug(type: Exec,dependsOn: 'assembleDebug') {
 
 
-    workingDir '/Users/a/DEV'
+//    workingDir '/Users/a/DEV'
 
-    commandLine 'python' , 'ASunity.py', UnityProjectPath,aarPathDebug
+    commandLine comndStr , pythonFile, UnityProjectPath,aarPathDebug
 }
 

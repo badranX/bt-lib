@@ -59,7 +59,6 @@ public class BluetoothConnection {
     public void enableReading(int readingThreadID){
         this.readingThreadID = readingThreadID;
         this.willRead = true;
-
     }
 
 

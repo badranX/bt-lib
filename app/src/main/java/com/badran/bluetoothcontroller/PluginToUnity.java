@@ -59,8 +59,6 @@ public final class PluginToUnity {
             UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, value, "");
         }
 
-
-
     }
 
 
