@@ -68,7 +68,7 @@ public class CircularArrayList {
         }
         return m;
     }
-    public synchronized boolean isDataAvailable(){
+    public   boolean isDataAvailable(){
         switch (mode){
             case LENGTH_PACKET :
                 return lengthPacketsCounter > 0;
@@ -80,7 +80,7 @@ public class CircularArrayList {
         }
     }
 
-    public synchronized int size() {
+    public   int size() {
         return tail - head + (tail < head ? n : 0);
     }
 
@@ -95,35 +95,30 @@ public class CircularArrayList {
         mode = MODES.LENGTH_PACKET;
     }
 
-    public void erasePackets(int size) {
-        marks.clear();
-        endBytes.clear();
-        packetSize = 0;
-        lengthPacketsCounter = 0;
-        counter = 0;
-        mode = MODES.NO_PACKETIZATION;
-    }
+//    public void erasePackets(int size) {
+//        marks.clear();
+//        endBytes.clear();
+//        packetSize = 0;
+//        lengthPacketsCounter = 0;
+//        counter = 0;
+//
+//    }
 
-    public synchronized int getDataSize(){
+    public   int getDataSize(){
         switch (mode){
-            case NO_PACKETIZATION: return 0;
+            case NO_PACKETIZATION: size();
             case LENGTH_PACKET : return lengthPacketsCounter;
             case END_BYTE_PACKET : return marks.size();
                 default: return size();
         }
 
     }
-    private void adjustSize(int size){
 
-
-    }
-    public synchronized boolean add(byte e) {//returns true if packet/data available for the first time after was no packets
+    public   boolean add(byte e) {//returns true if packet/data available for the first time after was no packets
 
         int s = size();
         if (s == n) {
-            throw new IllegalStateException("Cannot add element."
-                    + " CircularArrayList is filled to capacity.");
-
+            return false;//No Adding will be done
         }
 
         boolean isFirstTimeData = false;
@@ -139,22 +134,17 @@ public class CircularArrayList {
 
                     lengthPacketsCounter++;
 
-
-
                 }break;
 
             case END_BYTE_PACKET :
-                    boolean isFound = false;
                     for (byte byt : endBytes) {
                         if (byt == e) {
                             if(marks.isEmpty()) isFirstTimeData = true;
                             marks.add(tail);
-                            isFound = true;
                             break;
                         }
-
-
                     }
+
                 break;
             case NO_PACKETIZATION: if(s == 0) isFirstTimeData = true;
         }
@@ -168,7 +158,7 @@ public class CircularArrayList {
     }
 
 
-    public Byte poll() {
+    public   Byte poll() {
 
         if (size() <= 0) return null;
 
@@ -179,7 +169,7 @@ public class CircularArrayList {
         return e;
     }
 
-    public synchronized byte[] pollArray (int size,int id) {//endIndex or Size of Array
+    public   byte[] pollArray (int size,int id) {//endIndex or Size of Array
         if(mode != MODES.NO_PACKETIZATION) return pollPacket(id);
 
 
@@ -196,11 +186,8 @@ public class CircularArrayList {
         }
 
         if (endIndex < 0  ) {
-
-            throw new IndexOutOfBoundsException();
-
+            throw new IndexOutOfBoundsException("unity endIndex < 0");
         }
-
 
         int end = wrapIndex(head + endIndex );
 
@@ -228,12 +215,12 @@ public class CircularArrayList {
     private  byte[] pollPacketArray(int endIndex) {
 
         int s = size();
-        if (s == 0)  throw new IllegalStateException("Cann't poll Packet"
+        if (s == 0)  throw new IllegalStateException("unity Cann't poll Packet"
                 + "Buffer is empty");
 
         if (endIndex < 0 || endIndex >= s ) {
 
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("unity");
 
         }
 
@@ -246,13 +233,13 @@ public class CircularArrayList {
 
     }
 
-    public synchronized byte[] pollPacket(int id) {
+    public   byte[] pollPacket(int id) {
         switch (mode){
             case LENGTH_PACKET :
                 if(lengthPacketsCounter > 0) {
 
-                    byte[] temp = pollPacketArray(lengthPacketsCounter -1);
-
+                    byte[] temp = pollPacketArray(packetSize);
+                    --lengthPacketsCounter;
                     if(lengthPacketsCounter <= 0)
                         PluginToUnity.ControlMessages.EMPTIED_DATA.send(id);
                 }

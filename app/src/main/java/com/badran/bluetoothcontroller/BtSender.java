@@ -38,19 +38,20 @@ class BtSender {
     class Job {
         byte[] msg;
         BufferedOutputStream bufferedOutputStream;
-
-        public Job(BufferedOutputStream bufferedOutputStream, byte[] msg) {
+        final int deviceID;
+        public Job(BufferedOutputStream bufferedOutputStream, byte[] msg,int deviceID) {
             this.msg = msg;
             this.bufferedOutputStream = bufferedOutputStream;
+            this.deviceID = deviceID;
         }
     }
 
 
-    void addJob(BufferedOutputStream bufferedOutputStream, byte[] msg) {
+    void addJob(BufferedOutputStream bufferedOutputStream, byte[] msg,int deviceID) {
 
         Log.v("unity","addJob called");
         synchronized (lock1) {
-            outMessages.add(new Job(bufferedOutputStream, msg));
+            outMessages.add(new Job(bufferedOutputStream, msg,deviceID));
             Log.v("unity", "Acquired Lock for Sending");
             if (!isSending) {
                 Log.v("unity", "Started A thread for sending");
@@ -71,18 +72,19 @@ class BtSender {
             while (true) {
 
                 synchronized (lock1) {
-                    Log.v("unity","acquired thread lock");
+                    Log.v("unity","acquired thread lock ** 1");
                     if (outMessages.size() <= 0) {
                         isSending = false;
                         break;
                     } else job = outMessages.poll();
+                    Log.v("unity","acquired thread lock ** 2");
                 }
                 try {
                     job.bufferedOutputStream.write(job.msg);
                     job.bufferedOutputStream.flush();
                 } catch (IOException e) {
                     Log.v("unity","failed to write");
-                    PluginToUnity.ControlMessages.SENDING_ERROR.send(1);
+                    PluginToUnity.ControlMessages.SENDING_ERROR.send(job.deviceID);
                 }
 
 

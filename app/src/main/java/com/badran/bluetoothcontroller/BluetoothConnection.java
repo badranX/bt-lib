@@ -39,8 +39,8 @@ public class BluetoothConnection {
 
 
     //control data
-    boolean willRead = false;
-
+    private boolean WillRead = true;
+    private boolean WillSend = true;
 
 
 
@@ -54,14 +54,24 @@ public class BluetoothConnection {
     public InputStream inputStream = null;
     public BufferedReader bufferReadder = null;
 
-    public int readingThreadID;
+    public int readingThreadID = 0;//default Value
 
     public void enableReading(int readingThreadID){
         this.readingThreadID = readingThreadID;
-        this.willRead = true;
+        this.WillRead = true;
     }
 
+    public void disableReading(){
+        this.WillRead = false;
+    }
 
+    public void enableSending(){
+        this.WillSend = true;
+    }
+    public void disableSending(){
+        this.WillRead = false;
+    }
+    public boolean isReading(){return BtReader.getInstance().IsReading(this);}
     public void setBluetoothDevice(BluetoothDevice bt) {
         setupData.setDevice(bt,this.id);
         setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingBluetoothDeviceReference;
@@ -69,16 +79,16 @@ public class BluetoothConnection {
 
 
     public byte[] read(int size){
-            return  BtReader.getInstance().readArray(this.id,this.readingThreadID,size);
+            return  BtReader.getInstance().ReadArray(this.id,this.readingThreadID,size);
     }
 
     public boolean isDataAvailable(){
-        return  BtReader.getInstance().isDataAvailable(this.id,this.readingThreadID);
+        return  BtReader.getInstance().IsDataAvailable(this.id,this.readingThreadID);
     }
 
     public byte[] read(){//must change to PACKETIZTION
         Log.v("unity","getBuffer Called");
-        return  BtReader.getInstance().readPacket(this.id,this.readingThreadID);
+        return  BtReader.getInstance().ReadPacket(this.id,this.readingThreadID);
     }
 
     public  int connect( int trialsNumber) {
@@ -93,9 +103,8 @@ public class BluetoothConnection {
 
     public void close() {
 
-
-
-        BtReader.getInstance().close(id,readingThreadID);
+        BtReader.getInstance().Close(id,readingThreadID);
+        PluginToUnity.ControlMessages.DISCONNECTED.send(id);
 
     }
 
@@ -133,7 +142,7 @@ public class BluetoothConnection {
     public void sendString(String msg) {
 
         if(this.socket != null && this.bufferedOutputStream != null)
-        BtSender.getInstance().addJob(bufferedOutputStream,msg.getBytes());
+        BtSender.getInstance().addJob(bufferedOutputStream,msg.getBytes(),this.id);
 
     }
 
@@ -142,7 +151,7 @@ public class BluetoothConnection {
 
         if(this.socket != null && this.bufferedOutputStream != null) {
             Log.v("unity","ready to sendChar");
-            BtSender.getInstance().addJob(bufferedOutputStream, new byte[]{msg});
+            BtSender.getInstance().addJob(bufferedOutputStream, new byte[]{msg},this.id);
         }
         return this.setupData.name;
     }
@@ -152,44 +161,36 @@ public class BluetoothConnection {
     public void sendBytes(byte[] msg) {
         Log.v("unity","sendBytes called");
         if(this.socket != null && this.bufferedOutputStream != null)
-            BtSender.getInstance().addJob(bufferedOutputStream, msg);
+            BtSender.getInstance().addJob(this.bufferedOutputStream, msg,this.id);
 
     }
 
     public void initializeStreams() {
 
 
-        if (this.willRead) {
+        if (this.WillRead) {
             try {
-
                 this.inputStream = this.socket.getInputStream();
 
-
             } catch (IOException e) {
-
                 e.printStackTrace();
             }
 
             this.bufferReadder = new BufferedReader(new InputStreamReader(this.inputStream));
-            BtReader.getInstance().enableReading(this);
+            BtReader.getInstance().EnableReading(this);
             //btConnection.READER.startListeningThread();
 
         }
 
-        if (true) {//add check for Sending
+        if (this.WillSend) {//add check for Sending
             Log.v("unity", "Initializing streams");
             try {
-
-
                 this.outStream = this.socket.getOutputStream();
             } catch (IOException e) {
                 Log.v("unity", "can't get input stream");
-
-
             }
 
             if (this.outStream != null) {
-
                 this.bufferedOutputStream = new BufferedOutputStream(this.outStream);
                 Log.v("unity", "bufferedOutputStream created and ready");
             }

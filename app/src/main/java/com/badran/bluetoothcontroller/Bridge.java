@@ -5,7 +5,6 @@ package com.badran.bluetoothcontroller;
  */
 
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
@@ -19,16 +18,8 @@ import android.content.IntentFilter;
 import android.util.Log;
 
 
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
 public class Bridge {
 
@@ -122,39 +113,38 @@ public class Bridge {
         public void onReceive(Context context, Intent intent) {
             if (ACTION_DEVICE_SELECTED.equals(intent.getAction())) {
                 // context.unregisterReceiver(this);
-                BtDevice = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-                PluginToUnity.ControlMessages.DEVICE_PICKED.send();
-                //PluginToUnity.ControlMessages.DEVICE_DISCOVERED.send();
-                UnityPlayer.currentActivity.unregisterReceiver(this);
+                PickedBtDevice = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if(PickedBtDevice != null) {
+                    PluginToUnity.ControlMessages.DEVICE_PICKED.send();
+                    UnityPlayer.currentActivity.unregisterReceiver(this);
+                }
             }
-
-
         }
     }
 
 
 
 
-    public  void startServer( String unityUUID) {
+    public  void startServer( String unityUUID,int time) {
 
         Log.v("unity","Server Starting Called");
 
-        BtInterface.getInstance().initServer(unityUUID);
+        BtInterface.getInstance().initServer(unityUUID, time);
 
 
     }
 
-    private  BluetoothDevice  BtDevice;
+    private  BluetoothDevice PickedBtDevice;
     public  BluetoothConnection getPickedDevice (int id){
-        if(BtDevice != null) {
+        if(PickedBtDevice != null) {
             BluetoothConnection btConnection = new BluetoothConnection(id);
             btConnection.setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingBluetoothDeviceReference;
-            btConnection.setupData.setDevice(BtDevice, id);
+            btConnection.setupData.setDevice(PickedBtDevice, id);
             return btConnection;
         }
         return  null;
     }
+
 
     public  BluetoothConnection getDiscoveredDevice (int id){
         Log.v("Accepting","get DiscoveredDevice Called");
