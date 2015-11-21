@@ -22,21 +22,8 @@ import java.util.UUID;
 
 public class BluetoothConnection {
 
-    public final int id;
-
-
-
-    public BluetoothConnection (int id) {
-        this.id = id;
-
-        setupData = new ConnectionSetupData();
-    }
-
-
-    public final ConnectionSetupData setupData ;
-
-
-
+    private int id;
+    private boolean isIdAssigned = false;
 
     //control data
     private boolean WillRead = true;
@@ -56,6 +43,63 @@ public class BluetoothConnection {
 
     public int readingThreadID = 0;//default Value
 
+    //SetupData
+    private final String UUID_SERIAL = "00001101-0000-1000-8000-00805F9B34FB";
+    private static Map<BluetoothDevice,Integer> map = new HashMap<BluetoothDevice, Integer>();
+
+    public  String name;
+    public  String mac;
+
+
+    public int bufferLength;
+    public boolean isUsingMac;
+
+    public String SPP_UUID;
+
+
+    public boolean isDevicePicked;
+    private BluetoothDevice device;
+
+
+
+
+
+
+    public int maxBufferLength;
+    public byte stopByte ;
+
+
+    public boolean enableSending = true;
+    public boolean enableReading = false;
+
+
+    public enum ConnectionMode {
+        UsingMac , UsingName, UsingBluetoothDeviceReference,UsingSocket,NotSet
+    } public ConnectionMode connectionMode= ConnectionMode.NotSet;
+
+    public enum ReadingMode {
+        STRINGS , ENDBYTE, LENGTH
+    } public ReadingMode readMode;
+
+
+    //END SETUP DATA
+
+
+    public BluetoothConnection (int id) {
+        this.id = id;
+        this.isIdAssigned = true;
+        this.SPP_UUID = UUID_SERIAL;
+    }
+
+    public BluetoothConnection () {
+        this.isIdAssigned = false;
+        this.SPP_UUID = UUID_SERIAL;
+
+
+    }
+
+
+
     public void enableReading(int readingThreadID){
         this.readingThreadID = readingThreadID;
         this.WillRead = true;
@@ -72,29 +116,27 @@ public class BluetoothConnection {
         this.WillRead = false;
     }
     public boolean isReading(){return BtReader.getInstance().IsReading(this);}
-    public void setBluetoothDevice(BluetoothDevice bt) {
-        setupData.setDevice(bt,this.id);
-        setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingBluetoothDeviceReference;
-    }
+
+
 
 
     public byte[] read(int size){
-            return  BtReader.getInstance().ReadArray(this.id,this.readingThreadID,size);
+            return  BtReader.getInstance().ReadArray(this.id, this.readingThreadID, size);
     }
 
     public boolean isDataAvailable(){
-        return  BtReader.getInstance().IsDataAvailable(this.id,this.readingThreadID);
+        return  BtReader.getInstance().IsDataAvailable(this.id, this.readingThreadID);
     }
 
     public byte[] read(){//must change to PACKETIZTION
         Log.v("unity","getBuffer Called");
-        return  BtReader.getInstance().ReadPacket(this.id,this.readingThreadID);
+        return  BtReader.getInstance().ReadPacket(this.id, this.readingThreadID);
     }
 
     public  int connect( int trialsNumber) {
 
-        Log.v("unity","Connect called");
-        BtInterface.getInstance().connect(this,trialsNumber);
+        Log.v("unity", "Connect called");
+        BtInterface.getInstance().connect(this, trialsNumber);
         return 1;
 
     }
@@ -103,40 +145,54 @@ public class BluetoothConnection {
 
     public void close() {
 
-        BtReader.getInstance().Close(id,readingThreadID);
+        BtReader.getInstance().Close(id, readingThreadID);
         PluginToUnity.ControlMessages.DISCONNECTED.send(id);
 
     }
 
 
+    public void setID(int id){
+        this.id = id;
+        this.isIdAssigned = true;
+
+        if(this.device != null) {
+            if(map.get(device) != null) map.remove(device);
+            map.put(device, id);
+        }
+
+    }
+
+    public int getID(){
+        return this.id;
+    }
 
     public void setUUID (String SPP_UUID){
 
-        setupData.SPP_UUID = SPP_UUID;
+        this.SPP_UUID = SPP_UUID;
     }
 
     public void setMac (String mac){
-        setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingMac;
-        setupData.mac = mac;
+        this.connectionMode = ConnectionMode.UsingMac;
+        this.mac = mac;
     }
 
     public void setName (String name){//return data from the founded device
-        setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingName;
-        setupData.name = name;
+        this.connectionMode = ConnectionMode.UsingName;
+        this.name = name;
     }
 
     public String getName (){//return data from the founded device
-        BluetoothDevice d = setupData.getDevice();
+        BluetoothDevice d = this.getDevice();
         if(d != null)
-            return setupData.getDevice().getName();
-        return setupData.name;
+            return d.getName();
+        return this.name;
     }
 
     public String getAddress (){
-        BluetoothDevice d = setupData.getDevice();
+        BluetoothDevice d = this.getDevice();
         if(d != null)
-            return setupData.getDevice().getAddress();
-        return setupData.mac;
+            return d.getAddress();
+        return this.mac;
     }
 
     public void sendString(String msg) {
@@ -153,7 +209,7 @@ public class BluetoothConnection {
             Log.v("unity","ready to sendChar");
             BtSender.getInstance().addJob(bufferedOutputStream, new byte[]{msg},this.id);
         }
-        return this.setupData.name;
+        return this.name;
     }
 
 
@@ -202,5 +258,29 @@ public class BluetoothConnection {
 
     }
 
+
+    //SETUP DATA
+
+    public static Integer getIdFromDevice(BluetoothDevice device){
+        if(map.containsKey(device))
+            return map.get(device);
+        return null;
+
+    }
+    public void setDevice(BluetoothDevice device){
+        this.device = device;
+        this.connectionMode = ConnectionMode.UsingBluetoothDeviceReference;
+        if(isIdAssigned)
+            map.put(device,this.id);
+    }
+    public void setSucket(BluetoothSocket socket,int id){
+        this.device = socket.getRemoteDevice();
+        this.connectionMode = ConnectionMode.UsingSocket;
+        if(isIdAssigned)
+            map.put(device, id);
+    }
+    public BluetoothDevice getDevice(){
+        return this.device;
+    }
 
 }

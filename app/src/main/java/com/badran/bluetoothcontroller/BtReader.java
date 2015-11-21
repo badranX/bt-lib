@@ -184,7 +184,7 @@ class BtReader {
         ReadingThreadData rtd = ReadingThreads.Get(btConnection.readingThreadID);
         if(rtd != null) {
             synchronized (rtd.key) {
-                return rtd.GetReader(btConnection.id) != null ? true : false;
+                return rtd.GetReader(btConnection.getID()) != null ? true : false;
             }
         }
         return false;
@@ -194,30 +194,30 @@ class BtReader {
         ReadingThreadData rtd;
         if(btConnection.readingThreadID == 0 && ReadingThreads.Get(btConnection.readingThreadID) == null ){
             rtd = new ReadingThreadData(btConnection.readingThreadID);
-            BtElement element = new BtElement(btConnection.socket, btConnection.inputStream,btConnection.id);
-            rtd.AddReader(btConnection.id, element);
+            BtElement element = new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID());
+            rtd.AddReader(btConnection.getID(), element);
             ReadingThreads.Add(btConnection.readingThreadID, rtd);
             rtd.StartSingletonThread(element);
 
         }else if (btConnection.readingThreadID == 0 && (rtd = ReadingThreads.Get(btConnection.readingThreadID)) != null) {
 
-            BtElement element = new BtElement(btConnection.socket, btConnection.inputStream,btConnection.id);
-            rtd.AddReader(btConnection.id, element);
+            BtElement element = new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID());
+            rtd.AddReader(btConnection.getID(), element);
             rtd.StartSingletonThread(element);
 
 
         }else if ((rtd = ReadingThreads.Get(btConnection.readingThreadID)) != null) {
-            rtd.AddReader(btConnection.id, new BtElement(btConnection.socket, btConnection.inputStream));
+            rtd.AddReader(btConnection.getID(), new BtElement(btConnection.socket, btConnection.inputStream));
             rtd.StartThread();
         }else {
             rtd = new ReadingThreadData(btConnection.readingThreadID);
-            rtd.AddReader(btConnection.id, new BtElement(btConnection.socket, btConnection.inputStream));
+            rtd.AddReader(btConnection.getID(), new BtElement(btConnection.socket, btConnection.inputStream));
             ReadingThreads.Add(btConnection.readingThreadID, rtd);
             rtd.StartThread();
 
         }
 
-        PluginToUnity.ControlMessages.READING_STARTED.send(btConnection.id);
+        PluginToUnity.ControlMessages.READING_STARTED.send(btConnection.getID());
 
     }
 

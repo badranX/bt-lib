@@ -20,6 +20,7 @@ import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class Bridge {
 
@@ -138,8 +139,8 @@ public class Bridge {
     public  BluetoothConnection getPickedDevice (int id){
         if(PickedBtDevice != null) {
             BluetoothConnection btConnection = new BluetoothConnection(id);
-            btConnection.setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingBluetoothDeviceReference;
-            btConnection.setupData.setDevice(PickedBtDevice, id);
+            btConnection.connectionMode = BluetoothConnection.ConnectionMode.UsingBluetoothDeviceReference;
+            btConnection.setDevice(PickedBtDevice);
             return btConnection;
         }
         return  null;
@@ -152,14 +153,31 @@ public class Bridge {
 
             BluetoothConnection btConnection = new BluetoothConnection(id);
             btConnection.socket = PluginToUnity.ControlMessages.socket;
-            btConnection.setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingSocket;
-            btConnection.setupData.setSucket(PluginToUnity.ControlMessages.socket, id);
+            btConnection.connectionMode = BluetoothConnection.ConnectionMode.UsingSocket;
+            btConnection.setSucket(PluginToUnity.ControlMessages.socket, id);
 
 
             Boolean s = btConnection == null;
             Log.v("Accepting",s.toString());
             return btConnection;
         }return null;
+    }
+
+    public  BluetoothConnection[]  getPairedDevices (){
+        Set<BluetoothDevice> setPairedDevices;
+
+        setPairedDevices = mBluetoothAdapter.getBondedDevices();
+        BluetoothConnection[] returned = new BluetoothConnection[setPairedDevices.size()];
+        int i =0;
+        for (BluetoothDevice pairedDevice : setPairedDevices) {
+
+            BluetoothConnection btConnection = new BluetoothConnection();
+            btConnection.setDevice(pairedDevice);
+            returned[i] = btConnection;
+            i++;
+        }
+        return returned;
+
     }
 
 }

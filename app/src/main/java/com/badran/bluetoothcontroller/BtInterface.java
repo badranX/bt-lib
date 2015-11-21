@@ -48,7 +48,10 @@ public class BtInterface {
     private class ConnectionTrial {
         final BluetoothConnection btConnection;
         final int trialsCount;
+
         final boolean isNeedDiscovery;
+
+
 
         public ConnectionTrial(BluetoothConnection btConnection, int trialsCount) {
             this.btConnection = btConnection;
@@ -67,7 +70,6 @@ public class BtInterface {
     Queue<ConnectionTrial> btConnectionsQueue = new ConcurrentLinkedQueue<ConnectionTrial>();
 
 
-    Map<String, ConnectionSetupData> waitingDiscoveryDevices = new ConcurrentHashMap<String, ConnectionSetupData>();
 
 
 
@@ -90,11 +92,16 @@ public class BtInterface {
         IntentFilter filter5 = new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
 
 
+        IntentFilter filter6 = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        IntentFilter filter7 = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+
         UnityPlayer.currentActivity.registerReceiver(mReceiver, filter1);
         UnityPlayer.currentActivity.registerReceiver(mReceiver, filter2);
         UnityPlayer.currentActivity.registerReceiver(mReceiver, filter3);
         UnityPlayer.currentActivity.registerReceiver(mReceiver, filter4);
         UnityPlayer.currentActivity.registerReceiver(mReceiver, filter5);
+        UnityPlayer.currentActivity.registerReceiver(mReceiver, filter6);
+        UnityPlayer.currentActivity.registerReceiver(mReceiver, filter7);
 
         // Exists only to defeat instantiation.
 
@@ -112,74 +119,67 @@ public class BtInterface {
 
         boolean deviceIsAvailable = false;
         boolean socketIsAvailable = false;
-        if(btConnection.setupData.connectionMode == ConnectionSetupData.ConnectionMode.UsingSocket){
+        if(btConnection.connectionMode == BluetoothConnection.ConnectionMode.UsingSocket){
             socketIsAvailable = true;
 
-        }else if (btConnection.setupData.connectionMode == ConnectionSetupData.ConnectionMode.UsingBluetoothDeviceReference)
+        }else if (btConnection.connectionMode == BluetoothConnection.ConnectionMode.UsingBluetoothDeviceReference)
             deviceIsAvailable = true;
         else
-            deviceIsAvailable = findBluetoothDevice(btConnection.setupData);
+            deviceIsAvailable = findBluetoothDevice(btConnection);
 
         if(socketIsAvailable) {
             btConnection.initializeStreams();
             Log.v("unity", "Connection Sucess");
-            PluginToUnity.ControlMessages.CONNECTED.send(btConnection.id);
+            PluginToUnity.ControlMessages.CONNECTED.send(btConnection.getID());
         }else if (deviceIsAvailable ) {
 
             Log.v("unity", "Found Device");
-            synchronized (ConnectThreadLock) {
-                btConnectionsQueue.add(new ConnectionTrial(btConnection, trialsCount));
+            addConnectionTrial(new ConnectionTrial(btConnection, trialsCount));
 
-                if (!isConnecting) {
-                    isConnecting = true;
-                    (new Thread(new ConnectThread())).start();
-                }
-            }
 
         } else {
 
             Log.v("unity", "Device Not found and will try to Query Devices");
-            synchronized (ConnectThreadLock) {
+            addConnectionTrial(new ConnectionTrial(btConnection, trialsCount,true));
+        }
+    }
 
-
-                if (!isConnecting) {
-
-                    isConnecting = true;
-
-                    this.startDiscoveryForConnection(new ConnectionTrial(btConnection,trialsCount));
-
-                } else{
-
-                    btConnectionsQueue.add(new ConnectionTrial(btConnection, trialsCount,true));
-                }
+    private void addConnectionTrial(ConnectionTrial connectionTrial) {
+        synchronized (ConnectThreadLock) {
+            //there's no test for dublication
+            btConnectionsQueue.add(connectionTrial);
+            if (!isConnecting) {
+                isConnecting = true;
+                (new Thread(new ConnectThread())).start();
             }
 
         }
     }
 
 
+    private boolean findBluetoothDevice(BluetoothConnection setupData) {
 
-    private boolean findBluetoothDevice(ConnectionSetupData setupData) {
+        Log.v("unity","findBluetoothDevice");
 
         boolean foundModule = false;
 
             Set<BluetoothDevice> setPairedDevices;
             setPairedDevices = mBluetoothAdapter.getBondedDevices();
 
-            BluetoothDevice[] pairedDevices = setPairedDevices.toArray(new BluetoothDevice[setPairedDevices.size()]);
+        boolean useMac = setupData.connectionMode == BluetoothConnection.ConnectionMode.UsingMac;
+        Log.v("unity",setupData.connectionMode.toString());
+        for (BluetoothDevice pairedDevice : setPairedDevices) {
 
+            Log.v("unity","findBluetoothDevice1aa");
+            if (useMac)
 
-            for (BluetoothDevice pairedDevice : pairedDevices) {
-
-
-                if (setupData.connectionMode == ConnectionSetupData.ConnectionMode.UsingMac)
-                    foundModule = pairedDevice.getAddress().equals(setupData.mac);
+                foundModule = pairedDevice.getAddress().equals(setupData.mac);
                 else
                     foundModule = pairedDevice.getName().equals(setupData.name);
 
                 if (foundModule) {
-                    setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingBluetoothDeviceReference;
-                    setupData.setDevice(pairedDevice,btConnectionForDiscovery.btConnection.id);
+                    setupData.connectionMode = BluetoothConnection.ConnectionMode.UsingBluetoothDeviceReference;
+                    setupData.setDevice(pairedDevice);
                     break;
                 }
             }
@@ -199,22 +199,22 @@ public class BtInterface {
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     Log.v("unity", device.getName() + " : is found");
 
-                    ConnectionSetupData setupData = btConnectionForDiscovery.btConnection.setupData;
+                    BluetoothConnection setupData = btConnectionForDiscovery.btConnection;
                     boolean foundIt = false;
-                    if (setupData.connectionMode == ConnectionSetupData.ConnectionMode.UsingMac)
+                    if (setupData.connectionMode == BluetoothConnection.ConnectionMode.UsingMac)
 
                         if (setupData.mac.equals(device.getAddress())) {
 
-                            setupData.setDevice(device,btConnectionForDiscovery.btConnection.id);
+                            setupData.setDevice(device);
                             foundIt = true;
                         } else if (setupData.name.equals(device.getName())) {
-                            setupData.setDevice(device,btConnectionForDiscovery.btConnection.id);
+                            setupData.setDevice(device);
                             foundIt = true;
                         }
 
                     if (foundIt) {
 
-                        setupData.connectionMode = ConnectionSetupData.ConnectionMode.UsingBluetoothDeviceReference;
+                        setupData.connectionMode = BluetoothConnection.ConnectionMode.UsingBluetoothDeviceReference;
                         synchronized (ConnectThreadLock) {
                             btConnectionsQueue.add(btConnectionForDiscovery);
                             btConnectionForDiscovery = null;
@@ -258,8 +258,8 @@ public class BtInterface {
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-                if(ConnectionSetupData.getIdFromDevice(device) != null) {
-                    PluginToUnity.ControlMessages.DISCONNECTED.send(ConnectionSetupData.getIdFromDevice(device));
+                if(BluetoothConnection.getIdFromDevice(device) != null) {
+                    PluginToUnity.ControlMessages.DISCONNECTED.send(BluetoothConnection.getIdFromDevice(device));
                 }
                     Log.v("unity", device.getName() + " : Disconnected");
             }else if (BluetoothAdapter.ACTION_REQUEST_ENABLE.equals(action)) {
@@ -288,16 +288,16 @@ public class BtInterface {
     private class ConnectThread implements Runnable {
 
         BluetoothConnection btConnection;
-        ConnectionSetupData setupData;
+
 
 
 
         private void createSocket(boolean isChineseMobile) {//this method returns TRUE if Socket != null
 
             btConnection.socket = null;
-            final UUID SPP_UUID = UUID.fromString(setupData.SPP_UUID);
+            final UUID SPP_UUID = UUID.fromString(btConnection.SPP_UUID);
 
-            BluetoothDevice tmpDevice = setupData.getDevice();
+            BluetoothDevice tmpDevice = btConnection.getDevice();
 
             if (tmpDevice != null) {
                 Log.v("unity", "Found Device and trying to create socket");
@@ -310,7 +310,7 @@ public class BtInterface {
                         Method m;
                         try {
                             m = tmpDevice.getClass().getMethod(CREATE_INSECURE_RFcomm_Socket, new Class[]{int.class});
-                            tmpSocket = (BluetoothSocket) m.invoke(btConnection.setupData.getDevice(), 1);
+                            tmpSocket = (BluetoothSocket) m.invoke(btConnection.getDevice(), 1);
                         } catch (Exception e) {
                             Log.v(TAG, e.getMessage());
 
@@ -335,7 +335,7 @@ public class BtInterface {
 
             } else {
 
-                PluginToUnity.ControlMessages.NOT_FOUND.send(btConnection.id);
+                PluginToUnity.ControlMessages.NOT_FOUND.send(btConnection.getID());
 
             }
 
@@ -369,7 +369,7 @@ public class BtInterface {
                 Log.v("unity", "connect Thread started");
 
                 btConnection = tmpConnection.btConnection;
-                setupData = btConnection.setupData;
+
                 int connectionTrials = tmpConnection.trialsCount;
 
                 boolean isChineseMobile = false;
@@ -405,7 +405,7 @@ public class BtInterface {
 
 
                             Log.v("unity", "Connection Sucess");
-                            PluginToUnity.ControlMessages.CONNECTED.send(btConnection.id);
+                            PluginToUnity.ControlMessages.CONNECTED.send(btConnection.getID());
 
                             break; //success no need for trials
 
@@ -426,7 +426,7 @@ public class BtInterface {
                 } while (counter <= connectionTrials);
                 if(!sucess) {
                     btConnection.close();
-                    PluginToUnity.ControlMessages.MODULE_OFF.send(btConnection.id);
+                    PluginToUnity.ControlMessages.MODULE_OFF.send(btConnection.getID());
                 }
             }
 

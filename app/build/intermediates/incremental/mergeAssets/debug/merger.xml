@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="D:\Personal\w\app\src\main\assets"/></dataSet><dataSet config="debug"><source path="D:\Personal\w\app\src\debug\assets"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="/Users/a/bluetoothcontrollerjavaside3/app/src/main/assets"/></dataSet><dataSet config="debug"><source path="/Users/a/bluetoothcontrollerjavaside3/app/src/debug/assets"/></dataSet></merger>
