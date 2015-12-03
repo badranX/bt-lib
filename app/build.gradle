@@ -5,13 +5,13 @@ android {
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 20
+        targetSdkVersion 19
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles  'proguard-rules.txt'
         }
     }
     compileOptions {
@@ -22,7 +22,7 @@ android {
 
 dependencies {
 
-        compile files('libs/classes.jar')
+        provided files('libs/classes.jar')
 
 
 }
@@ -31,9 +31,10 @@ dependencies {
 //def UnityProjectPath = '/Users/a/DEV'
 //def UnityProjectPath = '/Users/a/Delete/Assets/Plugins/Android'
 //def UnityProjectPath = '/Users/a/Desktop/Main Terminal/Assets/Plugins/Android'
-//def UnityProjectPath = '/Users/a/UnityProjects/TERMINAL/Assets/Plugins/Android'
-def UnityProjectPath = 'D:\\Personal\\UnityWorkSpace\\BluetoothTerminlDev\\Assets\\Plugins\\Android'
-def comndStr = 'C:\\Python27\\python.exe'
+def UnityProjectPath = '/Users/a/UnityProjects/TerminalDev/Assets/Plugins/Android'
+//def UnityProjectPath = 'D:\\Personal\\UnityWorkSpace\\BluetoothTerminlDev\\Assets\\Plugins\\Android'
+//def comndStr = 'C:\\Python27\\python.exe'
+def  comndStr = 'python'
 //def pythonFile = 'C:\\Users\\hp\\Desktop\\ASunity.py'
 def pythonFile = getProjectDir().toString() + "/ASunity.py";
 

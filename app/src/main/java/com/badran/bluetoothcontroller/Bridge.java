@@ -27,7 +27,6 @@ public class Bridge {
 
     private static BluetoothAdapter mBluetoothAdapter;
 
-    private static Map<Integer, BluetoothConnection> map = new HashMap<Integer, BluetoothConnection>();
 
     private static Bridge instance = null;
 
@@ -48,7 +47,7 @@ public class Bridge {
         return "XXXXXXXXXXXXXYYYYYYYYYYYYYYYYXIIIIIII";
         //com.badran.library.NativeBuffer.add();
     }
-    public static BluetoothConnection createBlutoothConnectionObject( int id) {
+    public BluetoothConnection createBlutoothConnectionObject( int id) {
         BluetoothConnection btConnection = new BluetoothConnection(id);
         return  btConnection;
     }
