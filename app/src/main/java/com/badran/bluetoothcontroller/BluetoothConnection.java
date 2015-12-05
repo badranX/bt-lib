@@ -225,6 +225,7 @@ public class BluetoothConnection {
 
 
         if (this.WillRead) {
+            Log.v("unity", "Initializing streams and will read");
             try {
                 this.inputStream = this.socket.getInputStream();
 

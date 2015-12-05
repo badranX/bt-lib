@@ -88,9 +88,9 @@ public class Bridge {
 
 
     // show devices
-     BluetoothDevicePickerReceiver mBluetoothPickerReceiver = new BluetoothDevicePickerReceiver();
+    BluetoothDevicePickerReceiver mBluetoothPickerReceiver;
     public  void showDevices () {
-
+        if(mBluetoothPickerReceiver == null) mBluetoothPickerReceiver = new BluetoothDevicePickerReceiver();
         IntentFilter deviceSelectedFilter = new IntentFilter();
         deviceSelectedFilter.addAction(BluetoothDevicePicker.ACTION_DEVICE_SELECTED);
         UnityPlayer.currentActivity.registerReceiver(mBluetoothPickerReceiver, deviceSelectedFilter);
@@ -125,11 +125,11 @@ public class Bridge {
 
 
 
-    public  void startServer( String unityUUID,int time) {
+    public  void initServer( String unityUUID,int time,boolean oneDevice) {
 
         Log.v("unity","Server Starting Called");
 
-        BtInterface.getInstance().initServer(unityUUID, time);
+        BtInterface.getInstance().initServer(unityUUID, time,oneDevice);
 
 
     }
@@ -179,5 +179,9 @@ public class Bridge {
 
     }
 
+    public void OnDestroy(){
+
+        BtInterface.getInstance().OnDestroy();
+    }
 }
 

@@ -382,7 +382,6 @@ class BtReader {
                 try {
                     if (element.inputStream.available() > 0) {
 
-
                             synchronized (element.ReadWriteBufferKey) {
                                 if (element.Size() < element.Capacity()){
                                 byte ch;
