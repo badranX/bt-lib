@@ -151,6 +151,7 @@ public class BtInterface {
             if (!isConnecting) {
                 isConnecting = true;
                 (new Thread(new ConnectThread())).start();
+                Log.v("unity","Started connection thread  and will query device");
             }
 
         }
@@ -216,9 +217,12 @@ public class BtInterface {
 
                         setupData.connectionMode = BluetoothConnection.ConnectionMode.UsingBluetoothDeviceReference;
                         synchronized (ConnectThreadLock) {
+                            Log.v("unity","will start connection thread again");
                             btConnectionsQueue.add(btConnectionForDiscovery);
                             btConnectionForDiscovery = null;
                             (new Thread(new ConnectThread())).start();
+                            Log.v("unity", "finish starting connection thread again");
+
                         }
                         //Start the thread again
 
@@ -228,8 +232,8 @@ public class BtInterface {
 
             } else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-                Log.v("unity", device.getName() + " : Brodcasted as CONECTED X");
+                if(device != null)
+                    Log.v("unity", device.getName() + " : Brodcasted as CONECTED X");
 //                if(ConnectionSetupData.getIdFromDevice(device) != null) {
 //                   Log.v("unity", "Accepting : " + ConnectionSetupData.getIdFromDevice(device));
 //                    PluginToUnity.ControlMessages.CONNECTED.send(ConnectionSetupData.getIdFromDevice(device));
@@ -239,16 +243,14 @@ public class BtInterface {
             else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-                Log.v("unity", device.getName() + " : discovery finished");
-                if(btConnectionForDiscovery != null) { //using null to tell if we did found the device or not
-                Log.v("unity", device.getName() + " : discovery finished and will try to complete connection for others");
                     synchronized (ConnectThreadLock) {
                         if(!isConnecting) {
+
                             if (btConnectionsQueue.size() > 0) {
                                 (new Thread(new ConnectThread())).start();
                             }
                         }
-                    }
+
                 }
             }
         else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
@@ -379,14 +381,14 @@ public class BtInterface {
                 boolean sucess = true;
                 do {
                         createSocket(isChineseMobile);
-
-                    if (btConnection.socket != null) {
+                    BluetoothSocket socket = btConnection.socket;
+                    if (socket != null) {
 
 
                         mBluetoothAdapter.cancelDiscovery();
                         try {
 
-                            btConnection.socket.connect();
+                            socket.connect();
 
                         } catch (IOException e) {
                             Log.v("unity", "Connection Failed");
