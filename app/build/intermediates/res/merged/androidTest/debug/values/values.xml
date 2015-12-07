@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/Users/a/bluetoothcontrollerjavaside3/app/build/intermediates/bundles/debug/res/values/values.xml -->
+    <!-- From: file:/D:/Personal/w/app/build/intermediates/bundles/debug/res/values/values.xml -->
     <eat-comment/>
     <string name="app_name">Bluetooth Controller</string>
     <style name="AppBaseTheme" parent="android:Theme.Light">

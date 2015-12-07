@@ -31,10 +31,10 @@ dependencies {
 //def UnityProjectPath = '/Users/a/DEV'
 //def UnityProjectPath = '/Users/a/Delete/Assets/Plugins/Android'
 //def UnityProjectPath = '/Users/a/Desktop/Main Terminal/Assets/Plugins/Android'
-def UnityProjectPath = '/Users/a/UnityProjects/TerminalDev/Assets/Plugins/Android'
-//def UnityProjectPath = 'D:\\Personal\\UnityWorkSpace\\BluetoothTerminlDev\\Assets\\Plugins\\Android'
-//def comndStr = 'C:\\Python27\\python.exe'
-def  comndStr = 'python'
+//def UnityProjectPath = '/Users/a/UnityProjects/TerminalDev/Assets/Plugins/Android'
+def UnityProjectPath = 'D:\\Personal\\UnityWorkSpace\\BluetoothTerminlDev\\Assets\\Plugins\\Android'
+def comndStr = 'C:\\Python27\\python.exe'
+//def  comndStr = 'python'
 //def pythonFile = 'C:\\Users\\hp\\Desktop\\ASunity.py'
 def pythonFile = getProjectDir().toString() + "/ASunity.py";
 

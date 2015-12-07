@@ -117,11 +117,12 @@ public class BtInterface {
         }catch(IllegalArgumentException e){
             //Ignore
         }
-        try {
-            if(serverReceiver != null)
+        if(serverReceiver != null) {
+            try {
                 UnityPlayer.currentActivity.unregisterReceiver(serverReceiver);
-        }catch(IllegalArgumentException e){
-            //Ignore
+            } catch (IllegalArgumentException e) {
+                //Ignore
+            }
         }
     }
 
@@ -219,12 +220,10 @@ public class BtInterface {
 
                 Log.v("unity","DIscoverable STARTED");
                 if(scan_mode == BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
-
-                    BtInterface.getInstance().startServer();
+                        BtInterface.getInstance().startServer();//it will start if was asked
                 }
                 else if(scan_mode == BluetoothAdapter.SCAN_MODE_NONE || scan_mode == BluetoothAdapter.SCAN_MODE_CONNECTABLE){
-
-                    BtInterface.getInstance().stopServer();
+                        BtInterface.getInstance().abortServer();
                 }
             }
         }
@@ -275,7 +274,11 @@ public class BtInterface {
                     }
 
                 }
-                UnityPlayer.currentActivity.unregisterReceiver(this);
+                try {
+                    UnityPlayer.currentActivity.unregisterReceiver(this);
+                }catch (IllegalArgumentException e){
+                    //ignore
+                }
             }
         }
     }
@@ -433,7 +436,8 @@ public class BtInterface {
 
                         } catch (IOException e) {
                             Log.v("unity", "Connection Failed");
-                            Log.v(TAG, e.getMessage());
+                            Log.v("unity", e.getMessage());
+                             e.printStackTrace();
 
                             sucess = false;
                             //btConnection.controlMessage(-3);
@@ -487,7 +491,7 @@ public class BtInterface {
 
     public void initServer(String serverUUID,int time,boolean willConnectOneDevice){
 
-        if(acceptThread != null) {
+        if(acceptThread == null) {
             acceptThread = new AcceptThread(UUID.fromString(serverUUID), time, willConnectOneDevice);
         }else {
 
@@ -502,27 +506,26 @@ public class BtInterface {
             Intent discoverableIntent = new
                     Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
             discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,time);
-                UnityPlayer.currentActivity.startActivity(discoverableIntent);
+            UnityPlayer.currentActivity.startActivity(discoverableIntent);
 
     }
-    private void startServer(){
+    private void startServer(){//Shouldn't be called while server running, abort first
         synchronized (acceptThreadLock) {
-            if (acceptThread != null && !acceptThread.isRunning()) {
-
-                (new Thread(acceptThread)).start();
-            }
+            if (acceptThread != null) (new Thread(acceptThread)).start();
         }
     }
-    private void stopServer(){//called by plugin
-        if(acceptThread != null){
-            acceptThread.stopServer();
+    private void stopServer(){//called by plugin. When the device is not discoverable
+        synchronized (acceptThreadLock) {
+            if (acceptThread != null)  acceptThread.stopServer();
         }
     }
 
     public void abortServer(){//called by unity, cause imediate closing
-        if(acceptThread != null){
-            acceptThread.abortServer();
-            acceptThread = null;
+        synchronized (acceptThreadLock) {
+            if (acceptThread != null) {
+                acceptThread.abortServer();
+                acceptThread = null;
+            }
         }
     }
     private class AcceptThread implements Runnable {
@@ -543,9 +546,7 @@ public class BtInterface {
         }
 
         public  boolean isRunning(){
-
-                return isAccepting;
-
+            return isAccepting;
         }
 
         public void stopServer(){//won't stop immedeatly
@@ -554,10 +555,19 @@ public class BtInterface {
 
         public void abortServer(){//will stop immidiately
             this.willStop =true;
-            try {
-                mmServerSocket.close();
-            }catch (IOException e){
-                //Ignore
+            if(mmServerSocket != null) {
+                try {
+                    mmServerSocket.close();
+                } catch (IOException e) {
+                    //Ignore
+                }
+            }
+            if(serverReceiver != null) {
+                try {
+                    UnityPlayer.currentActivity.unregisterReceiver(serverReceiver);
+                } catch (IllegalArgumentException e) {
+                    //ignore
+                }
             }
         }
 
@@ -574,46 +584,31 @@ public class BtInterface {
                     tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("Server", serverUUID);
                 }
             } catch (IOException e) { }
-            mmServerSocket = tmp;
+            this.mmServerSocket = tmp;
         }
 
         public void run() {
-            synchronized (acceptThread){
-                isAccepting = true;
-            }
-
+            isAccepting = true;
             BluetoothSocket socket = null;
             // Keep listening until exception occurs or a socket is returned
             int i =0;
             while ( true) {
-
-                synchronized (acceptThreadLock) {
-                    if (this.willStop) {
-                        this.isAccepting = false;
-                        break;
-                    }
-                }
                 try {
                     Log.v("unity","ACCEPTING");
-
-                    socket = mmServerSocket.accept(discoverable_Time_Duration);
+                    if(mmServerSocket != null) socket = mmServerSocket.accept();
                 } catch (IOException e) {
 
                     e.printStackTrace();
                     Log.v("unity", "ACCEPTING FCk");
                     //TO_DO ADDING TOLLERANCE FOR THE TIME OF AVAILABLE FOR SERVER
-
-                    synchronized (acceptThreadLock) {
                         if (!this.willStop) {
                             createServerSocket();
                             continue;
-                        }
-                    }
+                        }else break;
                 }
                 // If a connection was accepted
                 Log.v("unity","ACCEPTING FINISHED");
                 if (socket != null) {
-
                     // Do work to manage the connection (in a separate thread)
                     manageConnectedSocket(socket);
                     Log.v("unity", "ACEEPTING Called manage SOCKET");
@@ -623,35 +618,38 @@ public class BtInterface {
                         cancel();
                         break;
                     }
-
                 }
-
             }
+            isAccepting = false;
+            Log.v("unity","ACCEPTING FINISHED");
             synchronized (acceptThreadLock) {
-                isAccepting = false;
+                if(serverReceiver != null) {
+                    try {
+                        UnityPlayer.currentActivity.unregisterReceiver(serverReceiver);
+                    } catch (IllegalArgumentException e) {
+                        //ignore
+                    }
+                }
                 acceptThread = null;
             }
+
 
         }
 
         /** Will cancel the listening socket, and cause the thread to finish */
         public void cancel() {
-            try {
-                mmServerSocket.close();
-            } catch (IOException e) { }
+            if(mmServerSocket != null) {
+                try {
+                    mmServerSocket.close();
+                } catch (IOException e) {
+                }
+            }
         }
         private void manageConnectedSocket(BluetoothSocket socket){
-
-
             PluginToUnity.ControlMessages.socket = socket;//Saving it to pick it by unity
 
             Log.v("unity","ACCEPTING SEND TO UNITY");
             PluginToUnity.ControlMessages.SERVER_DISCOVERED_DEVICE.send();
-
         }
-
-
     }
-
-
 }
