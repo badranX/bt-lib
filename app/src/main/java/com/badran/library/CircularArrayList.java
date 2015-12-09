@@ -176,33 +176,38 @@ public class CircularArrayList {
         boolean readAllData = false;
 
         int s = size();
-        if (s == 0) return null;
+
+        if (s == 0) {
+            Log.v("unity"," :: While Reading:: size is zero and will null");
+            return null;
+        }
 
         int endIndex = size -1;
 
-        if (size > s ) {
+        if (size >= s ) {
             endIndex = s - 1;
             readAllData = true;
         }
 
         if (endIndex < 0  ) {
-            throw new IndexOutOfBoundsException("unity endIndex < 0");
+            Log.v("unity"," :: While Reading:: unity endIndex < 0");
+            throw new IndexOutOfBoundsException(" :: While Reading:: unity endIndex < 0");
         }
 
         int end = wrapIndex(head + endIndex );
 
         byte[] e;
-        Log.v("unity","copy test");
+        Log.v("unity",":: While Reading:: copy test");
         if(end >= head) {
-            Log.v("unity", "copy test1");
+            Log.v("unity", ":: While Reading:: copy test1");
             e = Arrays.copyOfRange(buf, head, end);
         }else {
-            Log.v("unity","copy test2");
+            Log.v("unity",":: While Reading:: copy test2");
             e = new byte[size];
             System.arraycopy(buf, head, e, 0, n - head - 1);
             System.arraycopy(buf, 0, e, 0, end +1 );
         }
-        Log.v("unity","copy test passed");
+        Log.v("unity",":: While Reading:: copy test passed");
         head = wrapIndex(head + endIndex + 1);
 
         if(readAllData){

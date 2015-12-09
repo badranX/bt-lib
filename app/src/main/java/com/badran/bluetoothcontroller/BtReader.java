@@ -204,8 +204,6 @@ class BtReader {
             BtElement element = new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID());
             rtd.AddReader(btConnection.getID(), element);
             rtd.StartSingletonThread(element);
-
-
         }else if ((rtd = ReadingThreads.Get(btConnection.readingThreadID)) != null) {
             rtd.AddReader(btConnection.getID(), new BtElement(btConnection.socket, btConnection.inputStream));
             rtd.StartThread();
@@ -214,7 +212,6 @@ class BtReader {
             rtd.AddReader(btConnection.getID(), new BtElement(btConnection.socket, btConnection.inputStream));
             ReadingThreads.Add(btConnection.readingThreadID, rtd);
             rtd.StartThread();
-
         }
 
         PluginToUnity.ControlMessages.READING_STARTED.send(btConnection.getID());
