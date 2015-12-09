@@ -167,7 +167,6 @@ public class BluetoothConnection {
     }
 
     public void setUUID (String SPP_UUID){
-
         this.SPP_UUID = SPP_UUID;
     }
 

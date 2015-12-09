@@ -139,13 +139,18 @@ public class BtInterface {
         boolean deviceIsAvailable = false;
         boolean socketIsAvailable = false;
         if(btConnection.connectionMode == BluetoothConnection.ConnectionMode.UsingSocket){
+
+            Log.v("unity","Trying to connect a ready Socket ::: SERVER :::");
             socketIsAvailable = true;
 
-        }else if (btConnection.connectionMode == BluetoothConnection.ConnectionMode.UsingBluetoothDeviceReference)
+        }else if (btConnection.connectionMode == BluetoothConnection.ConnectionMode.UsingBluetoothDeviceReference) {
             deviceIsAvailable = true;
-        else
-            deviceIsAvailable = findBluetoothDevice(btConnection);
+            Log.v("unity","Trying to connect a DEVICE ::: NOT SERVER :::");
 
+        }else {
+            deviceIsAvailable = findBluetoothDevice(btConnection);
+            Log.v("unity","Trying to connect a NAME OR MAC ::: NOT SERVER :::");
+        }
         if(socketIsAvailable) {
             //Connected should be broadcasts before initializing streams
             PluginToUnity.ControlMessages.CONNECTED.send(btConnection.getID());
@@ -425,15 +430,19 @@ public class BtInterface {
                 boolean sucess = true;
                 do {
                         createSocket(isChineseMobile);
-                    BluetoothSocket socket = btConnection.socket;
-                    if (socket != null) {
 
-
+                    if (btConnection.socket != null) {
                         mBluetoothAdapter.cancelDiscovery();
                         try {
-
-                            socket.connect();
-
+                            if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                                if (!btConnection.socket.isConnected() ) {
+                                    btConnection.socket.connect();
+                                }else {
+                                    sucess = false;
+                                }
+                            }else {
+                                btConnection.socket.connect();
+                            }
                         } catch (IOException e) {
                             Log.v("unity", "Connection Failed");
                             Log.v("unity", e.getMessage());
@@ -450,18 +459,19 @@ public class BtInterface {
 
                             btConnection.initializeStreams();
 
-
-
                             Log.v("unity", "Connection Sucess");
-
 
                             break; //success no need for trials
 
                         } else try {
-                            Thread.sleep(100);
+                            try {
+                                btConnection.socket.close();
+                            }catch (IOException ioE){
+                                //ignore
+                            }
+                            Thread.sleep(1000);
 
                         } catch (InterruptedException e) {
-
                             Log.v("unity", "Sleep Thread Interrupt Exception");
                         }
                     }
@@ -579,9 +589,9 @@ public class BtInterface {
             try {
                 // MY_UUID is the app's UUID string, also used by the client code
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-                    tmp = mBluetoothAdapter.listenUsingInsecureRfcommWithServiceRecord("Server", serverUUID);
+                    tmp = mBluetoothAdapter.listenUsingInsecureRfcommWithServiceRecord("PluginServer", serverUUID);
                 }else {
-                    tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("Server", serverUUID);
+                    tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("PluginServer", serverUUID);
                 }
             } catch (IOException e) { }
             this.mmServerSocket = tmp;
@@ -595,7 +605,7 @@ public class BtInterface {
             while ( true) {
                 try {
                     Log.v("unity","ACCEPTING");
-                    if(mmServerSocket != null) socket = mmServerSocket.accept();
+                        if (mmServerSocket != null) socket = mmServerSocket.accept(this.discoverable_Time_Duration*1000);
                 } catch (IOException e) {
 
                     e.printStackTrace();
