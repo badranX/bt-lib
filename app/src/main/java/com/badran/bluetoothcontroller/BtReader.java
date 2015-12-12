@@ -57,6 +57,20 @@ class BtReader {
             }
         }
 
+        public void setPacketSize (int size){
+            synchronized (ReadWriteBufferKey) {
+                buffer.setPacketSize(size);
+            }
+
+        }
+
+        public void setEndByte (byte byt){
+            synchronized (ReadWriteBufferKey) {
+                buffer.setEndByte(byt);
+            }
+
+        }
+
         public int Size(){
             return  buffer.size();
         }
@@ -245,7 +259,35 @@ class BtReader {
         }
         return false;
     }
+    public void setPacketSize(int id, int threadId, int size){
+        ReadingThreadData rtd = ReadingThreads.Get(threadId);
+        BtElement e;
+        if(rtd != null)
+            e = rtd.GetReader(id);
+        else return;
 
+
+        if (e != null) {
+            Log.v("unity", "test pollingArray");
+            e.setPacketSize(size);
+            Log.v("unity", "pollingArray test Passed");
+        }
+    }
+
+    public void setEndByte(int id, int threadId, byte byt){
+        ReadingThreadData rtd = ReadingThreads.Get(threadId);
+        BtElement e;
+        if(rtd != null)
+            e = rtd.GetReader(id);
+        else return;
+
+
+        if (e != null) {
+            Log.v("unity", "test pollingArray");
+            e.setEndByte(byt);
+            Log.v("unity", "pollingArray test Passed");
+        }
+    }
 
     public  byte[] ReadArray(int id, int threadId, int size) {
 

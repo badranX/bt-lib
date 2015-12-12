@@ -85,7 +85,7 @@ public class CircularArrayList {
     }
 
 
-    public void addEndByte(byte byt) {
+    public void setEndByte(byte byt) {
         endBytes.add(byt);
         mode = MODES.END_BYTE_PACKET;
     }

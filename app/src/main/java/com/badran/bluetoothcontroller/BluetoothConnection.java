@@ -124,6 +124,15 @@ public class BluetoothConnection {
             return  BtReader.getInstance().ReadArray(this.id, this.readingThreadID, size);
     }
 
+    public void setPacketSize(int size){
+        BtReader.getInstance().setPacketSize(this.id, this.readingThreadID, size);
+    }
+
+    public void setEndByte(byte byt){
+        BtReader.getInstance().setEndByte(this.id, this.readingThreadID, byt);
+    }
+
+
     public boolean isDataAvailable(){
         return  BtReader.getInstance().IsDataAvailable(this.id, this.readingThreadID);
     }
