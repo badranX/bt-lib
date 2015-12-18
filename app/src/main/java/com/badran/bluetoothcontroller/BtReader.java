@@ -2,8 +2,6 @@ package com.badran.bluetoothcontroller;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.Key;
-import java.util.concurrent.SynchronousQueue;
 
 import android.bluetooth.BluetoothSocket;
 
@@ -48,12 +46,23 @@ class BtReader {
 
         public byte[] PollArray (int size,int id){
             synchronized (ReadWriteBufferKey) {
-                return buffer.pollArray(size, id);
+                return buffer.pollArrayOfSize(size, id);
             }
         }
         public byte[] PollPacket (int id){
             synchronized (ReadWriteBufferKey) {
                 return buffer.pollPacket(id);
+            }
+        }
+        public byte[] PollAll (int id){
+            synchronized (ReadWriteBufferKey) {
+                return buffer.pollAll(id);
+            }
+        }
+
+        public void flush (int id){
+            synchronized (ReadWriteBufferKey) {
+                 buffer.flush(id);
             }
         }
 
