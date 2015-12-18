@@ -90,15 +90,10 @@ class BtReader {
             return buffer.add(item);
         }
 
-        public BtElement(BluetoothSocket socket, InputStream inputStream) {
-
-            this.socket = socket;
-            this.inputStream = inputStream;
-
-        }
 
         public BtElement(BluetoothSocket socket, InputStream inputStream, int id) {
-            this(socket,inputStream);
+            this.socket = socket;
+            this.inputStream = inputStream;
             this.id = id;
         }
 
@@ -228,11 +223,11 @@ class BtReader {
             rtd.AddReader(btConnection.getID(), element);
             rtd.StartSingletonThread(element);
         }else if ((rtd = ReadingThreads.Get(btConnection.readingThreadID)) != null) {
-            rtd.AddReader(btConnection.getID(), new BtElement(btConnection.socket, btConnection.inputStream));
+            rtd.AddReader(btConnection.getID(), new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID()));
             rtd.StartThread();
         }else {
             rtd = new ReadingThreadData(btConnection.readingThreadID);
-            rtd.AddReader(btConnection.getID(), new BtElement(btConnection.socket, btConnection.inputStream));
+            rtd.AddReader(btConnection.getID(), new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID()));
             ReadingThreads.Add(btConnection.readingThreadID, rtd);
             rtd.StartThread();
         }
@@ -292,9 +287,7 @@ class BtReader {
 
 
         if (e != null) {
-            Log.v("unity", "test pollingArray");
             e.setEndByte(byt);
-            Log.v("unity", "pollingArray test Passed");
         }
     }
 
@@ -308,9 +301,7 @@ class BtReader {
 
 
         if (e != null) {
-            Log.v("unity", "test pollingArray");
             byte[] tempBytes = e.PollArray(size, id);
-            Log.v("unity", "pollingArray test Passed");
 
             return tempBytes;
         }
@@ -352,16 +343,17 @@ class BtReader {
                         i=0;
                     element = rtd.GetReaderByIndex(i);
                 }
+
                 if (element.socket != null) {
                     try {
                         if (element.inputStream.available() > 0) {
 
-
                             synchronized (element.ReadWriteBufferKey) {
-                                byte ch;
-                                while ((ch = (byte) element.inputStream.read()) >= 0) {
+                                if (element.Size() < element.Capacity()) {
+                                    byte ch;
+                                    while ((ch = (byte) element.inputStream.read()) >= 0) {
 
-                                    if (element.Size() < element.Capacity()) {
+
                                         if (element.AddByte(ch)) {
                                             PluginToUnity.ControlMessages.DATA_AVAILABLE.send(element.id);
                                         } else break;
