@@ -241,10 +241,13 @@ class BtReader {
         ReadingThreadData rtd = ReadingThreads.Get(threadID);
 
         if(rtd != null) {
-            BtElement element;
-            if ((element = rtd.GetReader(id)) != null) {
+
+            synchronized (rtd.key) {
+                BtElement element;
+                if ((element = rtd.GetReader(id)) != null) {
                     element.stopReading = true;
                     rtd.RemoveReader(id);
+                }
             }
         }
 
