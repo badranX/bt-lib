@@ -39,6 +39,8 @@ public final class PluginToUnity {
        READING_STOPPED ("TrReadingStopped"),
         READING_STARTED("TrReadingStarted"),
        DEVICE_PICKED ("TriggerPicked"),
+        BLUETOOTH_OFF("TrBluetoothOFF"),
+        BLUETOOTH_ON("TrBluetoothON"),
        SERVER_DISCOVERED_DEVICE("TrServerDiscoveredDevice");
 
         public static BluetoothSocket socket;

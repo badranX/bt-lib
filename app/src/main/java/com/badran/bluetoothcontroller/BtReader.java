@@ -245,8 +245,8 @@ class BtReader {
             synchronized (rtd.key) {
                 BtElement element;
                 if ((element = rtd.GetReader(id)) != null) {
-                    element.stopReading = true;
-                    rtd.RemoveReader(id);
+                    element.stopReading = true;//it will close when approbriate
+
                 }
             }
         }

@@ -39,7 +39,6 @@ public class BluetoothConnection {
     public BufferedOutputStream bufferedOutputStream = null;
 
     public InputStream inputStream = null;
-    public BufferedReader bufferReadder = null;
 
     public int readingThreadID = 0;//default Value
 
@@ -241,7 +240,7 @@ public class BluetoothConnection {
                 e.printStackTrace();
             }
 
-            this.bufferReadder = new BufferedReader(new InputStreamReader(this.inputStream));
+
             BtReader.getInstance().EnableReading(this);
             //btConnection.READER.startListeningThread();
 

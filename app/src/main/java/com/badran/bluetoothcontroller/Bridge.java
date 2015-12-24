@@ -57,10 +57,54 @@ public class Bridge {
 
 
     public  void askEnableBluetooth() {
-        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        UnityPlayer.currentActivity.startActivity(enableBtIntent);
+
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            UnityPlayer.currentActivity.startActivityForResult(enableBtIntent,8);
+    }
+
+    BtStateReceiver btStateReceiver;
+    public void registerStateReceiver (){
+        if(btStateReceiver == null) btStateReceiver = new BtStateReceiver();
+
+        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+
+        UnityPlayer.currentActivity.registerReceiver(btStateReceiver, filter);
 
     }
+    public void deRegisterStateReceiver (){
+        try {
+            if(btStateReceiver != null)
+                UnityPlayer.currentActivity.unregisterReceiver(btStateReceiver);
+        }catch(IllegalArgumentException e){
+            //Ignore
+        }
+
+    }
+
+    private class BtStateReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR);
+                switch (state) {
+                    case BluetoothAdapter.STATE_OFF:
+                        PluginToUnity.ControlMessages.BLUETOOTH_OFF.send();
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_OFF:
+
+                        break;
+                    case BluetoothAdapter.STATE_ON:
+                        PluginToUnity.ControlMessages.BLUETOOTH_ON.send();
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_ON:
+                        break;
+                }
+            }
+        }
+    };
 
     public  boolean enableBluetooth() {
         if (mBluetoothAdapter != null) {
@@ -111,6 +155,7 @@ public class Bridge {
          */
         @Override
         public void onReceive(Context context, Intent intent) {
+
             if (ACTION_DEVICE_SELECTED.equals(intent.getAction())) {
                 // context.unregisterReceiver(this);
                 PickedBtDevice = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -120,6 +165,7 @@ public class Bridge {
                 }
             }
         }
+
     }
 
 
@@ -180,7 +226,7 @@ public class Bridge {
     }
 
     public void OnDestroy(){
-
+        deRegisterStateReceiver();
         BtInterface.getInstance().OnDestroy();
     }
 }

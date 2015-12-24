@@ -21,6 +21,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.os.Debug;
 import android.util.Log;
 
 
@@ -48,7 +49,7 @@ public class BtInterface {
         final BluetoothConnection btConnection;
         final int trialsCount;
 
-        final boolean isNeedDiscovery;
+        boolean isNeedDiscovery;
 
 
 
@@ -239,6 +240,7 @@ public class BtInterface {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                Log.v("unity","Action Found Device");
 
                 if (btConnectionForDiscovery != null) {
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -246,22 +248,23 @@ public class BtInterface {
 
                     BluetoothConnection setupData = btConnectionForDiscovery.btConnection;
                     boolean foundIt = false;
-                    if (setupData.connectionMode == BluetoothConnection.ConnectionMode.UsingMac && setupData.mac.equals(device.getAddress()))
+                    if (setupData.connectionMode == BluetoothConnection.ConnectionMode.UsingMac && setupData.mac != null && setupData.mac.equals(device.getAddress()))
                         {
                             setupData.setDevice(device);
                             foundIt = true;
                         }
-
-                    if (setupData.connectionMode == BluetoothConnection.ConnectionMode.UsingName && setupData.name.equals(device.getName()))
+                    Log.v("unity",setupData.name == null ? "name is NULL" : "name is NOT_NULL");
+                    if (setupData.connectionMode == BluetoothConnection.ConnectionMode.UsingName && setupData.name != null && setupData.name.equals(device.getName()))
                     {
                         setupData.setDevice(device);
                         foundIt = true;
                     }
 
                     if (foundIt) {
-
+                        Log.v("unity","Action FOUND Actiual DEVICE");
                         setupData.connectionMode = BluetoothConnection.ConnectionMode.UsingBluetoothDeviceReference;
                         synchronized (ConnectThreadLock) {
+                            btConnectionForDiscovery.isNeedDiscovery = false;
                             btConnectionsQueue.add(btConnectionForDiscovery);
                             btConnectionForDiscovery = null;
                             (new Thread(new ConnectThread())).start();
@@ -271,13 +274,17 @@ public class BtInterface {
 
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                Log.v("unity","Action Discovery Finished");
                 synchronized (ConnectThreadLock) {
-                    if (!isConnecting) {
-                        if (btConnectionsQueue.size() > 0) {
-                            (new Thread(new ConnectThread())).start();
-                        }
-                    }
 
+                        if (btConnectionsQueue.size() > 0 && btConnectionForDiscovery != null) {
+                            PluginToUnity.ControlMessages.MODULE_OFF.send(btConnectionForDiscovery.btConnection.getID());
+                            btConnectionForDiscovery = null;
+                            (new Thread(new ConnectThread())).start();
+                        }else if (btConnectionForDiscovery != null) {
+                            btConnectionForDiscovery = null;
+                            isConnecting = false;
+                        }
                 }
                 try {
                     UnityPlayer.currentActivity.unregisterReceiver(this);
@@ -332,7 +339,9 @@ public class BtInterface {
 
         UnityPlayer.currentActivity.registerReceiver(deviceDiscoveryReceiver,action_found);
         UnityPlayer.currentActivity.registerReceiver(deviceDiscoveryReceiver,action_finished);
-
+        if (mBluetoothAdapter.isDiscovering()) {
+            mBluetoothAdapter.cancelDiscovery();
+        }
         mBluetoothAdapter.startDiscovery();
 
 
@@ -402,6 +411,7 @@ public class BtInterface {
             while (true) {
 
                 ConnectionTrial tmpConnection;
+
                 synchronized (ConnectThreadLock) {
 
                     Log.v("unity", "acquired Lock2");
