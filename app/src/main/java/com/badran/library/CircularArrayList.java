@@ -21,6 +21,7 @@ public class CircularArrayList {
 
     private final int n; // buffer length
 
+    private final byte[] empty = new byte[0];
 
     private volatile int  head = 0;
     private volatile int  tail = 0;
@@ -39,7 +40,7 @@ public class CircularArrayList {
 
     private Queue<Integer> marks ;
 
-    private List<Byte> endBytes;
+    private Byte endByte;
 
 
     public CircularArrayList(int capacity) {
@@ -87,9 +88,8 @@ public class CircularArrayList {
     public void setEndByte(byte byt) {
         if(size() <= 0) {
             marks = new LinkedList<Integer>();
-            endBytes = new LinkedList<Byte>();
 
-            endBytes.add(byt);
+            endByte = byt;
             mode = MODES.END_BYTE_PACKET;
         }
     }
@@ -144,10 +144,8 @@ public class CircularArrayList {
                 }break;
 
             case END_BYTE_PACKET :
-                    for (byte byt : endBytes) {
-                        if (byt == e) {
-                            Log.v("unity" , " marksssss");
-                            Log.v("unity" , marks.peek() == null ? " PEEEK NULL" : "PEEK NOT NULL");
+
+                        if (endByte == e) {
 
                             if( size() == 0 || (marks.peek() != null && marks.peek() == tail))//endByte at the start of new packet
                                     return false;
@@ -155,12 +153,10 @@ public class CircularArrayList {
                             if(marks.isEmpty()) isFirstTimeData = true;
                             marks.add(tail);//index excluded
 
-
-
                             return isFirstTimeData;//shouldn't add endByte
 
                         }
-                    }
+
 
                 break;
             case NO_PACKETIZATION: if(s == 0) isFirstTimeData = true;
@@ -222,8 +218,7 @@ public class CircularArrayList {
         int s = size();
 
         if (s <= 0 || size <=0) {
-            Log.v("unity"," :: While Reading:: size is zero and will null");
-            return null;
+            return empty;
         }
 
          //endIndex - startIndex = size ;;; endIndex = startIndex + size;
@@ -280,13 +275,13 @@ public class CircularArrayList {
                     return temp;
                 }
                 break;
-            case NO_PACKETIZATION:Log.v("unity","NO packetization");
+            case NO_PACKETIZATION:
                 byte[] temp = pollArray(size());
                 PluginToUnity.ControlMessages.EMPTIED_DATA.send(id);
                  return temp;
 
         }
-        return null;
+        return empty;
     }
 
 

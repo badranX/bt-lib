@@ -21,7 +21,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.IntentFilter;
 import android.os.Build;
-import android.os.Debug;
 import android.util.Log;
 
 
@@ -154,8 +153,7 @@ public class BtInterface {
         }
         if(socketIsAvailable) {
             //Connected should be broadcasts before initializing streams
-            PluginToUnity.ControlMessages.CONNECTED.send(btConnection.getID());
-
+             PluginToUnity.ControlMessages.CONNECTED.send(btConnection.getID());
             btConnection.initializeStreams();
             Log.v("unity", "Connection Sucess");
         }else if (deviceIsAvailable ) {
@@ -316,8 +314,12 @@ public class BtInterface {
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-                if(BluetoothConnection.getIdFromDevice(device) != null) {
-                    PluginToUnity.ControlMessages.DISCONNECTED.send(BluetoothConnection.getIdFromDevice(device));
+                if(BluetoothConnection.getInstFromDevice(device) != null) {
+                    BluetoothConnection tmpBt;
+                    if((tmpBt = BluetoothConnection.getInstFromDevice(device)) != null) {
+                        tmpBt.removeSocketServer();
+                        PluginToUnity.ControlMessages.DISCONNECTED.send(tmpBt.getID());
+                    }
                 }
                     Log.v("unity", device.getName() + " : Disconnected");
             }else if (BluetoothAdapter.ACTION_REQUEST_ENABLE.equals(action)) {

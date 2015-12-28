@@ -30,7 +30,11 @@ public class BluetoothConnection {
     private boolean WillSend = true;
 
 
+    public boolean isSizePacketized = false;
+    public boolean isEndBytePacketized = false;
 
+    public byte packetEndByte;
+    public int packetSize;
 
     public BluetoothSocket socket;
 
@@ -44,7 +48,7 @@ public class BluetoothConnection {
 
     //SetupData
     private final String UUID_SERIAL = "00001101-0000-1000-8000-00805F9B34FB";
-    private static Map<BluetoothDevice,Integer> map = new HashMap<BluetoothDevice, Integer>();
+    private static Map<BluetoothDevice,BluetoothConnection> map = new HashMap<BluetoothDevice, BluetoothConnection>();
 
     public  String name;
     public  String mac;
@@ -124,10 +128,16 @@ public class BluetoothConnection {
     }
 
     public void setPacketSize(int size){
+        this.packetSize = size;
+        this.isSizePacketized = true;
+        this.isEndBytePacketized = false;
         BtReader.getInstance().setPacketSize(this.id, this.readingThreadID, size);
     }
 
     public void setEndByte(byte byt){
+        this.packetEndByte = byt;
+        this.isSizePacketized = false;
+        this.isEndBytePacketized = true;
         BtReader.getInstance().setEndByte(this.id, this.readingThreadID, byt);
     }
 
@@ -137,15 +147,15 @@ public class BluetoothConnection {
     }
 
     public byte[] read(){//must change to PACKETIZTION
-        Log.v("unity","getBuffer Called");
+        Log.v("unity", "getBuffer Called");
         return  BtReader.getInstance().ReadPacket(this.id, this.readingThreadID);
     }
 
-    public  int connect( int trialsNumber) {
+    public  void connect( int trialsNumber) {
 
         Log.v("unity", "Connect called");
         BtInterface.getInstance().connect(this, trialsNumber);
-        return 1;
+
 
     }
 
@@ -153,20 +163,19 @@ public class BluetoothConnection {
 
     public void close() {
 
+        this.removeSocketServer();
         BtReader.getInstance().Close(id, readingThreadID);
         PluginToUnity.ControlMessages.DISCONNECTED.send(id);
 
     }
 
 
+
+
     public void setID(int id){
         this.id = id;
         this.isIdAssigned = true;
 
-        if(this.device != null) {
-            if(map.get(device) != null) map.remove(device);
-            map.put(device, id);
-        }
 
     }
 
@@ -269,26 +278,33 @@ public class BluetoothConnection {
 
     //SETUP DATA
 
-    public static Integer getIdFromDevice(BluetoothDevice device){
+    public static BluetoothConnection getInstFromDevice(BluetoothDevice device){
         if(map.containsKey(device))
             return map.get(device);
         return null;
-
     }
+
+
     public void setDevice(BluetoothDevice device){
         this.device = device;
         this.connectionMode = ConnectionMode.UsingBluetoothDeviceReference;
-        if(isIdAssigned)
-            map.put(device,this.id);
+
+        map.put(device,this);
     }
     public void setSucket(BluetoothSocket socket,int id){
         this.device = socket.getRemoteDevice();
         this.connectionMode = ConnectionMode.UsingSocket;
-        if(isIdAssigned)
-            map.put(device, id);
+
+        map.put(device, this);
     }
     public BluetoothDevice getDevice(){
         return this.device;
     }
 
+    public void removeSocketServer(){
+        //It's only produced by a server and after disconnecting no need to save the socket
+        //a device reference already there since the server found the remote device
+        //No need to change connection mode in unity since it's only needed here, and the old connection mode won't be commited, because it's not going to change there
+        if(this.connectionMode == ConnectionMode.UsingSocket) this.connectionMode = ConnectionMode.UsingBluetoothDeviceReference;
+    }
 }

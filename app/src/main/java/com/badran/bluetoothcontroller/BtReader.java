@@ -17,6 +17,7 @@ class BtReader {
 
 //    private BtReceiver RECEIVER;
 
+    private final byte[] empty = new byte[0];
     private static BtReader instance = null;
     protected BtReader() {
         // Exists only to defeat instantiation.
@@ -210,25 +211,31 @@ class BtReader {
     public void EnableReading(BluetoothConnection btConnection) {
 
         ReadingThreadData rtd;
+        BtElement element;
         if(btConnection.readingThreadID == 0 && ReadingThreads.Get(btConnection.readingThreadID) == null ){
             rtd = new ReadingThreadData(btConnection.readingThreadID);
-            BtElement element = new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID());
+            element = new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID());
             rtd.AddReader(btConnection.getID(), element);
             ReadingThreads.Add(btConnection.readingThreadID, rtd);
+            packetize(btConnection, element);
             rtd.StartSingletonThread(element);
 
         }else if (btConnection.readingThreadID == 0 && (rtd = ReadingThreads.Get(btConnection.readingThreadID)) != null) {
-
-            BtElement element = new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID());
+            element = new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID());
             rtd.AddReader(btConnection.getID(), element);
+            packetize(btConnection,element);
             rtd.StartSingletonThread(element);
         }else if ((rtd = ReadingThreads.Get(btConnection.readingThreadID)) != null) {
-            rtd.AddReader(btConnection.getID(), new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID()));
+            element =  new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID());
+            rtd.AddReader(btConnection.getID(), element);
+            packetize(btConnection,element);
             rtd.StartThread();
         }else {
             rtd = new ReadingThreadData(btConnection.readingThreadID);
-            rtd.AddReader(btConnection.getID(), new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID()));
+            element = new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID());
+            rtd.AddReader(btConnection.getID(), element);
             ReadingThreads.Add(btConnection.readingThreadID, rtd);
+            packetize(btConnection,element);
             rtd.StartThread();
         }
 
@@ -236,7 +243,13 @@ class BtReader {
 
     }
 
-
+    private void packetize(BluetoothConnection btConnection,BtElement element){
+        if(btConnection.isSizePacketized){
+            element.setPacketSize(btConnection.packetSize);
+        }else if(btConnection.isEndBytePacketized){
+            element.setEndByte(btConnection.packetEndByte);
+        }
+    }
     public void Close(int id, int threadID) {//need adjusting
         ReadingThreadData rtd = ReadingThreads.Get(threadID);
 
@@ -300,7 +313,7 @@ class BtReader {
         BtElement e;
         if(rtd != null)
             e = rtd.GetReader(id);
-        else return null;
+        else return empty;
 
 
         if (e != null) {
@@ -309,7 +322,7 @@ class BtReader {
             return tempBytes;
         }
 
-        return null;
+        return empty;
     }
 
     public  byte[] ReadPacket(int id, int threadId) {
@@ -321,7 +334,7 @@ class BtReader {
                 return e.PollPacket(id);
             }
         }
-        return null;
+        return empty;
     }
 
 
