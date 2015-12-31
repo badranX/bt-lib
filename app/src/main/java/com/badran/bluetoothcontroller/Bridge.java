@@ -120,7 +120,6 @@ public class Bridge {
             return mBluetoothAdapter.disable();
         } else return false;
 
-
     }
 
     public  boolean isBluetoothEnabled() {

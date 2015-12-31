@@ -72,8 +72,7 @@ public class BluetoothConnection {
     public byte stopByte ;
 
 
-    public boolean enableSending = true;
-    public boolean enableReading = false;
+
 
 
     public enum ConnectionMode {

@@ -36,12 +36,12 @@ public final class PluginToUnity {
         //added after version 3.6
         DATA_AVAILABLE ("TrDataAvailable"),
 
-       READING_STOPPED ("TrReadingStopped"),
+        READING_STOPPED ("TrReadingStopped"),
         READING_STARTED("TrReadingStarted"),
-       DEVICE_PICKED ("TriggerPicked"),
+        DEVICE_PICKED ("TriggerPicked"),
         BLUETOOTH_OFF("TrBluetoothOFF"),
         BLUETOOTH_ON("TrBluetoothON"),
-       SERVER_DISCOVERED_DEVICE("TrServerDiscoveredDevice");
+        SERVER_DISCOVERED_DEVICE("TrServerDiscoveredDevice");
 
         public static BluetoothSocket socket;
         private static final String UNITY_GAME_OBJECT_NAME = "BtConnector";
