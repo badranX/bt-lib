@@ -10,7 +10,7 @@ import android.util.Log;
 
 public class Level10 {
     //Log
-    private final String TAG = "PLUGIN";
+    private final String TAG = "PLUGIN . UNITY";
     private final String CHINESE_CONNECTION_FAILED ="Chinese connection failed";
     //log
 

@@ -13,13 +13,7 @@ import com.unity3d.player.UnityPlayer;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-//import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
-
-
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class Bridge {
@@ -171,12 +165,7 @@ public class Bridge {
 
 
     public  void initServer( String unityUUID,int time,boolean oneDevice) {
-
-        Log.v("unity","Server Starting Called");
-
         BtInterface.getInstance().initServer(unityUUID, time,oneDevice);
-
-
     }
 
     private  BluetoothDevice PickedBtDevice;
@@ -192,17 +181,12 @@ public class Bridge {
 
 
     public  BluetoothConnection getDiscoveredDevice (int id){
-        Log.v("Accepting","get DiscoveredDevice Called");
         if(PluginToUnity.ControlMessages.socket != null) {
 
             BluetoothConnection btConnection = new BluetoothConnection(id);
             btConnection.socket = PluginToUnity.ControlMessages.socket;
             btConnection.connectionMode = BluetoothConnection.ConnectionMode.UsingSocket;
             btConnection.setSucket(PluginToUnity.ControlMessages.socket, id);
-
-
-            Boolean s = btConnection == null;
-            Log.v("Accepting",s.toString());
             return btConnection;
         }return null;
     }

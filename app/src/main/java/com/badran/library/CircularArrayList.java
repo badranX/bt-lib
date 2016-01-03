@@ -1,6 +1,5 @@
 package com.badran.library;
 
-import android.util.Log;
 
 import com.badran.bluetoothcontroller.PluginToUnity;
 
@@ -192,17 +191,13 @@ public class CircularArrayList {
         int end = wrapIndex(head + size );
 
         byte[] e;
-        Log.v("unity",":: While Reading:: copy test");
         if(end >= head) {
-            Log.v("unity", ":: While Reading:: copy test1");
             e = Arrays.copyOfRange(buf, head, end);
         }else {
-            Log.v("unity",":: While Reading:: copy test2");
             e = new byte[size];
             System.arraycopy(buf, head, e, 0, n - head );
             System.arraycopy(buf, 0, e, 0, end  );
         }
-        Log.v("unity",":: While Reading:: copy test passed");
         head = end; // this end had excluded from copying _still hasn't been read
 
 
@@ -255,7 +250,7 @@ public class CircularArrayList {
 
     public byte[] pollPacket(int id) {
         switch (mode){
-            case LENGTH_PACKET : Log.v("unity","packetization : Length");
+            case LENGTH_PACKET :
                 if(lengthPacketsCounter > 0) {
                     byte[] temp = pollArray(packetSize);
                     --lengthPacketsCounter;
@@ -265,7 +260,7 @@ public class CircularArrayList {
                 }
                 break;
 
-            case END_BYTE_PACKET :Log.v("unity","packetization : End Byte");
+            case END_BYTE_PACKET :
                 if (!marks.isEmpty()) {
                     int bytTail = marks.poll();
                     byte[] temp = pollArray(bytTail - head + (bytTail < head ? n : 0));//size between marks.poll and head

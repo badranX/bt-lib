@@ -288,9 +288,7 @@ class BtReader {
 
 
         if (e != null) {
-            Log.v("unity", "test pollingArray");
             e.setPacketSize(size);
-            Log.v("unity", "pollingArray test Passed");
         }
     }
 
@@ -433,7 +431,6 @@ class BtReader {
         @Override
         public void run() {
 
-            Log.v("unity","single Thread running");
             while (element.socket != null && !element.stopReading) {
                 try {
                     if (element.inputStream.available() > 0) {

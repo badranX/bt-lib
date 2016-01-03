@@ -49,12 +49,9 @@ class BtSender {
 
     void addJob(BufferedOutputStream bufferedOutputStream, byte[] msg,int deviceID) {
 
-        Log.v("unity","addJob called");
         synchronized (lock1) {
             outMessages.add(new Job(bufferedOutputStream, msg,deviceID));
-            Log.v("unity", "Acquired Lock for Sending");
             if (!isSending) {
-                Log.v("unity", "Started A thread for sending");
                 isSending = true;
                 (new Thread(new BtSenderThread())).start();
 
@@ -72,25 +69,21 @@ class BtSender {
             while (true) {
 
                 synchronized (lock1) {
-                    Log.v("unity","acquired thread lock ** 1");
                     if (outMessages.size() <= 0) {
                         isSending = false;
                         break;
                     } else job = outMessages.poll();
-                    Log.v("unity","acquired thread lock ** 2");
                 }
                 try {
                     job.bufferedOutputStream.write(job.msg);
                     job.bufferedOutputStream.flush();
                 } catch (IOException e) {
-                    Log.v("unity","failed to write");
+                    Log.v("PLUGIN . UNITY","failed while write/sending data");
                     PluginToUnity.ControlMessages.SENDING_ERROR.send(job.deviceID);
                 }
 
-
             }
-
-
+            
         }
     }
 

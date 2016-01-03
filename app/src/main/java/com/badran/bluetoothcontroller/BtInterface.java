@@ -74,7 +74,7 @@ public class BtInterface {
 
     private Object ConnectThreadLock = new Object();
 
-    private final String TAG = "PLUGIN";
+    private final String TAG = "PLUGIN . UNITY";
 
     private static BtInterface instance = null;
     private static BtInterface ConnectThreadInstance = null;
@@ -140,43 +140,41 @@ public class BtInterface {
         boolean socketIsAvailable = false;
         if(btConnection.connectionMode == BluetoothConnection.ConnectionMode.UsingSocket){
 
-            Log.v("unity","Trying to connect a ready Socket ::: SERVER :::");
+            //Trying to connect a ready Socket ::: SERVER :::
             socketIsAvailable = true;
 
         }else if (btConnection.connectionMode == BluetoothConnection.ConnectionMode.UsingBluetoothDeviceReference) {
             deviceIsAvailable = true;
-            Log.v("unity","Trying to connect a DEVICE ::: NOT SERVER :::");
+            //Trying to connect a DEVICE ::: NOT SERVER :::
 
         }else {
             deviceIsAvailable = findBluetoothDevice(btConnection);
-            Log.v("unity","Trying to connect a NAME OR MAC ::: NOT SERVER :::");
+            //Trying to connect a NAME OR MAC ::: NOT SERVER :::
         }
         if(socketIsAvailable) {
             //Connected should be broadcasts before initializing streams
              PluginToUnity.ControlMessages.CONNECTED.send(btConnection.getID());
             btConnection.initializeStreams();
-            Log.v("unity", "Connection Sucess");
         }else if (deviceIsAvailable ) {
 
-            Log.v("unity", "Found Device");
+            //Found Device
             addConnectionTrial(new ConnectionTrial(btConnection, trialsCount));
 
 
         } else {
-
-            Log.v("unity", "Device Not found and will try to Query Devices");
+            //Device Not found and will try to Query Devices
             addConnectionTrial(new ConnectionTrial(btConnection, trialsCount,true));
         }
     }
 
     private void addConnectionTrial(ConnectionTrial connectionTrial) {
         synchronized (ConnectThreadLock) {
-            //there's no test for dublication
+            //there's no test for dublication//added twice means doing it twice
             btConnectionsQueue.add(connectionTrial);
             if (!isConnecting) {
                 isConnecting = true;
                 (new Thread(new ConnectThread())).start();
-                Log.v("unity","Started connection thread  and will query device");
+                //Started connection thread  and will query device
             }
 
         }
@@ -185,7 +183,6 @@ public class BtInterface {
 
     private boolean findBluetoothDevice(BluetoothConnection setupData) {
 
-        Log.v("unity","findBluetoothDevice");
 
         boolean foundModule = false;
 
@@ -193,12 +190,9 @@ public class BtInterface {
             setPairedDevices = mBluetoothAdapter.getBondedDevices();
 
         boolean useMac = setupData.connectionMode == BluetoothConnection.ConnectionMode.UsingMac;
-        Log.v("unity",setupData.connectionMode.toString());
         for (BluetoothDevice pairedDevice : setPairedDevices) {
 
-            Log.v("unity","findBluetoothDevice1aa");
             if (useMac)
-
                 foundModule = pairedDevice.getAddress().equals(setupData.mac);
                 else
                     foundModule = pairedDevice.getName().equals(setupData.name);
@@ -222,7 +216,6 @@ public class BtInterface {
             if(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED.equals(action)){
                 int scan_mode = intent.getIntExtra(BluetoothAdapter.EXTRA_SCAN_MODE, BluetoothAdapter.ERROR);
 
-                Log.v("unity","DIscoverable STARTED");
                 if(scan_mode == BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
                         BtInterface.getInstance().startServer();//it will start if was asked
                 }
@@ -238,8 +231,6 @@ public class BtInterface {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                Log.v("unity","Action Found Device");
-
                 if (btConnectionForDiscovery != null) {
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     if(device == null) return;
@@ -251,7 +242,6 @@ public class BtInterface {
                             setupData.setDevice(device);
                             foundIt = true;
                         }
-                    Log.v("unity",setupData.name == null ? "name is NULL" : "name is NOT_NULL");
                     if (setupData.connectionMode == BluetoothConnection.ConnectionMode.UsingName && setupData.name != null && setupData.name.equals(device.getName()))
                     {
                         setupData.setDevice(device);
@@ -259,7 +249,6 @@ public class BtInterface {
                     }
 
                     if (foundIt) {
-                        Log.v("unity","Action FOUND Actiual DEVICE");
                         setupData.connectionMode = BluetoothConnection.ConnectionMode.UsingBluetoothDeviceReference;
                         synchronized (ConnectThreadLock) {
                             btConnectionForDiscovery.isNeedDiscovery = false;
@@ -272,9 +261,8 @@ public class BtInterface {
 
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                Log.v("unity","Action Discovery Finished");
                 synchronized (ConnectThreadLock) {
-
+                        //finished discovery so we need to check if the connection thread needs to continue
                         if (btConnectionsQueue.size() > 0 && btConnectionForDiscovery != null) {
                             PluginToUnity.ControlMessages.MODULE_OFF.send(btConnectionForDiscovery.btConnection.getID());
                             btConnectionForDiscovery = null;
@@ -300,17 +288,12 @@ public class BtInterface {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if(device != null)
-                    Log.v("unity", device.getName() + " : Brodcasted as CONECTED X");
-
-
+                //TODO: we don't need this yet, but might use it in the future
             }
 
         else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                //TODO: we don't need this yet, but might use it in the future
 
-                Log.v("unity", device.getName() + " : Disconnect requist");
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
@@ -321,9 +304,8 @@ public class BtInterface {
                         PluginToUnity.ControlMessages.DISCONNECTED.send(tmpBt.getID());
                     }
                 }
-                    Log.v("unity", device.getName() + " : Disconnected");
             }else if (BluetoothAdapter.ACTION_REQUEST_ENABLE.equals(action)) {
-                Log.v("unity","BLUETOOTH Requested to be enabled");
+                //TODO: we don't need this yet, but might use it in the future
             }
         }
     };
@@ -331,7 +313,6 @@ public class BtInterface {
 
 
     private void startDiscoveryForConnection(ConnectionTrial btConnectionTrial){
-        Log.v("unity","discovery Started");
         this.btConnectionForDiscovery = btConnectionTrial;
 
         if(deviceDiscoveryReceiver == null) deviceDiscoveryReceiver = new DeviceDiscoveryReceiver();
@@ -363,7 +344,7 @@ public class BtInterface {
             BluetoothDevice tmpDevice = btConnection.getDevice();
 
             if (tmpDevice != null) {
-                Log.v("unity", "Found Device and trying to create socket");
+                //Found Device and trying to create socket
                 BluetoothSocket tmpSocket = null;
 
                 try {
@@ -376,8 +357,6 @@ public class BtInterface {
                             tmpSocket = (BluetoothSocket) m.invoke(btConnection.getDevice(), 1);
                         } catch (Exception e) {
                             Log.v(TAG, e.getMessage());
-
-
                         }
                     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
                         tmpSocket = Level10.getInstance().createRfcommSocket(tmpDevice, SPP_UUID);
@@ -386,10 +365,6 @@ public class BtInterface {
                         tmpSocket = tmpDevice.createRfcommSocketToServiceRecord(SPP_UUID);//for API 9
                 } catch (IOException mainError) {
                     Log.v(TAG, mainError.getMessage());
-
-                    //Bridge.controlMessage(-1);
-
-
                 }
 
                 btConnection.socket = tmpSocket;
@@ -415,8 +390,6 @@ public class BtInterface {
                 ConnectionTrial tmpConnection;
 
                 synchronized (ConnectThreadLock) {
-
-                    Log.v("unity", "acquired Lock2");
                     if (btConnectionsQueue.size() <= 0) {
                         isConnecting = false;
                         break;//thread must end
@@ -429,7 +402,6 @@ public class BtInterface {
                         break;//thread must end
                     }
                 }
-                Log.v("unity", "connect Thread started");
 
                 btConnection = tmpConnection.btConnection;
 
@@ -456,13 +428,13 @@ public class BtInterface {
                                 btConnection.socket.connect();
                             }
                         } catch (IOException e) {
-                            Log.v("unity", "Connection Failed");
-                            Log.v("unity", e.getMessage());
-                             e.printStackTrace();
+                            Log.v(TAG, "Connection Failed");
+                            Log.v(TAG, e.getMessage());
+                            e.printStackTrace();
 
                             sucess = false;
-                            //btConnection.controlMessage(-3);
-                            //also UUID COULD BE DIFFERENT .MODULE_UUID_WRONG
+
+                            //The reason : UUID COULD BE DIFFERENT .MODULE_UUID_WRONG
                         }
 
 
@@ -470,8 +442,6 @@ public class BtInterface {
                             PluginToUnity.ControlMessages.CONNECTED.send(btConnection.getID());
 
                             btConnection.initializeStreams();
-
-                            Log.v("unity", "Connection Sucess");
 
                             break; //success no need for trials
 
@@ -484,7 +454,7 @@ public class BtInterface {
                             Thread.sleep(1000);
 
                         } catch (InterruptedException e) {
-                            Log.v("unity", "Sleep Thread Interrupt Exception");
+                            Log.v(TAG, "Sleep Thread Interrupt Exception");
                         }
                     }
 
@@ -621,20 +591,17 @@ public class BtInterface {
                 } catch (IOException e) {
 
                     e.printStackTrace();
-                    Log.v("unity", "ACCEPTING FCk");
-                    //TO_DO ADDING TOLLERANCE FOR THE TIME OF AVAILABLE FOR SERVER
+                    Log.v(TAG, "Accepting Socket Failed to IOException");
+                    //TODO: ADDING TOLLERANCE FOR THE TIME AVAILABLE FOR SERVER
                         if (!this.willStop) {
                             createServerSocket();
                             continue;
                         }else break;
                 }
                 // If a connection was accepted
-                Log.v("unity","ACCEPTING FINISHED");
                 if (socket != null) {
                     // Do work to manage the connection (in a separate thread)
                     manageConnectedSocket(socket);
-                    Log.v("unity", "ACEEPTING Called manage SOCKET");
-
                     if(willConnectOneDevice)
                     {
                         cancel();
@@ -643,7 +610,6 @@ public class BtInterface {
                 }
             }
             isAccepting = false;
-            Log.v("unity","ACCEPTING FINISHED");
             synchronized (acceptThreadLock) {
                 if(serverReceiver != null) {
                     try {
@@ -669,8 +635,6 @@ public class BtInterface {
         }
         private void manageConnectedSocket(BluetoothSocket socket){
             PluginToUnity.ControlMessages.socket = socket;//Saving it to pick it by unity
-
-            Log.v("unity","ACCEPTING SEND TO UNITY");
             PluginToUnity.ControlMessages.SERVER_DISCOVERED_DEVICE.send();
         }
     }

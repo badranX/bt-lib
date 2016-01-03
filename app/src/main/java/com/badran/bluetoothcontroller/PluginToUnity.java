@@ -26,10 +26,8 @@ public final class PluginToUnity {
     public enum ControlMessages {
         CONNECTED ("TrConnect"), //"Connected"
         DISCONNECTED ("TrDisconnect") , //"Disconnected"
-        UNABLE_TO_CONNECT ("TrUnableToConnect"), //"found your Bluetooth Module but unable to connect to it"
         NOT_FOUND ("TrModuleNotFound"), //"Bluetooth module with the name or the MAC you provided can't be found"
         MODULE_OFF ("TrModuleOFF"),//"Connection Failed, usually because your Bluetooth module is off "
-        CLOSING_ERROR ("TrClosingError"), //"error while closing"
         SENDING_ERROR ("TrSendingError"), //"error while writing"
         READING_ERROR ("TrReadingError"),//error while reading
         EMPTIED_DATA ("TrEmptiedData"),

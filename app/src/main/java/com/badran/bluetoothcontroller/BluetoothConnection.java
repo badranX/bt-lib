@@ -6,18 +6,13 @@ import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 
-import com.unity3d.player.UnityPlayer;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 
 public class BluetoothConnection {
@@ -52,28 +47,8 @@ public class BluetoothConnection {
 
     public  String name;
     public  String mac;
-
-
-    public int bufferLength;
-    public boolean isUsingMac;
-
     public String SPP_UUID;
-
-
-    public boolean isDevicePicked;
     private BluetoothDevice device;
-
-
-
-
-
-
-    public int maxBufferLength;
-    public byte stopByte ;
-
-
-
-
 
     public enum ConnectionMode {
         UsingMac , UsingName, UsingBluetoothDeviceReference,UsingSocket,NotSet
@@ -85,7 +60,6 @@ public class BluetoothConnection {
 
 
     //END SETUP DATA
-
 
     public BluetoothConnection (int id) {
         this.id = id;
@@ -146,16 +120,11 @@ public class BluetoothConnection {
     }
 
     public byte[] read(){//must change to PACKETIZTION
-        Log.v("unity", "getBuffer Called");
         return  BtReader.getInstance().ReadPacket(this.id, this.readingThreadID);
     }
 
     public  void connect( int trialsNumber) {
-
-        Log.v("unity", "Connect called");
         BtInterface.getInstance().connect(this, trialsNumber);
-
-
     }
 
 
@@ -221,7 +190,6 @@ public class BluetoothConnection {
     public String sendChar(byte msg) {
 
         if(this.socket != null && this.bufferedOutputStream != null) {
-            Log.v("unity","ready to sendChar");
             BtSender.getInstance().addJob(bufferedOutputStream, new byte[]{msg},this.id);
         }
         return this.name;
@@ -230,7 +198,6 @@ public class BluetoothConnection {
 
 
     public void sendBytes(byte[] msg) {
-        Log.v("unity","sendBytes called");
         if(this.socket != null && this.bufferedOutputStream != null)
             BtSender.getInstance().addJob(this.bufferedOutputStream, msg,this.id);
 
@@ -240,7 +207,6 @@ public class BluetoothConnection {
 
 
         if (this.WillRead) {
-            Log.v("unity", "Initializing streams and will read");
             try {
                 this.inputStream = this.socket.getInputStream();
 
@@ -255,7 +221,6 @@ public class BluetoothConnection {
         }
 
         if (this.WillSend) {//add check for Sending
-            Log.v("unity", "Initializing streams");
             try {
                 this.outStream = this.socket.getOutputStream();
             } catch (IOException e) {
@@ -264,11 +229,8 @@ public class BluetoothConnection {
 
             if (this.outStream != null) {
                 this.bufferedOutputStream = new BufferedOutputStream(this.outStream);
-                Log.v("unity", "bufferedOutputStream created and ready");
             }
-            if (this.socket == null) Log.v("unity", " connect socket is null");
-            if (this.bufferedOutputStream == null)
-                Log.v("unity", "connect bufferedOutputStream is null");
+
         }
 
 
