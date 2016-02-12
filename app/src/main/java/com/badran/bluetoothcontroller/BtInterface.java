@@ -7,7 +7,7 @@ package com.badran.bluetoothcontroller;
 import android.bluetooth.BluetoothAdapter;
 
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.LinkedList;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
@@ -66,7 +66,7 @@ public class BtInterface {
 
     }
 
-    Queue<ConnectionTrial> btConnectionsQueue = new ConcurrentLinkedQueue<ConnectionTrial>();
+    Queue<ConnectionTrial> btConnectionsQueue = new LinkedList<ConnectionTrial>();
 
 
 
@@ -176,9 +176,9 @@ public class BtInterface {
                 (new Thread(new ConnectThread())).start();
                 //Started connection thread  and will query device
             }
-
         }
     }
+
 
 
     private boolean findBluetoothDevice(BluetoothConnection setupData) {
@@ -396,6 +396,8 @@ public class BtInterface {
                     }
 
                     tmpConnection = btConnectionsQueue.poll();
+
+                    if(!tmpConnection.btConnection.WillConnect) continue;
 
                     if(tmpConnection.isNeedDiscovery) { //if device is not found yet, need to start discovery
                         startDiscoveryForConnection(tmpConnection);

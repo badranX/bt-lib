@@ -21,9 +21,12 @@ public class BluetoothConnection {
     private boolean isIdAssigned = false;
 
     //control data
-    private boolean WillRead = true;
-    private boolean WillSend = true;
+    private boolean WillRead = true;//== Is the unity needs this instance to read or not, it doesn't mean that it actually able to read or failed to read
+    private boolean WillSend = true;//== Is the unity needs this instance to send or not, it doesn't mean that it actually able to send or failed to send
 
+    //== Is the unity needs this instance to be connected or not, it doesn't mean that it actually connected or failed to connect
+    //it's volatile because the connection thread check this to see if this instance still needs to connect
+    volatile boolean WillConnect = false;
 
     public boolean isSizePacketized = false;
     public boolean isEndBytePacketized = false;
@@ -124,17 +127,42 @@ public class BluetoothConnection {
     }
 
     public  void connect( int trialsNumber) {
+        this.WillConnect = true;
         BtInterface.getInstance().connect(this, trialsNumber);
     }
 
 
 
-    public void close() {
+    public void close()
+    {
+        this.WillConnect = false;
+        removeSocketServer();
+        if (!BtReader.getInstance().Close(this.id, this.readingThreadID))
+        {
+            try
+            {
+                if (this.socket != null) {
+                    this.socket.close();
+                }
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            try
+            {
+                if (this.inputStream != null) {
+                    this.inputStream.close();
+                }
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        BtSender.getInstance().addCloseJob(this.bufferedOutputStream);
 
-        this.removeSocketServer();
-        BtReader.getInstance().Close(id, readingThreadID);
-        PluginToUnity.ControlMessages.DISCONNECTED.send(id);
-
+        PluginToUnity.ControlMessages.DISCONNECTED.send(this.id);
     }
 
 

@@ -250,20 +250,20 @@ class BtReader {
             element.setEndByte(btConnection.packetEndByte);
         }
     }
-    public void Close(int id, int threadID) {//need adjusting
+    public boolean Close(int id, int threadID) {//need adjusting
         ReadingThreadData rtd = ReadingThreads.Get(threadID);
-
-        if(rtd != null) {
-
-            synchronized (rtd.key) {
+        if (rtd != null) {
+            synchronized (rtd.key)
+            {
                 BtElement element;
-                if ((element = rtd.GetReader(id)) != null) {
-                    element.stopReading = true;//it will close when approbriate
-
+                if ((element = rtd.GetReader(id)) != null)
+                {
+                    element.stopReading = true;
+                    return true;
                 }
             }
         }
-
+        return false;
     }
 
     public boolean IsDataAvailable(int id, int threadID) {//need adjusting
@@ -337,83 +337,108 @@ class BtReader {
 
 
     private class BtReceiver implements Runnable {
-        private ReadingThreadData rtd;
+        private BtReader.ReadingThreadData rtd;
 
-        public BtReceiver(ReadingThreadData rtd) {
+        public BtReceiver(BtReader.ReadingThreadData rtd)
+        {
             this.rtd = rtd;
         }
 
-        /////////////////////////////////////////String dataToSend = "";
-        @Override
-        public void run() {
-            BtElement element;
-            for (int i = 0;;i++) {
-                synchronized (rtd.key) {
-                    int size = rtd.NumberOfReaders();
-                    if(size <= 0) {
-                        rtd.DoneReading();
+        public void run()
+        {
+            for (int i = 0;; i++)
+            {
+                BtReader.BtElement element;
+                synchronized (this.rtd.key)
+                {
+                    int size = this.rtd.NumberOfReaders();
+                    if (size <= 0)
+                    {
+                        this.rtd.DoneReading();
                         break;
-                    }if (i >= size)
-                        i=0;
-                    element = rtd.GetReaderByIndex(i);
+                    }
+                    if (i >= size) {
+                        i = 0;
+                    }
+                    element = this.rtd.GetReaderByIndex(i);
                 }
 
                 if (element.socket != null) {
-                    try {
+                    try
+                    {
                         if (element.inputStream.available() > 0) {
-
-                            synchronized (element.ReadWriteBufferKey) {
-                                if (element.Size() < element.Capacity()) {
+                            synchronized (element.ReadWriteBufferKey)
+                            {
+                                if (element.Size() < element.Capacity())
+                                {
                                     byte ch;
-                                    while ((ch = (byte) element.inputStream.read()) >= 0) {
-
-
-                                        if (element.AddByte(ch)) {
-                                            PluginToUnity.ControlMessages.DATA_AVAILABLE.send(element.id);
-                                        } else break;
+                                    while ((ch = (byte)element.inputStream.read()) >= 0)
+                                    {
+                                        if (!element.AddByte(ch)) {
+                                            break;
+                                        }
+                                        PluginToUnity.ControlMessages.DATA_AVAILABLE.send(element.id);
                                     }
                                 }
                             }
                         }
-                    } catch (IOException e) {
-                        PluginToUnity.ControlMessages.READING_ERROR.send(element.id);//-6
                     }
-
-
+                    catch (IOException e)
+                    {
+                        PluginToUnity.ControlMessages.READING_ERROR.send(element.id);
+                    }
                 }
-
-                //perform closing for one element
-                if (element.stopReading) {
-                    try {
-                        if (element.inputStream != null) element.inputStream.close();
-                        if (element.socket != null) element.socket.close();
-                    }catch(IOException e){
+                if (element.stopReading)
+                {
+                    try
+                    {
+                        if (element.socket != null) {
+                            element.socket.close();
+                        }
+                    }
+                    catch (IOException e)
+                    {
                         e.printStackTrace();
                     }
+                    try
+                    {
+                        if (element.inputStream != null) {
+                            element.inputStream.close();
+                        }
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                    this.rtd.RemoveReader(element.id);
 
-                    rtd.RemoveReader(element.id);
-                    //if(rtd.NumberOfReaders() <= 0) rtd.RemoveReader(rtd.ThreadID);
                     PluginToUnity.ControlMessages.READING_STOPPED.send(element.id);
                 }
-
             }
-            performStreamsClosing(rtd);
-
+            performStreamsClosing(this.rtd);
         }
 
-        private  void performStreamsClosing(ReadingThreadData rtd) {
-            for(int i = 0; i < rtd.NumberOfReaders(); i++) {
-                BtElement element = rtd.GetReaderByIndex(i);
-                try {
-                    if (element.inputStream != null) element.inputStream.close();
-                    if (element.socket != null) element.socket.close();
-                } catch (IOException e) {
+        private void performStreamsClosing(BtReader.ReadingThreadData rtd)
+        {
+            for (int i = 0; i < rtd.NumberOfReaders(); i++)
+            {
+                BtReader.BtElement element = rtd.GetReaderByIndex(i);
+                try
+                {
+                    if (element.inputStream != null) {
+                        element.inputStream.close();
+                    }
+                    if (element.socket != null) {
+                        element.socket.close();
+                    }
+                }
+                catch (IOException e)
+                {
                     e.printStackTrace();
                 }
             }
-            ReadingThreads.Remove(rtd.ThreadID);
+            BtReader.ReadingThreads.Remove(rtd.ThreadID);
             rtd.Clear();
-            rtd.isReading = false;
         }
     }
 
