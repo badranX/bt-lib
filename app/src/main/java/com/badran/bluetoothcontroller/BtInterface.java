@@ -47,21 +47,24 @@ public class BtInterface {
     private class ConnectionTrial {
         final BluetoothConnection btConnection;
         final int trialsCount;
+        final int time;
 
         boolean isNeedDiscovery;
 
 
 
-        public ConnectionTrial(BluetoothConnection btConnection, int trialsCount) {
+        public ConnectionTrial(BluetoothConnection btConnection, int trialsCount, int time) {
             this.btConnection = btConnection;
             this.trialsCount = trialsCount;
             this.isNeedDiscovery = false;
+            this.time = time;
         }
 
-        public ConnectionTrial(BluetoothConnection btConnection, int trialsCount,boolean isNeedDiscovery) {
+        public ConnectionTrial(BluetoothConnection btConnection, int trialsCount, int time ,boolean isNeedDiscovery) {
             this.btConnection = btConnection;
             this.trialsCount = trialsCount;
             this.isNeedDiscovery = isNeedDiscovery;
+            this.time = time;
         }
 
     }
@@ -134,8 +137,9 @@ public class BtInterface {
     }
 
 
-    public void connect(BluetoothConnection btConnection, int trialsCount) {
+    public void connect(BluetoothConnection btConnection, int trialsCount , int time, boolean allowPageScan) {
 
+        if(btConnection.isConnected) return;
         boolean deviceIsAvailable = false;
         boolean socketIsAvailable = false;
         if(btConnection.connectionMode == BluetoothConnection.ConnectionMode.UsingSocket){
@@ -153,23 +157,28 @@ public class BtInterface {
         }
         if(socketIsAvailable) {
             //Connected should be broadcasts before initializing streams
+            btConnection.RaiseCONNECTED();
              PluginToUnity.ControlMessages.CONNECTED.send(btConnection.getID());
+
             btConnection.initializeStreams();
         }else if (deviceIsAvailable ) {
-
             //Found Device
-            addConnectionTrial(new ConnectionTrial(btConnection, trialsCount));
+            addConnectionTrial(new ConnectionTrial(btConnection, trialsCount, time));
 
 
-        } else {
+        } else if(allowPageScan) {
             //Device Not found and will try to Query Devices
-            addConnectionTrial(new ConnectionTrial(btConnection, trialsCount,true));
+            btConnection.RaiseDISCOVERY_STARTED();
+            addConnectionTrial(new ConnectionTrial(btConnection, trialsCount,time,true));
+        } else {
+            btConnection.RaiseMODULE_OFF();
         }
     }
 
     private void addConnectionTrial(ConnectionTrial connectionTrial) {
         synchronized (ConnectThreadLock) {
             //there's no test for dublication//added twice means doing it twice
+
             btConnectionsQueue.add(connectionTrial);
             if (!isConnecting) {
                 isConnecting = true;
@@ -264,7 +273,7 @@ public class BtInterface {
                 synchronized (ConnectThreadLock) {
                         //finished discovery so we need to check if the connection thread needs to continue
                         if (btConnectionsQueue.size() > 0 && btConnectionForDiscovery != null) {
-                            PluginToUnity.ControlMessages.MODULE_OFF.send(btConnectionForDiscovery.btConnection.getID());
+                            btConnectionForDiscovery.btConnection.RaiseMODULE_OFF();
                             btConnectionForDiscovery = null;
                             (new Thread(new ConnectThread())).start();
                         }else if (btConnectionForDiscovery != null) {
@@ -296,14 +305,14 @@ public class BtInterface {
 
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                BluetoothConnection tmpBt;
 
-                if(BluetoothConnection.getInstFromDevice(device) != null) {
-                    BluetoothConnection tmpBt;
+
                     if((tmpBt = BluetoothConnection.getInstFromDevice(device)) != null) {
                         tmpBt.removeSocketServer();
-                        PluginToUnity.ControlMessages.DISCONNECTED.send(tmpBt.getID());
+                        tmpBt.RaiseDISCONNECTED();
                     }
-                }
+
             }else if (BluetoothAdapter.ACTION_REQUEST_ENABLE.equals(action)) {
                 //TODO: we don't need this yet, but might use it in the future
             }
@@ -311,7 +320,28 @@ public class BtInterface {
     };
 
 
+    void OnDeviceClosing (BluetoothConnection con) {
 
+        synchronized (ConnectThreadLock) {
+            if (mBluetoothAdapter.isDiscovering() && con == this.btConnectionForDiscovery.btConnection ) {
+                //finished discovery so we need to check if the connection thread needs to continue
+                if (btConnectionsQueue.size() > 0 && btConnectionForDiscovery != null) {
+                    btConnectionForDiscovery = null;
+                    (new Thread(new ConnectThread())).start();
+                } else if (btConnectionForDiscovery != null) {
+                    btConnectionForDiscovery = null;
+                    isConnecting = false;
+                }
+                try {
+                    if(deviceDiscoveryReceiver != null)
+                        UnityPlayer.currentActivity.unregisterReceiver(deviceDiscoveryReceiver);
+                }catch(IllegalArgumentException e){
+                    //Ignore
+                }
+                mBluetoothAdapter.cancelDiscovery();
+            }
+        }
+    }
     private void startDiscoveryForConnection(ConnectionTrial btConnectionTrial){
         this.btConnectionForDiscovery = btConnectionTrial;
 
@@ -326,8 +356,6 @@ public class BtInterface {
             mBluetoothAdapter.cancelDiscovery();
         }
         mBluetoothAdapter.startDiscovery();
-
-
     }
     private class ConnectThread implements Runnable {
 
@@ -371,9 +399,7 @@ public class BtInterface {
 
 
             } else {
-
-                PluginToUnity.ControlMessages.NOT_FOUND.send(btConnection.getID());
-
+                btConnection.RaiseNOT_FOUND();
             }
 
         }
@@ -382,8 +408,6 @@ public class BtInterface {
 
 
         public void run() {
-
-
             int counter;
             while (true) {
 
@@ -397,7 +421,8 @@ public class BtInterface {
 
                     tmpConnection = btConnectionsQueue.poll();
 
-                    if(!tmpConnection.btConnection.WillConnect) continue;
+                    //check if close has been called || it's already connected
+                    if(!tmpConnection.btConnection.WillConnect || tmpConnection.btConnection.isConnected) continue;
 
                     if(tmpConnection.isNeedDiscovery) { //if device is not found yet, need to start discovery
                         startDiscoveryForConnection(tmpConnection);
@@ -408,7 +433,7 @@ public class BtInterface {
                 btConnection = tmpConnection.btConnection;
 
                 int connectionTrials = tmpConnection.trialsCount;
-
+                int time =  tmpConnection.time;
                 boolean isChineseMobile = false;
 
 
@@ -441,8 +466,7 @@ public class BtInterface {
 
 
                         if (sucess) {
-                            PluginToUnity.ControlMessages.CONNECTED.send(btConnection.getID());
-
+                            btConnection.RaiseCONNECTED();
                             btConnection.initializeStreams();
 
                             break; //success no need for trials
@@ -453,7 +477,7 @@ public class BtInterface {
                             }catch (IOException ioE){
                                 //ignore
                             }
-                            Thread.sleep(1000);
+                            Thread.sleep(time);
 
                         } catch (InterruptedException e) {
                             Log.v(TAG, "Sleep Thread Interrupt Exception");
@@ -467,8 +491,8 @@ public class BtInterface {
 
                 } while (counter <= connectionTrials);
                 if(!sucess) {
-                    btConnection.close();
-                    PluginToUnity.ControlMessages.MODULE_OFF.send(btConnection.getID());
+                    btConnection.RaiseMODULE_OFF();
+                    btConnection.releaseResources();
                 }
             }
 

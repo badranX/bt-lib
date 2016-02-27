@@ -27,7 +27,7 @@ public class BluetoothConnection {
     //== Is the unity needs this instance to be connected or not, it doesn't mean that it actually connected or failed to connect
     //it's volatile because the connection thread check this to see if this instance still needs to connect
     volatile boolean WillConnect = false;
-
+    boolean isConnected = false;
     public boolean isSizePacketized = false;
     public boolean isEndBytePacketized = false;
 
@@ -126,17 +126,12 @@ public class BluetoothConnection {
         return  BtReader.getInstance().ReadPacket(this.id, this.readingThreadID);
     }
 
-    public  void connect( int trialsNumber) {
+    public  void connect( int trialsNumber, int time, boolean allowPageScan) {
         this.WillConnect = true;
-        BtInterface.getInstance().connect(this, trialsNumber);
+        BtInterface.getInstance().connect(this, trialsNumber, time, allowPageScan);
     }
 
-
-
-    public void close()
-    {
-        this.WillConnect = false;
-        removeSocketServer();
+    void releaseResources(){
         if (!BtReader.getInstance().Close(this.id, this.readingThreadID))
         {
             try
@@ -161,18 +156,21 @@ public class BluetoothConnection {
             }
         }
         BtSender.getInstance().addCloseJob(this.bufferedOutputStream);
-
-        PluginToUnity.ControlMessages.DISCONNECTED.send(this.id);
     }
 
-
+    public void close()
+    {
+        BtInterface.getInstance().OnDeviceClosing(this);
+        this.WillConnect = false;
+        removeSocketServer();
+        releaseResources();
+        this.RaiseDISCONNECTED();
+    }
 
 
     public void setID(int id){
         this.id = id;
         this.isIdAssigned = true;
-
-
     }
 
     public int getID(){
@@ -210,7 +208,7 @@ public class BluetoothConnection {
     public void sendString(String msg) {
 
         if(this.socket != null && this.bufferedOutputStream != null)
-        BtSender.getInstance().addJob(bufferedOutputStream,msg.getBytes(),this.id);
+        BtSender.getInstance().addJob(bufferedOutputStream,msg.getBytes(),this);
 
     }
 
@@ -218,7 +216,7 @@ public class BluetoothConnection {
     public String sendChar(byte msg) {
 
         if(this.socket != null && this.bufferedOutputStream != null) {
-            BtSender.getInstance().addJob(bufferedOutputStream, new byte[]{msg},this.id);
+            BtSender.getInstance().addJob(bufferedOutputStream, new byte[]{msg},this);
         }
         return this.name;
     }
@@ -227,11 +225,11 @@ public class BluetoothConnection {
 
     public void sendBytes(byte[] msg) {
         if(this.socket != null && this.bufferedOutputStream != null)
-            BtSender.getInstance().addJob(this.bufferedOutputStream, msg,this.id);
+            BtSender.getInstance().addJob(this.bufferedOutputStream, msg,this);
 
     }
 
-    public void initializeStreams() {
+     void initializeStreams() {
 
 
         if (this.WillRead) {
@@ -267,33 +265,56 @@ public class BluetoothConnection {
 
     //SETUP DATA
 
-    public static BluetoothConnection getInstFromDevice(BluetoothDevice device){
+    static BluetoothConnection getInstFromDevice(BluetoothDevice device){
         if(map.containsKey(device))
             return map.get(device);
         return null;
     }
 
 
-    public void setDevice(BluetoothDevice device){
+    void setDevice(BluetoothDevice device){
         this.device = device;
         this.connectionMode = ConnectionMode.UsingBluetoothDeviceReference;
 
         map.put(device,this);
     }
-    public void setSucket(BluetoothSocket socket,int id){
+    void setSucket(BluetoothSocket socket,int id){
         this.device = socket.getRemoteDevice();
         this.connectionMode = ConnectionMode.UsingSocket;
 
         map.put(device, this);
     }
-    public BluetoothDevice getDevice(){
+    BluetoothDevice getDevice(){
         return this.device;
     }
 
-    public void removeSocketServer(){
+    void removeSocketServer(){
         //It's only produced by a server and after disconnecting no need to save the socket
         //a device reference already there since the server found the remote device
         //No need to change connection mode in unity since it's only needed here, and the old connection mode won't be commited, because it's not going to change there
         if(this.connectionMode == ConnectionMode.UsingSocket) this.connectionMode = ConnectionMode.UsingBluetoothDeviceReference;
     }
+
+    void RaiseCONNECTED(){
+        this.isConnected = true;
+        PluginToUnity.ControlMessages.CONNECTED.send(this.getID());
+    }
+    void RaiseDISCONNECTED(){
+        this.isConnected = false;
+        PluginToUnity.ControlMessages.DISCONNECTED.send(this.getID());
+    }
+    void RaiseNOT_FOUND(){
+        PluginToUnity.ControlMessages.NOT_FOUND.send(this.getID());
+    }
+    void RaiseMODULE_OFF (){
+        PluginToUnity.ControlMessages.MODULE_OFF.send(this.getID());
+    }
+    void RaiseSENDING_ERROR (){
+        PluginToUnity.ControlMessages.SENDING_ERROR.send(this.getID());
+    }
+    void RaiseDISCOVERY_STARTED() {
+
+    }
+    //TODO add BtReader Raising Functionality
 }
+

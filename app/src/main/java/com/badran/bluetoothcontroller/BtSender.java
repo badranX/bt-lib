@@ -40,26 +40,26 @@ class BtSender {
         boolean isClose = false;
         byte[] msg;
         BufferedOutputStream bufferedOutputStream;
-        final int deviceID;
-        public Job(BufferedOutputStream bufferedOutputStream, byte[] msg,int deviceID) {
+        final BluetoothConnection btConnection;
+        public Job(BufferedOutputStream bufferedOutputStream, byte[] msg,BluetoothConnection btConnection) {
             this.msg = msg;
             this.bufferedOutputStream = bufferedOutputStream;
-            this.deviceID = deviceID;
+            this.btConnection = btConnection;
         }
 
         public Job(BufferedOutputStream bufferedOutputStream)
         {
             this.bufferedOutputStream = bufferedOutputStream;
             this.isClose = true;
-            this.deviceID = 0;
+            this.btConnection = null;
         }
     }
 
 
-    void addJob(BufferedOutputStream bufferedOutputStream, byte[] msg,int deviceID) {
+    void addJob(BufferedOutputStream bufferedOutputStream, byte[] msg,BluetoothConnection btConnection) {
 
         synchronized (lock1) {
-            outMessages.add(new Job(bufferedOutputStream, msg,deviceID));
+            outMessages.add(new Job(bufferedOutputStream, msg,btConnection));
             if (!isSending) {
                 isSending = true;
                 (new Thread(new BtSenderThread())).start();
@@ -138,7 +138,7 @@ class BtSender {
                 catch (IOException e)
                 {
                     Log.v("PLUGIN . UNITY", "failed while write/sending data");
-                    PluginToUnity.ControlMessages.SENDING_ERROR.send(job.deviceID);
+                    job.btConnection.RaiseSENDING_ERROR();
                 }
 
             }
