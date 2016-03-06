@@ -186,7 +186,7 @@ public class Bridge {
             BluetoothConnection btConnection = new BluetoothConnection(id);
             btConnection.socket = PluginToUnity.ControlMessages.socket;
             btConnection.connectionMode = BluetoothConnection.ConnectionMode.UsingSocket;
-            btConnection.setSucket(PluginToUnity.ControlMessages.socket, id);
+            btConnection.setSucket(PluginToUnity.ControlMessages.socket);
             return btConnection;
         }return null;
     }

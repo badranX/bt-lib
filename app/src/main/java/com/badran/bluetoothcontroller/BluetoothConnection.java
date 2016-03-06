@@ -78,7 +78,9 @@ public class BluetoothConnection {
     }
 
 
-
+    String getUUID () {
+        return this.SPP_UUID;
+    }
     public void enableReading(int readingThreadID){
         this.readingThreadID = readingThreadID;
         this.WillRead = true;
@@ -278,7 +280,7 @@ public class BluetoothConnection {
 
         map.put(device,this);
     }
-    void setSucket(BluetoothSocket socket,int id){
+    void setSucket(BluetoothSocket socket){
         this.device = socket.getRemoteDevice();
         this.connectionMode = ConnectionMode.UsingSocket;
 

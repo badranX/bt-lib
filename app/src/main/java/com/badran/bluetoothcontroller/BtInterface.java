@@ -30,6 +30,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.bluetooth.BluetoothServerSocket;
+import android.util.SparseArray;
 
 public class BtInterface {
 
@@ -48,16 +49,23 @@ public class BtInterface {
         final BluetoothConnection btConnection;
         final int trialsCount;
         final int time;
-
+        final UUID uuid;
+        final BluetoothDevice device;
+        private boolean willStop = false;
         boolean isNeedDiscovery;
 
-
+        void stopConnecting(){
+            this.willStop = true;
+        }
+        boolean isWillStop(){ return this.willStop;}
 
         public ConnectionTrial(BluetoothConnection btConnection, int trialsCount, int time) {
             this.btConnection = btConnection;
             this.trialsCount = trialsCount;
             this.isNeedDiscovery = false;
             this.time = time;
+            this.device = btConnection.getDevice();
+            this.uuid = UUID.fromString(btConnection.getUUID());
         }
 
         public ConnectionTrial(BluetoothConnection btConnection, int trialsCount, int time ,boolean isNeedDiscovery) {
@@ -65,15 +73,14 @@ public class BtInterface {
             this.trialsCount = trialsCount;
             this.isNeedDiscovery = isNeedDiscovery;
             this.time = time;
+            this.device = btConnection.getDevice();
+            this.uuid = UUID.fromString(btConnection.getUUID());
         }
 
     }
 
     Queue<ConnectionTrial> btConnectionsQueue = new LinkedList<ConnectionTrial>();
-
-
-
-
+    SparseArray<LinkedList<ConnectionTrial>> sparseTrials = new SparseArray<LinkedList<ConnectionTrial>>();
 
     private Object ConnectThreadLock = new Object();
 
@@ -168,7 +175,6 @@ public class BtInterface {
 
         } else if(allowPageScan) {
             //Device Not found and will try to Query Devices
-            btConnection.RaiseDISCOVERY_STARTED();
             addConnectionTrial(new ConnectionTrial(btConnection, trialsCount,time,true));
         } else {
             btConnection.RaiseMODULE_OFF();
@@ -180,6 +186,15 @@ public class BtInterface {
             //there's no test for dublication//added twice means doing it twice
 
             btConnectionsQueue.add(connectionTrial);
+            int id = connectionTrial.btConnection.getID();
+            LinkedList<ConnectionTrial> conList =  sparseTrials.get(id);
+            if(conList  == null) {
+                conList = new LinkedList<ConnectionTrial>();
+                conList.add(connectionTrial);
+                sparseTrials.put(id,conList);
+            }else {
+                conList.add(connectionTrial);
+            }
             if (!isConnecting) {
                 isConnecting = true;
                 (new Thread(new ConnectThread())).start();
@@ -323,6 +338,15 @@ public class BtInterface {
     void OnDeviceClosing (BluetoothConnection con) {
 
         synchronized (ConnectThreadLock) {
+            LinkedList<ConnectionTrial> list = sparseTrials.get(con.getID());
+            if(list != null){
+                for(ConnectionTrial c : list){
+                    c.stopConnecting();
+                }
+                sparseTrials.remove(con.getID());
+            }
+
+            //Close Discovery for a device that has been closed
             if (mBluetoothAdapter.isDiscovering() && con == this.btConnectionForDiscovery.btConnection ) {
                 //finished discovery so we need to check if the connection thread needs to continue
                 if (btConnectionsQueue.size() > 0 && btConnectionForDiscovery != null) {
@@ -359,19 +383,7 @@ public class BtInterface {
     }
     private class ConnectThread implements Runnable {
 
-        BluetoothConnection btConnection;
-
-
-
-
-        private void createSocket(boolean isChineseMobile) {//this method returns TRUE if Socket != null
-
-            btConnection.socket = null;
-            final UUID SPP_UUID = UUID.fromString(btConnection.SPP_UUID);
-
-            BluetoothDevice tmpDevice = btConnection.getDevice();
-
-            if (tmpDevice != null) {
+        private BluetoothSocket createSocket(boolean isChineseMobile, ConnectionTrial conAttempt) {//this method returns TRUE if Socket != null
                 //Found Device and trying to create socket
                 BluetoothSocket tmpSocket = null;
 
@@ -381,26 +393,21 @@ public class BtInterface {
 
                         Method m;
                         try {
-                            m = tmpDevice.getClass().getMethod(CREATE_INSECURE_RFcomm_Socket, new Class[]{int.class});
-                            tmpSocket = (BluetoothSocket) m.invoke(btConnection.getDevice(), 1);
+                            m = conAttempt.device.getClass().getMethod(CREATE_INSECURE_RFcomm_Socket, new Class[]{int.class});
+                            tmpSocket = (BluetoothSocket) m.invoke(conAttempt.device, 1);
                         } catch (Exception e) {
                             Log.v(TAG, e.getMessage());
                         }
                     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-                        tmpSocket = Level10.getInstance().createRfcommSocket(tmpDevice, SPP_UUID);
+                        tmpSocket = Level10.getInstance().createRfcommSocket(conAttempt.device, conAttempt.uuid);
 
                     } else
-                        tmpSocket = tmpDevice.createRfcommSocketToServiceRecord(SPP_UUID);//for API 9
+                        tmpSocket = conAttempt.device.createRfcommSocketToServiceRecord(conAttempt.uuid);//for API 9
                 } catch (IOException mainError) {
                     Log.v(TAG, mainError.getMessage());
                 }
 
-                btConnection.socket = tmpSocket;
-
-
-            } else {
-                btConnection.RaiseNOT_FOUND();
-            }
+                return tmpSocket;
 
         }
 
@@ -411,88 +418,104 @@ public class BtInterface {
             int counter;
             while (true) {
 
-                ConnectionTrial tmpConnection;
+                ConnectionTrial conAttempt;
 
                 synchronized (ConnectThreadLock) {
                     if (btConnectionsQueue.size() <= 0) {
                         isConnecting = false;
                         break;//thread must end
                     }
-
-                    tmpConnection = btConnectionsQueue.poll();
+                    //Every ConAttempt must have a device reference or it already asked for discovery to find a reference
+                    conAttempt = btConnectionsQueue.poll();
 
                     //check if close has been called || it's already connected
-                    if(!tmpConnection.btConnection.WillConnect || tmpConnection.btConnection.isConnected) continue;
+                    if(conAttempt.isWillStop() || conAttempt.btConnection.isConnected) continue;
 
-                    if(tmpConnection.isNeedDiscovery) { //if device is not found yet, need to start discovery
-                        startDiscoveryForConnection(tmpConnection);
+                    if(conAttempt.isNeedDiscovery) { //if device is not found yet, need to start discovery
+                        startDiscoveryForConnection(conAttempt);
                         break;//thread must end
                     }
                 }
 
-                btConnection = tmpConnection.btConnection;
 
-                int connectionTrials = tmpConnection.trialsCount;
-                int time =  tmpConnection.time;
                 boolean isChineseMobile = false;
 
-
+                BluetoothSocket socket = null;
                 counter = 0;
-                boolean sucess = true;
+                boolean success = true;
                 do {
-                        createSocket(isChineseMobile);
+                    socket = createSocket(isChineseMobile, conAttempt );
 
-                    if (btConnection.socket != null) {
+                    if (socket != null) {
                         mBluetoothAdapter.cancelDiscovery();
                         try {
                             if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                                if (!btConnection.socket.isConnected() ) {
-                                    btConnection.socket.connect();
+                                if (!socket.isConnected() ) {//Sometimes it's connected before calling connect(), because of an error in previous-attempt
+                                    socket.connect();
                                 }else {
-                                    sucess = false;
+                                    success = false;
                                 }
                             }else {
-                                btConnection.socket.connect();
+                                socket.connect();
                             }
                         } catch (IOException e) {
                             Log.v(TAG, "Connection Failed");
                             Log.v(TAG, e.getMessage());
                             e.printStackTrace();
 
-                            sucess = false;
-
+                            success = false;
                             //The reason : UUID COULD BE DIFFERENT .MODULE_UUID_WRONG
                         }
 
 
-                        if (sucess) {
-                            btConnection.RaiseCONNECTED();
-                            btConnection.initializeStreams();
 
+                            synchronized (ConnectThreadLock){
+                                if(conAttempt.isWillStop()) {
+                                    try {
+                                        socket.close();
+                                    }catch (IOException ioE){
+                                        //ignore
+                                    }
+                                    //Considered success and break. it's success because the user has closed it.
+                                    break;
+                                }
+                                if(success) {
+                                    conAttempt.btConnection.setSucket(socket);
+                                }
+                            }
+
+                        if(success){
+                            conAttempt.btConnection.RaiseCONNECTED();
+                            conAttempt.btConnection.initializeStreams();
                             break; //success no need for trials
-
-                        } else try {
+                        }else {
                             try {
-                                btConnection.socket.close();
+                                conAttempt.btConnection.socket.close();
                             }catch (IOException ioE){
                                 //ignore
                             }
-                            Thread.sleep(time);
-
-                        } catch (InterruptedException e) {
-                            Log.v(TAG, "Sleep Thread Interrupt Exception");
                         }
+                    }else {
+                        success = false;
                     }
 
-
                     counter++;
+                    if(counter >= conAttempt.trialsCount){
+                        break;
+                    }
+
+                    try {
+                        Thread.sleep(conAttempt.time);
+                    } catch (InterruptedException e) {
+                        Log.v(TAG, "Sleep Thread Interrupt Exception");
+                    }
+
                     isChineseMobile = !isChineseMobile;
 
 
-                } while (counter <= connectionTrials);
-                if(!sucess) {
-                    btConnection.RaiseMODULE_OFF();
-                    btConnection.releaseResources();
+                } while (true);
+                if(!success) {
+                    conAttempt.btConnection.RaiseMODULE_OFF();
                 }
             }
 
@@ -609,7 +632,6 @@ public class BtInterface {
             isAccepting = true;
             BluetoothSocket socket = null;
             // Keep listening until exception occurs or a socket is returned
-            int i =0;
             while ( true) {
                 try {
                     Log.v("unity","ACCEPTING");

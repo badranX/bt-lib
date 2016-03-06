@@ -5,16 +5,7 @@ import com.badran.bluetoothcontroller.PluginToUnity;
 
 import java.util.*;
 
-/**
- * If you use this code, please consider notifying isak at du-preez dot com
- * with a brief description of your application.
- * <p/>
- * This is free and unencumbered software released into the public domain.
- * Anyone is free to copy, modify, publish, use, compile, sell, or
- * distribute this software, either in source code form or as a compiled
- * binary, for any purpose, commercial or non-commercial, and by any
- * means.
- */
+
 
 public class CircularArrayList {
 
@@ -43,7 +34,7 @@ public class CircularArrayList {
 
 
     public CircularArrayList(int capacity) {
-        n = capacity ;
+        n = capacity + 1;
         buf = new byte[n];
 
     }
@@ -53,7 +44,7 @@ public class CircularArrayList {
 
 
     public int capacity() {
-        return n ;
+        return n - 1 ;
     }
 
 
@@ -71,7 +62,7 @@ public class CircularArrayList {
                 return lengthPacketsCounter > 0;
 
             case END_BYTE_PACKET :
-               return !marks.isEmpty();
+                return !marks.isEmpty();
             case NO_PACKETIZATION: return size() > 0;
             default: return false;
         }
@@ -79,7 +70,8 @@ public class CircularArrayList {
 
 
 
-    public   int size() {
+    public int size() {
+        //tail never equals capacity because wrapindex() doesn't allow that. so size never equals capacity
         return tail - head + (tail < head ? n : 0);
     }
 
@@ -114,7 +106,7 @@ public class CircularArrayList {
             case NO_PACKETIZATION: size();
             case LENGTH_PACKET : return lengthPacketsCounter;
             case END_BYTE_PACKET : return marks.size();
-                default: return size();
+            default: return size();
         }
 
     }
@@ -122,7 +114,8 @@ public class CircularArrayList {
     public   boolean add(byte e) {//returns true if packet/data available for the first time after was no packets
 
         int s = size();
-        if (s == n) {
+        if (s == n - 1) {
+            //TODO this should never be reached, should throw exception
             return false;//No Adding will be done
         }
 
@@ -144,17 +137,17 @@ public class CircularArrayList {
 
             case END_BYTE_PACKET :
 
-                        if (endByte == e) {
+                if (endByte == e) {
 
-                            if( size() == 0 || (marks.peek() != null && marks.peek() == tail))//endByte at the start of new packet
-                                    return false;
+                    if( size() == 0 || ( marks.peek()!= null && marks.peek() == tail))//endByte at the start of new packet
+                        return false;
 
-                            if(marks.isEmpty()) isFirstTimeData = true;
-                            marks.add(tail);//index excluded
+                    if(marks.isEmpty()) isFirstTimeData = true;
+                    marks.add(tail);//index excluded
 
-                            return isFirstTimeData;//shouldn't add endByte
+                    return isFirstTimeData;//shouldn't add endByte
 
-                        }
+                }
 
 
                 break;
@@ -185,7 +178,7 @@ public class CircularArrayList {
 
     private byte[] pollArray (int size){//Doesn't tollerate errors in inputs (size),expect to check them before calling
 
-    //same As pollArraySize() but used for packetization, so it doesn't send to unity
+        //same As pollArraySize() but used for packetization, so it doesn't send to unity
 
 
         int end = wrapIndex(head + size );
@@ -195,8 +188,9 @@ public class CircularArrayList {
             e = Arrays.copyOfRange(buf, head, end);
         }else {
             e = new byte[size];
-            System.arraycopy(buf, head, e, 0, n - head );
-            System.arraycopy(buf, 0, e, 0, end  );
+            int len = n - head;
+            System.arraycopy(buf, head, e, 0, len  );//n-1 is the actual capacity
+            System.arraycopy(buf, 0, e, len, end  );
         }
         head = end; // this end had excluded from copying _still hasn't been read
 
@@ -216,7 +210,7 @@ public class CircularArrayList {
             return empty;
         }
 
-         //endIndex - startIndex = size ;;; endIndex = startIndex + size;
+        //endIndex - startIndex = size ;;; endIndex = startIndex + size;
         if (size >= s ) {
             size = s;
             readAllData = true;
@@ -273,7 +267,7 @@ public class CircularArrayList {
             case NO_PACKETIZATION:
                 byte[] temp = pollArray(size());
                 PluginToUnity.ControlMessages.EMPTIED_DATA.send(id);
-                 return temp;
+                return temp;
 
         }
         return empty;
