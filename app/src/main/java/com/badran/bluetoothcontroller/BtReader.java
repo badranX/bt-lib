@@ -37,7 +37,7 @@ class BtReader {
         final public Object ReadWriteBufferKey = new Object();
         int id;
         volatile boolean stopReading = false;
-        private CircularArrayList buffer = new CircularArrayList(128);
+        private CircularArrayList buffer = new CircularArrayList(1024);
 
         public boolean IsDataAvailable(){
             synchronized (ReadWriteBufferKey){
@@ -456,7 +456,7 @@ class BtReader {
         @Override
         public void run() {
 
-            while (element.socket != null && !element.stopReading) {
+            while ( !element.stopReading) {
                 try {
                     if (element.inputStream.available() > 0) {
 
@@ -464,7 +464,6 @@ class BtReader {
                                 if (element.Size() < element.Capacity()){
                                 byte ch;
                                 if ((ch = (byte) element.inputStream.read()) >= 0) {
-
                                     if (element.AddByte(ch)) {
                                         PluginToUnity.ControlMessages.DATA_AVAILABLE.send(element.id);
                                     }

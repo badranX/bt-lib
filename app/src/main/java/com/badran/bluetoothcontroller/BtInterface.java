@@ -33,8 +33,6 @@ import android.bluetooth.BluetoothServerSocket;
 import android.util.SparseArray;
 
 public class BtInterface {
-
-
     private final String CREATE_RFcomm_Socket = "createRfcommSocket";
     private final String CREATE_INSECURE_RFcomm_Socket = "createInsecureRfcommSocket";
     private BluetoothAdapter mBluetoothAdapter;
@@ -193,6 +191,7 @@ public class BtInterface {
                 conList.add(connectionTrial);
                 sparseTrials.put(id,conList);
             }else {
+                conList = new LinkedList<ConnectionTrial>();
                 conList.add(connectionTrial);
             }
             if (!isConnecting) {
@@ -204,10 +203,7 @@ public class BtInterface {
     }
 
 
-
     private boolean findBluetoothDevice(BluetoothConnection setupData) {
-
-
         boolean foundModule = false;
 
             Set<BluetoothDevice> setPairedDevices;
@@ -425,6 +421,7 @@ public class BtInterface {
                         isConnecting = false;
                         break;//thread must end
                     }
+                    //TODO peek to element and poll it when it's not needed for discovery.
                     //Every ConAttempt must have a device reference or it already asked for discovery to find a reference
                     conAttempt = btConnectionsQueue.poll();
 
@@ -490,7 +487,7 @@ public class BtInterface {
                             break; //success no need for trials
                         }else {
                             try {
-                                conAttempt.btConnection.socket.close();
+                                socket.close();
                             }catch (IOException ioE){
                                 //ignore
                             }
@@ -518,9 +515,7 @@ public class BtInterface {
                     conAttempt.btConnection.RaiseMODULE_OFF();
                 }
             }
-
             //end of the biggest while
-
         }
 
 

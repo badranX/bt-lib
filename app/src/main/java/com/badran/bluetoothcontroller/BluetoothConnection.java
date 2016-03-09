@@ -26,23 +26,22 @@ public class BluetoothConnection {
 
     //== Is the unity needs this instance to be connected or not, it doesn't mean that it actually connected or failed to connect
     //it's volatile because the connection thread check this to see if this instance still needs to connect
-    volatile boolean WillConnect = false;
     boolean isConnected = false;
-    public boolean isSizePacketized = false;
-    public boolean isEndBytePacketized = false;
+    boolean isSizePacketized = false;
+    boolean isEndBytePacketized = false;
 
-    public byte packetEndByte;
-    public int packetSize;
+    byte packetEndByte;
+    int packetSize;
 
-    public BluetoothSocket socket;
+     BluetoothSocket socket;
 
-    public OutputStream outStream;
+     OutputStream outStream;
 
-    public BufferedOutputStream bufferedOutputStream = null;
+     BufferedOutputStream bufferedOutputStream = null;
 
-    public InputStream inputStream = null;
+     InputStream inputStream = null;
 
-    public int readingThreadID = 0;//default Value
+     int readingThreadID = 0;//default Value
 
     //SetupData
     private final String UUID_SERIAL = "00001101-0000-1000-8000-00805F9B34FB";
@@ -53,13 +52,9 @@ public class BluetoothConnection {
     public String SPP_UUID;
     private BluetoothDevice device;
 
-    public enum ConnectionMode {
+     enum ConnectionMode {
         UsingMac , UsingName, UsingBluetoothDeviceReference,UsingSocket,NotSet
-    } public ConnectionMode connectionMode= ConnectionMode.NotSet;
-
-    public enum ReadingMode {
-        STRINGS , ENDBYTE, LENGTH
-    } public ReadingMode readMode;
+    }  ConnectionMode connectionMode= ConnectionMode.NotSet;
 
 
     //END SETUP DATA
@@ -82,11 +77,24 @@ public class BluetoothConnection {
         return this.SPP_UUID;
     }
     public void enableReading(int readingThreadID){
+        if(this.isConnected){
+            if(this.socket != null && this.inputStream == null) {
+                try {
+                    this.inputStream = this.socket.getInputStream();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            BtReader.getInstance().EnableReading(this);
+        }
         this.readingThreadID = readingThreadID;
         this.WillRead = true;
     }
 
     public void disableReading(){
+        if(this.isConnected) {
+            BtReader.getInstance().Close(this.id, this.readingThreadID);
+        }
         this.WillRead = false;
     }
 
@@ -94,7 +102,7 @@ public class BluetoothConnection {
         this.WillSend = true;
     }
     public void disableSending(){
-        this.WillRead = false;
+        this.WillSend = false;
     }
     public boolean isReading(){return BtReader.getInstance().IsReading(this);}
 
@@ -129,13 +137,14 @@ public class BluetoothConnection {
     }
 
     public  void connect( int trialsNumber, int time, boolean allowPageScan) {
-        this.WillConnect = true;
         BtInterface.getInstance().connect(this, trialsNumber, time, allowPageScan);
     }
-
+    private void reset(){
+        //This must be called when this instance will be used for a different Remote Device
+        if(this.isConnected) this.close();
+    }
     void releaseResources(){
-        if (!BtReader.getInstance().Close(this.id, this.readingThreadID))
-        {
+        BtReader.getInstance().Close(this.id, this.readingThreadID);
             try
             {
                 if (this.socket != null) {
@@ -146,24 +155,12 @@ public class BluetoothConnection {
             {
                 e.printStackTrace();
             }
-            try
-            {
-                if (this.inputStream != null) {
-                    this.inputStream.close();
-                }
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
         BtSender.getInstance().addCloseJob(this.bufferedOutputStream);
     }
 
     public void close()
     {
         BtInterface.getInstance().OnDeviceClosing(this);
-        this.WillConnect = false;
         removeSocketServer();
         releaseResources();
         this.RaiseDISCONNECTED();
@@ -180,15 +177,20 @@ public class BluetoothConnection {
     }
 
     public void setUUID (String SPP_UUID){
+        reset();
         this.SPP_UUID = SPP_UUID;
     }
 
     public void setMac (String mac){
+        reset();
+        if(this.isConnected)this.close();
         this.connectionMode = ConnectionMode.UsingMac;
         this.mac = mac;
     }
 
     public void setName (String name){//return data from the founded device
+        reset();
+        if(this.isConnected)this.close();
         this.connectionMode = ConnectionMode.UsingName;
         this.name = name;
     }
@@ -232,8 +234,6 @@ public class BluetoothConnection {
     }
 
      void initializeStreams() {
-
-
         if (this.WillRead) {
             try {
                 this.inputStream = this.socket.getInputStream();
