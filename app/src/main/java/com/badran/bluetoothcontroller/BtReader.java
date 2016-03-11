@@ -37,7 +37,7 @@ class BtReader {
         final public Object ReadWriteBufferKey = new Object();
         int id;
         volatile boolean stopReading = false;
-        private CircularArrayList buffer = new CircularArrayList(1024);
+        private CircularArrayList buffer = new CircularArrayList(2);
 
         public boolean IsDataAvailable(){
             synchronized (ReadWriteBufferKey){
@@ -82,10 +82,16 @@ class BtReader {
         }
 
         public int Size(){
-            return  buffer.size();
+                return buffer.size();
         }
         public int Capacity(){
-            return  buffer.capacity();
+            //TODO check if capacity is synchronized
+                return buffer.capacity();
+        }
+        public void Resize(){
+            synchronized (ReadWriteBufferKey) {
+                buffer.resize();
+            }
         }
         public boolean AddByte(byte item){
             return buffer.add(item);
@@ -372,13 +378,15 @@ class BtReader {
                                 if (element.Size() < element.Capacity())
                                 {
                                     byte ch;
-                                    while ((ch = (byte)element.inputStream.read()) >= 0)
+                                    if ((ch = (byte)element.inputStream.read()) >= 0)
                                     {
-                                        if (!element.AddByte(ch)) {
-                                            break;
+                                        if (element.AddByte(ch)) {
+                                            PluginToUnity.ControlMessages.DATA_AVAILABLE.send(element.id);
                                         }
-                                        PluginToUnity.ControlMessages.DATA_AVAILABLE.send(element.id);
+
                                     }
+                                }else {
+                                    element.Resize();
                                 }
                             }
                         }
@@ -390,16 +398,6 @@ class BtReader {
                 }
                 if (element.stopReading)
                 {
-                    try
-                    {
-                        if (element.socket != null) {
-                            element.socket.close();
-                        }
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
                     try
                     {
                         if (element.inputStream != null) {
@@ -427,9 +425,6 @@ class BtReader {
                 {
                     if (element.inputStream != null) {
                         element.inputStream.close();
-                    }
-                    if (element.socket != null) {
-                        element.socket.close();
                     }
                 }
                 catch (IOException e)
@@ -468,18 +463,19 @@ class BtReader {
                                         PluginToUnity.ControlMessages.DATA_AVAILABLE.send(element.id);
                                     }
                                 }
-                            }
+                            } else {
+                                    element.Resize();
+                                    Log.v("unity . plugin", "size  now is :: " + element.Capacity());
+                                }
                         }
                     }
 
                 } catch (IOException e) {
                     PluginToUnity.ControlMessages.READING_ERROR.send(element.id);//-6
                 }
-
             }
 
             try {
-                if (element.socket != null) element.socket.close();
                 if (element.inputStream != null) element.inputStream.close();
             }catch(IOException e){
                 e.printStackTrace();

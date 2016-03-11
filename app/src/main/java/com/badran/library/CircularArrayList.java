@@ -9,7 +9,7 @@ import java.util.*;
 
 public class CircularArrayList {
 
-    private final int n; // buffer length
+    private volatile int n; // buffer length and it's volatile as it would be changed from a thread.
 
     private final byte[] empty = new byte[0];
 
@@ -28,7 +28,7 @@ public class CircularArrayList {
     } private  MODES mode = MODES.NO_PACKETIZATION;
 
 
-    private Queue<Integer> marks ;
+    private LinkedList<Integer> marks ;
 
     private Byte endByte;
 
@@ -69,7 +69,6 @@ public class CircularArrayList {
     }
 
 
-
     public int size() {
         //tail never equals capacity because wrapindex() doesn't allow that. so size never equals capacity
         return tail - head + (tail < head ? n : 0);
@@ -108,6 +107,52 @@ public class CircularArrayList {
             case END_BYTE_PACKET : return marks.size();
             default: return size();
         }
+
+    }
+
+    public void resize(){//Assumes that the buffer is full. size == capacity
+        int tmpN = (int)(n * 1.5);
+        byte[] tmp;
+       try {
+           tmp = new byte[tmpN];
+       }catch (OutOfMemoryError e) {
+            return;
+        }
+
+
+        if(head == 0) {//The case that the head is still at 0 index. so the tail is at last index
+            //as the last index is where the tail points out and it's empty.
+            //copy all elements to the new buffer and that's it.
+            System.arraycopy(buf, 0, tmp, 0, n -1  );//n-1 is the last index, and since the last index isn't included (n-1)
+            n = tmpN;
+            //the array structure is still the same , heads and marks
+            return;
+
+        }else {
+            int len = n - head;//From the Head (included) up to the last index(included). this is there length.
+            System.arraycopy(buf, head, tmp, 0, len  );//n-1 index is included here
+            System.arraycopy(buf, 0, tmp, len, head );//head won't be included so from 0 to head -1
+
+            int markSize = marks.size();
+            for (int i = 0 ; i < markSize ; i++) {
+                int mark = marks.poll();
+                //It's not possible that mark == head, as it would be already removed //
+                // ( a mark marks the end of a packet head could only be a start of a packet.
+                if(mark > head){
+                    mark = mark - head;
+                }else {
+                    mark = mark + len;
+                }
+
+                marks.addLast(mark);
+            }
+
+            head = 0;
+            tail = n -1;
+            n = tmpN;
+        }
+
+
 
     }
 

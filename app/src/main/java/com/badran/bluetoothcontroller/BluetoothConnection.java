@@ -46,7 +46,7 @@ public class BluetoothConnection {
     //SetupData
     private final String UUID_SERIAL = "00001101-0000-1000-8000-00805F9B34FB";
     private static Map<BluetoothDevice,BluetoothConnection> map = new HashMap<BluetoothDevice, BluetoothConnection>();
-
+    private static Map<String,BluetoothConnection> mapAddress = new HashMap<String, BluetoothConnection>();
     public  String name;
     public  String mac;
     public String SPP_UUID;
@@ -270,6 +270,9 @@ public class BluetoothConnection {
     static BluetoothConnection getInstFromDevice(BluetoothDevice device){
         if(map.containsKey(device))
             return map.get(device);
+        if(mapAddress.containsKey(device.getAddress())){
+            return map.get(device.getAddress());
+        }
         return null;
     }
 
@@ -279,12 +282,15 @@ public class BluetoothConnection {
         this.connectionMode = ConnectionMode.UsingBluetoothDeviceReference;
 
         map.put(device,this);
+        mapAddress.put(device.getAddress(),this);
     }
     void setSucket(BluetoothSocket socket){
+        this.socket = socket;
         this.device = socket.getRemoteDevice();
         this.connectionMode = ConnectionMode.UsingSocket;
 
         map.put(device, this);
+        mapAddress.put(device.getAddress(),this);
     }
     BluetoothDevice getDevice(){
         return this.device;

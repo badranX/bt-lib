@@ -313,11 +313,14 @@ public class BtInterface {
 
         else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
                 //TODO: we don't need this yet, but might use it in the future
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                Log.v(TAG, "device ask for CLOSING ::::::: " + device.getName());
 
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 BluetoothConnection tmpBt;
-
+                Log.v(TAG, "device CLOSING ::::::: " + device.getName());
 
                     if((tmpBt = BluetoothConnection.getInstFromDevice(device)) != null) {
                         tmpBt.removeSocketServer();
@@ -522,7 +525,7 @@ public class BtInterface {
     }
     //Accepting Thread
 
-    AcceptThread acceptThread;
+    private volatile AcceptThread acceptThread;
     public final Object acceptThreadLock = new Object();
 
     public void initServer(String serverUUID,int time,boolean willConnectOneDevice){
@@ -530,9 +533,10 @@ public class BtInterface {
         if(acceptThread == null) {
             acceptThread = new AcceptThread(UUID.fromString(serverUUID), time, willConnectOneDevice);
         }else {
-
-            acceptThread.abortServer();
-            acceptThread = new AcceptThread(UUID.fromString(serverUUID), time, willConnectOneDevice);
+            synchronized (acceptThreadLock) {
+                acceptThread.abortServer();
+                acceptThread = new AcceptThread(UUID.fromString(serverUUID), time, willConnectOneDevice);
+            }
         }
             IntentFilter filter_scan_mode = new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
             if(serverReceiver == null) serverReceiver = new ServerReceiver();
@@ -566,7 +570,7 @@ public class BtInterface {
     }
     private class AcceptThread implements Runnable {
         private volatile boolean  willStop= false;
-        private  BluetoothServerSocket mmServerSocket;
+        private  volatile BluetoothServerSocket mmServerSocket;
         private volatile boolean isAccepting = false;
 
 
@@ -578,7 +582,7 @@ public class BtInterface {
             this.serverUUID = serverUUID;
             this.willConnectOneDevice = willConnectOneDevice;
             this.discoverable_Time_Duration = discoverable_Time_Duration;
-            createServerSocket();
+            this.mmServerSocket = createServerSocket();
         }
 
         public  boolean isRunning(){
@@ -610,7 +614,7 @@ public class BtInterface {
 
 
 
-        private void createServerSocket(){
+        private BluetoothServerSocket createServerSocket(){
             BluetoothServerSocket tmp = null;
             try {
                 // MY_UUID is the app's UUID string, also used by the client code
@@ -619,8 +623,11 @@ public class BtInterface {
                 }else {
                     tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("PluginServer", serverUUID);
                 }
-            } catch (IOException e) { }
-            this.mmServerSocket = tmp;
+            } catch (IOException e) {
+                Log.e(TAG,"Can't Create BluetoothServerSocket : ",e);
+               }
+            return tmp;
+
         }
 
         public void run() {
@@ -637,7 +644,7 @@ public class BtInterface {
                     Log.v(TAG, "Accepting Socket Failed to IOException");
                     //TODO: ADDING TOLLERANCE FOR THE TIME AVAILABLE FOR SERVER
                         if (!this.willStop) {
-                            createServerSocket();
+                            this.mmServerSocket = createServerSocket();
                             continue;
                         }else break;
                 }

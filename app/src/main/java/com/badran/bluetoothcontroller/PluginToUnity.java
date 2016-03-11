@@ -41,7 +41,7 @@ public final class PluginToUnity {
         BLUETOOTH_ON("TrBluetoothON"),
         SERVER_DISCOVERED_DEVICE("TrServerDiscoveredDevice");
 
-        public static BluetoothSocket socket;
+        public volatile static BluetoothSocket socket;
         private static final String UNITY_GAME_OBJECT_NAME = "BtConnector";
 
         private final String value;
