@@ -85,13 +85,11 @@ class BtReader {
                 return buffer.size();
         }
         public int Capacity(){
-            //TODO check if capacity is synchronized
+            //TODO check if capacity is synchronized with resize and size
                 return buffer.capacity();
         }
         public void Resize(){
-            synchronized (ReadWriteBufferKey) {
                 buffer.resize();
-            }
         }
         public boolean AddByte(byte item){
             return buffer.add(item);

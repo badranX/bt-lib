@@ -9,7 +9,7 @@ import java.util.*;
 
 public class CircularArrayList {
 
-    private volatile int n; // buffer length and it's volatile as it would be changed from a thread.
+    private int n;
 
     private final byte[] empty = new byte[0];
 
@@ -124,6 +124,7 @@ public class CircularArrayList {
             //as the last index is where the tail points out and it's empty.
             //copy all elements to the new buffer and that's it.
             System.arraycopy(buf, 0, tmp, 0, n -1  );//n-1 is the last index, and since the last index isn't included (n-1)
+            buf = tmp;
             n = tmpN;
             //the array structure is still the same , heads and marks
             return;
@@ -131,29 +132,27 @@ public class CircularArrayList {
         }else {
             int len = n - head;//From the Head (included) up to the last index(included). this is there length.
             System.arraycopy(buf, head, tmp, 0, len  );//n-1 index is included here
-            System.arraycopy(buf, 0, tmp, len, head );//head won't be included so from 0 to head -1
+            System.arraycopy(buf, 0, tmp, len, head );//head won't be included so from 0 to head -1 and in tmp
+            if(marks != null && mode == MODES.END_BYTE_PACKET) {
+                int markSize = marks.size();
+                for (int i = 0; i < markSize; i++) {
+                    int mark = marks.poll();
+                    //It's not possible that mark == head, as it would be already removed //
+                    // ( a mark marks the end of a packet head could only be a start of a packet.
+                    if (mark > head) {
+                        mark = mark - head;
+                    } else {
+                        mark = mark + len;
+                    }
 
-            int markSize = marks.size();
-            for (int i = 0 ; i < markSize ; i++) {
-                int mark = marks.poll();
-                //It's not possible that mark == head, as it would be already removed //
-                // ( a mark marks the end of a packet head could only be a start of a packet.
-                if(mark > head){
-                    mark = mark - head;
-                }else {
-                    mark = mark + len;
+                    marks.addLast(mark);
                 }
-
-                marks.addLast(mark);
             }
-
+            buf = tmp;
             head = 0;
             tail = n -1;
             n = tmpN;
         }
-
-
-
     }
 
     public   boolean add(byte e) {//returns true if packet/data available for the first time after was no packets
