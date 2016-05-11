@@ -1,6 +1,8 @@
 package com.badran.library;
 
 
+import android.util.Log;
+
 import com.badran.bluetoothcontroller.PluginToUnity;
 
 import java.util.*;
@@ -12,7 +14,6 @@ public class CircularArrayList {
     private int n;
 
     private final byte[] empty = new byte[0];
-
     private volatile int  head = 0;
     private volatile int  tail = 0;
 
@@ -30,7 +31,7 @@ public class CircularArrayList {
 
     private LinkedList<Integer> marks ;
 
-    private Byte endByte;
+    private byte endByte;
 
 
     public CircularArrayList(int capacity) {
@@ -76,6 +77,7 @@ public class CircularArrayList {
 
 
     public void setEndByte(byte byt) {
+
         if(size() <= 0) {
             marks = new LinkedList<Integer>();
 
@@ -111,11 +113,12 @@ public class CircularArrayList {
     }
 
     public void resize(){//Assumes that the buffer is full. size == capacity
-        int tmpN = (int)(n * 1.5);
+        int tmpN = (int)(n * 2);
         byte[] tmp;
-       try {
-           tmp = new byte[tmpN];
-       }catch (OutOfMemoryError e) {
+        try {
+            tmp = new byte[tmpN];
+        }catch (OutOfMemoryError e) {
+            Log.e("Unity . Plugin","Can't Take enough memory for the buffer, data is too big");
             return;
         }
 
@@ -132,14 +135,16 @@ public class CircularArrayList {
         }else {
             int len = n - head;//From the Head (included) up to the last index(included). this is there length.
             System.arraycopy(buf, head, tmp, 0, len  );//n-1 index is included here
-            System.arraycopy(buf, 0, tmp, len, head );//head won't be included so from 0 to head -1 and in tmp
-            if(marks != null && mode == MODES.END_BYTE_PACKET) {
+            //head won't be included so from 0 to head -1 and in tmp,
+            //and head - 1 is the index of tail and shouldn't be included either cause it's empty
+            System.arraycopy(buf, 0, tmp, len, head);// copy a 'head' number of indices
+            if(marks != null && mode == MODES.END_BYTE_PACKET && marks.size() > 0) {
                 int markSize = marks.size();
                 for (int i = 0; i < markSize; i++) {
                     int mark = marks.poll();
                     //It's not possible that mark == head, as it would be already removed //
                     // ( a mark marks the end of a packet head could only be a start of a packet.
-                    if (mark > head) {
+                    if (mark >= head) {
                         mark = mark - head;
                     } else {
                         mark = mark + len;
@@ -149,8 +154,9 @@ public class CircularArrayList {
                 }
             }
             buf = tmp;
+            tail = size();//previous size, as head will be 0
             head = 0;
-            tail = n -1;
+
             n = tmpN;
         }
     }
@@ -238,8 +244,28 @@ public class CircularArrayList {
         }
         head = end; // this end had excluded from copying _still hasn't been read
 
-
         return e;
+    }
+
+    //IMPORTANT :: startIndex is of the Array e not the buffer. the index where it will start assigning data in e
+    private void pollArray (byte[] e,int startIndex,int size){//Doesn't tollerate errors in inputs (size),expect to check them before calling
+
+        //same As pollArraySize() but used for packetization, so it doesn't send to unity
+
+
+        int end = wrapIndex(head + size);
+
+        if(end >= head) {
+            System.arraycopy(buf, head, e, startIndex, end  );
+
+        }else {
+            e = new byte[size];
+            int len = n - head;
+            System.arraycopy(buf, head, e, startIndex, len  );//n-1 is the actual capacity
+            System.arraycopy(buf, 0, e, startIndex + len, end);
+        }
+        head = end; // this end had excluded from copying _still hasn't been read
+
     }
 
     public byte[] pollArrayOfSize(int size, int id) {//endIndex or Size of Array
@@ -262,7 +288,7 @@ public class CircularArrayList {
 
         byte[] e = pollArray(size);
 
-        if(readAllData){
+        if(readAllData && mode != MODES.NO_PACKETIZATION){//In Case of No packetization, unity already know that data will be emptied.
             PluginToUnity.ControlMessages.EMPTIED_DATA.send(id);
         }
         return e;
@@ -286,6 +312,65 @@ public class CircularArrayList {
         return temp;
     }
 
+    public byte[] pollAllPackets(int id){
+        switch (mode){
+            case LENGTH_PACKET :
+                if(lengthPacketsCounter > 0) {
+                    if(lengthPacketsCounter == 0) return empty;
+                    int s = lengthPacketsCounter*packetSize;
+                    byte[] temp2d = new byte[s];
+
+                    pollArray(temp2d, 0, s);
+
+                    lengthPacketsCounter = 0;
+
+                    return temp2d;
+                }
+
+            case END_BYTE_PACKET:
+                if(marks.isEmpty()) return empty;
+
+                int lastIndx= marks.peek();
+                //s = size of the whole packets
+                int s = lastIndx - head + (lastIndx < head ? n : 0);
+                int numOfMarks = marks.size();
+
+                int headerSize = 4 + (numOfMarks - 1)*4;//each int cost 4 bytes, the last mark isn't useful
+                byte[] temp2d = new byte[s + headerSize];
+                IntToBytes(temp2d, 0, numOfMarks - 1);//Number of marks at the start of the array
+
+
+                if(numOfMarks > 1) {
+                    //Insert all Marks inside the Array as header
+                    Iterator<Integer> iterator = marks.iterator();
+                    int index = 4;//the first 4 used by the Num. of marks
+
+                    int reached_size = headerSize;
+
+                    if(iterator.hasNext()) iterator.next();//remove the first element as it's just the start index, we don't need to send it to unity
+
+                    while (iterator.hasNext()) {
+                        int bytTail = iterator.next();
+                        int packetSize = bytTail - head + (bytTail < head ? n : 0);
+                        IntToBytes(temp2d, index, reached_size);//every indx will contain the size from zero up to the last indx of the packet
+                        reached_size += packetSize;
+                        index += 4;
+                    }
+                }
+
+                pollArray(temp2d,headerSize, s);//Num of Marks is the first index of the actual data
+
+                return temp2d;
+
+            case NO_PACKETIZATION:
+                int size = size();
+                if(size == 0) return empty;
+                byte[] temp = pollArray(size);
+                return temp;
+        }
+        return empty;
+
+    }
     public byte[] pollPacket(int id) {
         switch (mode){
             case LENGTH_PACKET :
@@ -300,22 +385,39 @@ public class CircularArrayList {
 
             case END_BYTE_PACKET :
                 if (!marks.isEmpty()) {
+
                     int bytTail = marks.poll();
                     byte[] temp = pollArray(bytTail - head + (bytTail < head ? n : 0));//size between marks.poll and head
                     if(marks.isEmpty())
                         PluginToUnity.ControlMessages.EMPTIED_DATA.send(id);
-
                     return temp;
                 }
                 break;
             case NO_PACKETIZATION:
-                byte[] temp = pollArray(size());
+                int s = size();
+                if(s == 0) return empty;
+                byte[] temp = pollArray(s);
                 PluginToUnity.ControlMessages.EMPTIED_DATA.send(id);
                 return temp;
-
         }
         return empty;
     }
 
+    public static void main(String[] args) {
+         LinkedList<Integer> marks = new LinkedList<Integer>() ;
+            marks.add(2);
+        int x = 8979396;
 
+        System.out.println((byte)x); // Display the string.
+        System.out.println((byte)(x >>> 8)); // Display the string.
+        System.out.println((byte)(x >>> 16)); // Display the string.
+        System.out.println((byte)(x >>> 24)); // Display the string.
+    }
+
+    void IntToBytes(byte[] out, int index,int val){
+        out[index] = (byte)val;
+        out[index + 1] = (byte)(val >>> 8);
+        out[index + 2] = (byte)(val >>> 16);
+        out[index + 3] = (byte)(val >>> 24);
+    }
 }

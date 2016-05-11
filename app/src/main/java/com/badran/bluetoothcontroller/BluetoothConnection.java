@@ -1,6 +1,7 @@
 package com.badran.bluetoothcontroller;
 
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
@@ -17,8 +18,8 @@ import java.util.Map;
 
 public class BluetoothConnection {
 
-    private int id;
-    private boolean isIdAssigned = false;
+    private int id = 0;//0 means not assigned yet
+    private boolean IdAssigned = false;
 
     //control data
     private boolean WillRead = true;//== Is the unity needs this instance to read or not, it doesn't mean that it actually able to read or failed to read
@@ -32,7 +33,6 @@ public class BluetoothConnection {
 
     byte packetEndByte;
     int packetSize;
-
      BluetoothSocket socket;
 
      OutputStream outStream;
@@ -53,23 +53,33 @@ public class BluetoothConnection {
     private BluetoothDevice device;
 
      enum ConnectionMode {
-        UsingMac , UsingName, UsingBluetoothDeviceReference,UsingSocket,NotSet
+        UsingMac(0) , UsingName(1), UsingBluetoothDeviceReference(2),UsingSocket(3),NotSet(4);
+
+         private final int value;
+         private ConnectionMode(int value) {
+             this.value = value;
+         }
+
+         public int getValue() {
+             return value;
+         }
     }  ConnectionMode connectionMode= ConnectionMode.NotSet;
 
 
+    public int getConnectionMode() {
+        return connectionMode.getValue();
+    }
     //END SETUP DATA
 
     public BluetoothConnection (int id) {
         this.id = id;
-        this.isIdAssigned = true;
+        this.IdAssigned = true;
         this.SPP_UUID = UUID_SERIAL;
     }
 
     public BluetoothConnection () {
-        this.isIdAssigned = false;
+        this.IdAssigned = false;
         this.SPP_UUID = UUID_SERIAL;
-
-
     }
 
 
@@ -113,6 +123,10 @@ public class BluetoothConnection {
             return  BtReader.getInstance().ReadArray(this.id, this.readingThreadID, size);
     }
 
+    public byte[] readAllPackets(){
+        return  BtReader.getInstance().ReadAllPackets(this.id, this.readingThreadID);
+    }
+
     public void setPacketSize(int size){
         this.packetSize = size;
         this.isSizePacketized = true;
@@ -136,40 +150,119 @@ public class BluetoothConnection {
         return  BtReader.getInstance().ReadPacket(this.id, this.readingThreadID);
     }
 
+    public void normal_connect(boolean isChinese,boolean isSecure){
+        if(this.isConnected) return;
+        BtInterface.getInstance().normal_connect(this,isChinese,isSecure);
+    }
     public  void connect( int trialsNumber, int time, boolean allowPageScan) {
+        if(this.isConnected) return;
         BtInterface.getInstance().connect(this, trialsNumber, time, allowPageScan);
+    }
+
+
+
+    public void brutal_connect(int trialsNumber, int time, boolean allowPageScan){
+        if(this.isConnected) return;
+        BtInterface.getInstance().brutal_connect(this, trialsNumber, time, allowPageScan);
     }
     private void reset(){
         //This must be called when this instance will be used for a different Remote Device
         if(this.isConnected) this.close();
     }
-    void releaseResources(){
+    void releaseResources() {
         BtReader.getInstance().Close(this.id, this.readingThreadID);
-            try
-            {
-                if (this.socket != null) {
-                    this.socket.close();
-                }
+        //BtSender.getInstance().addCloseJob(this.bufferedOutputStream);
+        if (this.bufferedOutputStream != null) {
+            try {
+                this.bufferedOutputStream.flush();
+            } catch (IOException e) {
             }
-            catch (IOException e)
-            {
+
+            try {
+                this.bufferedOutputStream.close();
+            } catch (IOException e) {
+                Log.e("unity", "bufferedOutputStream closing");
                 e.printStackTrace();
             }
-        BtSender.getInstance().addCloseJob(this.bufferedOutputStream);
+            this.bufferedOutputStream = null;
+        }
+
+        if (this.outStream != null) {
+            try {
+                this.outStream.flush();
+            } catch (IOException e) {
+            }
+
+
+            try {
+
+                if (this.outStream != null) {
+                    this.outStream.close();
+                }
+            } catch (IOException e) {
+                Log.e("unity", "outStream closing");
+
+                e.printStackTrace();
+            }
+            this.outStream = null;
+        }
+
+        if (this.inputStream != null) {
+            try {
+
+                this.inputStream.close();
+
+            }catch(IOException e)
+            {
+                Log.e("unity", "inputStream closing");
+
+                e.printStackTrace();
+            }
+            this.inputStream = null;
+        }
+
+
+            int count =0;
+            while(count <3) {
+                try {
+                    if (this.socket != null) {
+                        this.socket.close();
+
+                    }
+                } catch (IOException e) {
+                    Log.e("unity","socket closing");
+
+                    e.printStackTrace();
+
+                    count++;
+                    continue;
+                }
+
+                break;
+            }
+        this.socket = null;
+
     }
 
     public void close()
     {
-        BtInterface.getInstance().OnDeviceClosing(this);
         removeSocketServer();
         releaseResources();
+        BtInterface.getInstance().OnDeviceClosing(this);
+
         this.RaiseDISCONNECTED();
     }
 
+    static void closeAll(){
+        for (Map.Entry<BluetoothDevice, BluetoothConnection> entry : map.entrySet())
+        {
+            entry.getValue().close();
+        }
+    }
 
     public void setID(int id){
         this.id = id;
-        this.isIdAssigned = true;
+        this.IdAssigned = true;
     }
 
     public int getID(){
@@ -182,18 +275,31 @@ public class BluetoothConnection {
     }
 
     public void setMac (String mac){
+        if(BluetoothAdapter.checkBluetoothAddress(mac)){
+            BluetoothDevice dev = BtInterface.getInstance().mBluetoothAdapter.getRemoteDevice(mac);
+            this.setDevice(dev);
+        }else {
+            this.mac = mac;
+            this.connectionMode = ConnectionMode.UsingMac;
+        }
+
         reset();
+
         if(this.isConnected)this.close();
-        this.connectionMode = ConnectionMode.UsingMac;
-        this.mac = mac;
+
+
     }
 
     public void setName (String name){//return data from the founded device
+        this.name = name;
+        this.connectionMode = ConnectionMode.UsingName;
         reset();
         if(this.isConnected)this.close();
-        this.connectionMode = ConnectionMode.UsingName;
-        this.name = name;
+
+
     }
+
+
 
     public String getName (){//return data from the founded device
         BluetoothDevice d = this.getDevice();
@@ -224,16 +330,40 @@ public class BluetoothConnection {
         }
         return this.name;
     }
+    boolean isBufferDynamic = true;
+    int bufferSize = 1024;
 
-
+    public void setBufferSize(int size){
+        if(size <= 0) {
+            throw new IllegalArgumentException("buffer is equal or less than zero");
+        }
+        this.isBufferDynamic = false;
+        this.bufferSize = size;
+    }
 
     public void sendBytes(byte[] msg) {
         if(this.socket != null && this.bufferedOutputStream != null)
             BtSender.getInstance().addJob(this.bufferedOutputStream, msg,this);
 
     }
+    public void sendBytes_Blocking(byte[] msg,BluetoothConnection btConnection){
+        try
+        {
+            if (btConnection.bufferedOutputStream != null)
+            {
+                btConnection.bufferedOutputStream.write(msg);
+                btConnection.bufferedOutputStream.flush();
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
 
-     void initializeStreams() {
+    }
+
+
+    void initializeStreams() {
         if (this.WillRead) {
             try {
                 this.inputStream = this.socket.getInputStream();
@@ -263,15 +393,29 @@ public class BluetoothConnection {
 
 
     }
+    public boolean startDiscovery (){
+        return BtInterface.getInstance().startDiscovery();
+    }
+
+    public void instanceRemoved() {
+        if(map.containsKey(this)) {
+             map.remove(this);
+        }
+
+        if(mapAddress.containsKey(this.getAddress())){
+            mapAddress.remove(this.getAddress());
+        }
+        this.close();
+    }
 
 
     //SETUP DATA
-
     static BluetoothConnection getInstFromDevice(BluetoothDevice device){
-        if(map.containsKey(device))
+        if(map.containsKey(device)) {
             return map.get(device);
+        }
         if(mapAddress.containsKey(device.getAddress())){
-            return map.get(device.getAddress());
+            return mapAddress.get(device.getAddress());
         }
         return null;
     }
@@ -301,15 +445,29 @@ public class BluetoothConnection {
         //a device reference already there since the server found the remote device
         //No need to change connection mode in unity since it's only needed here, and the old connection mode won't be commited, because it's not going to change there
         if(this.connectionMode == ConnectionMode.UsingSocket) this.connectionMode = ConnectionMode.UsingBluetoothDeviceReference;
+
+
     }
 
-    void RaiseCONNECTED(){
+
+    //TODO SYNCHRONIZATION BETWEEN RaiseCONNECTED/RaiseDISCONNECTED RESEARCH
+    synchronized void RaiseCONNECTED() {
+        if (!this.isConnected){
+            PluginToUnity.ControlMessages.CONNECTED.send(this.getID());
+        }
         this.isConnected = true;
-        PluginToUnity.ControlMessages.CONNECTED.send(this.getID());
     }
-    void RaiseDISCONNECTED(){
+
+    synchronized void RaiseDISCONNECTED(){
+
+
+        //TODO don't disconnect non connected yet device
+        if(this.isConnected) {
+
+            this.removeSocketServer();//TODO RESEARCH //To allow it to try a newer socket when it try to connect again
+            PluginToUnity.ControlMessages.DISCONNECTED.send(this.getID());
+        }
         this.isConnected = false;
-        PluginToUnity.ControlMessages.DISCONNECTED.send(this.getID());
     }
     void RaiseNOT_FOUND(){
         PluginToUnity.ControlMessages.NOT_FOUND.send(this.getID());
@@ -321,8 +479,10 @@ public class BluetoothConnection {
         PluginToUnity.ControlMessages.SENDING_ERROR.send(this.getID());
     }
     void RaiseDISCOVERY_STARTED() {
-
     }
     //TODO add BtReader Raising Functionality
 }
+
+
+
 

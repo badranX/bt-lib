@@ -4,9 +4,11 @@ package com.badran.bluetoothcontroller;
  * 
  */
 
+import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -23,7 +25,6 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.util.Log;
 
-
 import com.unity3d.player.UnityPlayer;
 
 import android.content.BroadcastReceiver;
@@ -35,55 +36,47 @@ import android.util.SparseArray;
 public class BtInterface {
     private final String CREATE_RFcomm_Socket = "createRfcommSocket";
     private final String CREATE_INSECURE_RFcomm_Socket = "createInsecureRfcommSocket";
-    private BluetoothAdapter mBluetoothAdapter;
+    BluetoothAdapter mBluetoothAdapter;
 
     private ServerReceiver serverReceiver;
     private DeviceDiscoveryReceiver deviceDiscoveryReceiver;
+    private RSSI_DiscoveryReceiver rssi_DiscoveryReceiver;
     private volatile boolean isConnecting = false;
 
     private ConnectionTrial btConnectionForDiscovery;
 
     private class ConnectionTrial {
-        final BluetoothConnection btConnection;
         final int trialsCount;
         final int time;
         final UUID uuid;
-        final BluetoothDevice device;
         private boolean willStop = false;
-        boolean isNeedDiscovery;
+        boolean isNeedDiscovery = false;
+        final boolean isBrutalConnection;
+        final BluetoothDevice device;
 
+        final BluetoothConnection btConnection;
         void stopConnecting(){
             this.willStop = true;
         }
         boolean isWillStop(){ return this.willStop;}
 
-        public ConnectionTrial(BluetoothConnection btConnection, int trialsCount, int time) {
-            this.btConnection = btConnection;
+        public ConnectionTrial(BluetoothConnection btConnection, int trialsCount, int time,boolean isBrutalConnection) {
             this.trialsCount = trialsCount;
-            this.isNeedDiscovery = false;
             this.time = time;
-            this.device = btConnection.getDevice();
             this.uuid = UUID.fromString(btConnection.getUUID());
-        }
-
-        public ConnectionTrial(BluetoothConnection btConnection, int trialsCount, int time ,boolean isNeedDiscovery) {
             this.btConnection = btConnection;
-            this.trialsCount = trialsCount;
-            this.isNeedDiscovery = isNeedDiscovery;
-            this.time = time;
             this.device = btConnection.getDevice();
-            this.uuid = UUID.fromString(btConnection.getUUID());
+            this.isBrutalConnection = isBrutalConnection;
         }
-
     }
 
     Queue<ConnectionTrial> btConnectionsQueue = new LinkedList<ConnectionTrial>();
-    SparseArray<LinkedList<ConnectionTrial>> sparseTrials = new SparseArray<LinkedList<ConnectionTrial>>();
+    SparseArray<Queue<ConnectionTrial>> sparseTrials = new SparseArray<Queue<ConnectionTrial>>();
 
     private Object ConnectThreadLock = new Object();
 
     private final String TAG = "PLUGIN . UNITY";
-
+    private final String NAME_SPD = "com.badran.bluetoothcontroller.SPD";
     private static BtInterface instance = null;
     private static BtInterface ConnectThreadInstance = null;
 
@@ -91,21 +84,19 @@ public class BtInterface {
     protected BtInterface() {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+        //IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
 
         IntentFilter filter2 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
         IntentFilter filter3 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        IntentFilter filter4 = new IntentFilter(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        IntentFilter filter5 = new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+        //IntentFilter filter5 = new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
 
 
 
 
-        UnityPlayer.currentActivity.registerReceiver(mReceiver, filter1);
+        //UnityPlayer.currentActivity.registerReceiver(mReceiver, filter1);
         UnityPlayer.currentActivity.registerReceiver(mReceiver, filter2);
         UnityPlayer.currentActivity.registerReceiver(mReceiver, filter3);
-        UnityPlayer.currentActivity.registerReceiver(mReceiver, filter4);
-        UnityPlayer.currentActivity.registerReceiver(mReceiver, filter5);
+        //UnityPlayer.currentActivity.registerReceiver(mReceiver, filter5);
 
 
         // Exists only to defeat instantiation.
@@ -141,10 +132,7 @@ public class BtInterface {
         return instance;
     }
 
-
-    public void connect(BluetoothConnection btConnection, int trialsCount , int time, boolean allowPageScan) {
-
-        if(btConnection.isConnected) return;
+    public void brutal_connect(BluetoothConnection btConnection, int trialsCount , int time, boolean allowPageScan) {
         boolean deviceIsAvailable = false;
         boolean socketIsAvailable = false;
         if(btConnection.connectionMode == BluetoothConnection.ConnectionMode.UsingSocket){
@@ -160,23 +148,97 @@ public class BtInterface {
             deviceIsAvailable = findBluetoothDevice(btConnection);
             //Trying to connect a NAME OR MAC ::: NOT SERVER :::
         }
+
         if(socketIsAvailable) {
             //Connected should be broadcasts before initializing streams
             btConnection.RaiseCONNECTED();
-             PluginToUnity.ControlMessages.CONNECTED.send(btConnection.getID());
+
 
             btConnection.initializeStreams();
         }else if (deviceIsAvailable ) {
             //Found Device
-            addConnectionTrial(new ConnectionTrial(btConnection, trialsCount, time));
+            ConnectionTrial trial = new ConnectionTrial(btConnection, trialsCount, time,true);//true for isBrutalConnection
+            trial.isNeedDiscovery = false;
+            addConnectionTrial(trial);
+        } else if(allowPageScan) {
+            //Device Not found and will try to Query Devices
+            ConnectionTrial trial = new ConnectionTrial(btConnection, trialsCount,time,true);//true for isBrutalConnection
+            trial.isNeedDiscovery = true;
+            addConnectionTrial(trial);
+        } else {
+            btConnection.RaiseNOT_FOUND();
+        }
 
+
+    }
+    public void normal_connect(BluetoothConnection btConnection,boolean isChinese,boolean isSecure){
+        boolean deviceIsAvailable = false;
+        boolean socketIsAvailable = false;
+        if(btConnection.connectionMode == BluetoothConnection.ConnectionMode.UsingSocket){
+
+            //Trying to connect a ready Socket ::: SERVER :::
+            socketIsAvailable = true;
+
+        }else if (btConnection.connectionMode == BluetoothConnection.ConnectionMode.UsingBluetoothDeviceReference) {
+            deviceIsAvailable = true;
+            //Trying to connect a DEVICE ::: NOT SERVER :::
+        }else {
+            deviceIsAvailable = findBluetoothDevice(btConnection);
+            //Trying to connect a NAME OR MAC ::: NOT SERVER :::
+        }
+
+        if(socketIsAvailable) {
+            //Connected should be broadcasts before initializing streams
+            btConnection.RaiseCONNECTED();
+            btConnection.initializeStreams();
+        }else if (deviceIsAvailable ) {
+            UUID uuid = UUID.fromString(btConnection.getUUID());
+
+            NormalConnectThread NCT = new NormalConnectThread(btConnection,uuid,isChinese,isSecure);
+            NCT.start();
+        } else {
+            btConnection.RaiseNOT_FOUND();
+        }
+
+    }
+    public void connect(BluetoothConnection btConnection, int trialsCount , int time, boolean allowPageScan) {
+
+
+        boolean deviceIsAvailable = false;
+        boolean socketIsAvailable = false;
+        if(btConnection.connectionMode == BluetoothConnection.ConnectionMode.UsingSocket){
+
+            //Trying to connect a ready Socket ::: SERVER :::
+            socketIsAvailable = true;
+
+        }else if (btConnection.connectionMode == BluetoothConnection.ConnectionMode.UsingBluetoothDeviceReference) {
+            deviceIsAvailable = true;
+            //Trying to connect a DEVICE ::: NOT SERVER :::
+        }else {
+            deviceIsAvailable = findBluetoothDevice(btConnection);
+            //Trying to connect a NAME OR MAC ::: NOT SERVER :::
+        }
+
+        if(socketIsAvailable) {
+            //Connected should be broadcasts before initializing streams
+            btConnection.RaiseCONNECTED();
+            btConnection.initializeStreams();
+        }else if (deviceIsAvailable ) {
+            //Found Device
+            ConnectionTrial trial = new ConnectionTrial(btConnection, trialsCount, time,false);//false for isBrutalConnection
+            trial.isNeedDiscovery = false;
+
+            addConnectionTrial(trial);
 
         } else if(allowPageScan) {
             //Device Not found and will try to Query Devices
-            addConnectionTrial(new ConnectionTrial(btConnection, trialsCount,time,true));
+            ConnectionTrial trial = new ConnectionTrial(btConnection, trialsCount,time,false);//false for isBrutalConnection
+            trial.isNeedDiscovery = true;
+            addConnectionTrial(trial);
         } else {
-            btConnection.RaiseMODULE_OFF();
+            btConnection.RaiseNOT_FOUND();
         }
+
     }
 
     private void addConnectionTrial(ConnectionTrial connectionTrial) {
@@ -185,13 +247,13 @@ public class BtInterface {
 
             btConnectionsQueue.add(connectionTrial);
             int id = connectionTrial.btConnection.getID();
-            LinkedList<ConnectionTrial> conList =  sparseTrials.get(id);
+
+            Queue<ConnectionTrial> conList =  sparseTrials.get(id);
             if(conList  == null) {
                 conList = new LinkedList<ConnectionTrial>();
                 conList.add(connectionTrial);
                 sparseTrials.put(id,conList);
             }else {
-                conList = new LinkedList<ConnectionTrial>();
                 conList.add(connectionTrial);
             }
             if (!isConnecting) {
@@ -211,9 +273,22 @@ public class BtInterface {
 
         boolean useMac = setupData.connectionMode == BluetoothConnection.ConnectionMode.UsingMac;
         for (BluetoothDevice pairedDevice : setPairedDevices) {
-
             if (useMac)
                 foundModule = pairedDevice.getAddress().equals(setupData.mac);
+            else
+                foundModule = pairedDevice.getName().equals(setupData.name);
+
+                if (foundModule) {
+                    setupData.connectionMode = BluetoothConnection.ConnectionMode.UsingBluetoothDeviceReference;
+                    setupData.setDevice(pairedDevice);
+                    break;
+                }
+        }
+
+        if(!foundModule && AlreadyFoundDevices != null){
+            for (BluetoothDevice pairedDevice : AlreadyFoundDevices) {
+                if (useMac)
+                    foundModule = pairedDevice.getAddress().equals(setupData.mac);
                 else
                     foundModule = pairedDevice.getName().equals(setupData.name);
 
@@ -223,6 +298,8 @@ public class BtInterface {
                     break;
                 }
             }
+        }
+
             setPairedDevices = null;
 
         return foundModule;
@@ -241,6 +318,13 @@ public class BtInterface {
                 }
                 else if(scan_mode == BluetoothAdapter.SCAN_MODE_NONE || scan_mode == BluetoothAdapter.SCAN_MODE_CONNECTABLE){
                         BtInterface.getInstance().abortServer();
+                        if(serverReceiver != null) {
+                            try {
+                                UnityPlayer.currentActivity.unregisterReceiver(serverReceiver);
+                            } catch (IllegalArgumentException e) {
+                                //ignore
+                            }
+                        }
                 }
             }
         }
@@ -251,40 +335,58 @@ public class BtInterface {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                if (btConnectionForDiscovery != null) {
-                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    if(device == null) return;
 
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if(device == null) return;
+
+                if(!mBluetoothAdapter.getBondedDevices().contains(device)) {
+                    if(AlreadyFoundDevices == null) AlreadyFoundDevices = new HashSet<BluetoothDevice>();
+                    AlreadyFoundDevices.add(device);
+                }
+
+                //The next is for connecting to unpaired device, that has the instance btConnectionForDiscovery
+                if (btConnectionForDiscovery != null) {
                     BluetoothConnection setupData = btConnectionForDiscovery.btConnection;
                     boolean foundIt = false;
-                    if (setupData.connectionMode == BluetoothConnection.ConnectionMode.UsingMac && setupData.mac != null && setupData.mac.equals(device.getAddress()))
-                        {
-                            setupData.setDevice(device);
-                            foundIt = true;
-                        }
-                    if (setupData.connectionMode == BluetoothConnection.ConnectionMode.UsingName && setupData.name != null && setupData.name.equals(device.getName()))
-                    {
-                        setupData.setDevice(device);
-                        foundIt = true;
+                    switch(setupData.connectionMode){
+                        case UsingMac:
+                            if(setupData.mac != null &&
+                              setupData.mac.equals(device.getAddress())){
+                                foundIt = true;
+                            }
+                            break;
+                        case UsingName:
+                            if(setupData.name != null &&
+                                    setupData.name.equals(device.getName())){
+                                foundIt = true;
+                            }
+                            break;
+
                     }
 
                     if (foundIt) {
+
+                        setupData.setDevice(device);
                         setupData.connectionMode = BluetoothConnection.ConnectionMode.UsingBluetoothDeviceReference;
                         synchronized (ConnectThreadLock) {
                             btConnectionForDiscovery.isNeedDiscovery = false;
-                            btConnectionsQueue.add(btConnectionForDiscovery);
                             btConnectionForDiscovery = null;
                             (new Thread(new ConnectThread())).start();
                         }
                         //Start the thread again
                     }
-
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 synchronized (ConnectThreadLock) {
                         //finished discovery so we need to check if the connection thread needs to continue
-                        if (btConnectionsQueue.size() > 0 && btConnectionForDiscovery != null) {
+                        //No need for synchronization as while this reciever is registered and discovering the thread is off
+                        if ( btConnectionForDiscovery  != null && btConnectionsQueue.size() > 0 ) {
+
                             btConnectionForDiscovery.btConnection.RaiseMODULE_OFF();
+
+                            synchronized (ConnectThreadLock) {
+                                btConnectionsQueue.poll();//so it doesn't try to connect to it when it starts again
+                            }
                             btConnectionForDiscovery = null;
                             (new Thread(new ConnectThread())).start();
                         }else if (btConnectionForDiscovery != null) {
@@ -292,43 +394,111 @@ public class BtInterface {
                             isConnecting = false;
                         }
                 }
-                try {
-                    UnityPlayer.currentActivity.unregisterReceiver(this);
-                }catch (IllegalArgumentException e){
-                    //ignore
+                if(deviceDiscoveryReceiver != null) {
+                    try {
+                        UnityPlayer.currentActivity.unregisterReceiver(deviceDiscoveryReceiver);
+                    } catch (IllegalArgumentException e) {
+                        //ignore
+                    }
                 }
             }
         }
     }
 
+    Set<BluetoothDevice> AlreadyFoundDevices;
 
+    public class RSSI_DiscoveryReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if(device == null) return;
+                short rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
+
+//                BluetoothConnection bt = BluetoothConnection.getInstFromDevice(device);
+//                if(bt != null){
+//                   bt.setRSSI(rssi);
+//                }
+//                bt = null;// no need for it.
+
+                if(!mBluetoothAdapter.getBondedDevices().contains(device)) {
+                    if(AlreadyFoundDevices == null) AlreadyFoundDevices = new HashSet<BluetoothDevice>();
+                    AlreadyFoundDevices.add(device);
+                }
+
+                PluginToUnity.ControlMessages.DISCOVERED_DEVICE.send(device.getName(),device.getAddress(),Short.toString(rssi));
+
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+
+                if(deviceDiscoveryReceiver != null) {
+                    try {
+                        UnityPlayer.currentActivity.unregisterReceiver(rssi_DiscoveryReceiver);
+                    } catch (IllegalArgumentException e) {
+                        //ignore
+                    }
+                }
+            }
+        }
+    }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+
             String action = intent.getAction();
-            if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
-                //TODO: we don't need this yet, but might use it in the future
-            }
+            //NO need for checking for connection
+//            if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+//
+//                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+//                    BluetoothConnection tmpBt;
+//
+//                    Log.v(TAG, "device Cnnected ::::::: " + device.getName());
+//
+//                    if ((tmpBt = BluetoothConnection.getInstFromDevice(device)) != null) {
+//                        synchronized (ConnectThreadLock) {
+//                            if(!tmpBt.isConnected && sparseTrials.get(tmpBt.getID()) == null){
+//                                tmpBt.RaiseCONNECTED();
+//                            }
+//                        }
+//
+//                    }
+//
+//            }
+//
+//        else
+            if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
 
-        else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
-                //TODO: we don't need this yet, but might use it in the future
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    BluetoothConnection tmpBt;
 
-                Log.v(TAG, "device ask for CLOSING ::::::: " + device.getName());
 
-            } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                BluetoothConnection tmpBt;
-                Log.v(TAG, "device CLOSING ::::::: " + device.getName());
+                    if ((tmpBt = BluetoothConnection.getInstFromDevice(device)) != null) {
 
-                    if((tmpBt = BluetoothConnection.getInstFromDevice(device)) != null) {
-                        tmpBt.removeSocketServer();
-                        tmpBt.RaiseDISCONNECTED();
+                        synchronized (ConnectThreadLock) {
+                            if(tmpBt.isConnected && sparseTrials.get(tmpBt.getID()) == null ){
+                                tmpBt.close();
+                            }
+                        }
+
                     }
 
-            }else if (BluetoothAdapter.ACTION_REQUEST_ENABLE.equals(action)) {
-                //TODO: we don't need this yet, but might use it in the future
+
+            } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
+
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                BluetoothConnection tmpBt;
+
+                //sparseTrials.get(tmpBt.getID()) == null//means that device isn't trying to connect, there's no attempts
+                    if((tmpBt = BluetoothConnection.getInstFromDevice(device)) != null) {
+                        synchronized (ConnectThreadLock) {
+                            if(tmpBt.isConnected && (sparseTrials.get(tmpBt.getID()) == null )){
+                                tmpBt.close();
+                            }
+                        }
+                    }
+
             }
         }
     };
@@ -337,7 +507,7 @@ public class BtInterface {
     void OnDeviceClosing (BluetoothConnection con) {
 
         synchronized (ConnectThreadLock) {
-            LinkedList<ConnectionTrial> list = sparseTrials.get(con.getID());
+            Queue<ConnectionTrial> list = sparseTrials.get(con.getID());
             if(list != null){
                 for(ConnectionTrial c : list){
                     c.stopConnecting();
@@ -346,15 +516,25 @@ public class BtInterface {
             }
 
             //Close Discovery for a device that has been closed
-            if (mBluetoothAdapter.isDiscovering() && con == this.btConnectionForDiscovery.btConnection ) {
+            if (mBluetoothAdapter.isDiscovering() && this.btConnectionForDiscovery != null && con.equals(this.btConnectionForDiscovery.btConnection) ) {
                 //finished discovery so we need to check if the connection thread needs to continue
-                if (btConnectionsQueue.size() > 0 && btConnectionForDiscovery != null) {
+                boolean isNeedToContinueConection = false;
+                synchronized (ConnectThreadLock) {
+                    ConnectionTrial tmpCon = btConnectionsQueue.peek();
+                    if(con.equals(tmpCon)){
+                        btConnectionsQueue.poll();
+                    }
+                    isNeedToContinueConection = btConnectionsQueue.size() > 0;
+                }
+
+                if (isNeedToContinueConection) {
                     btConnectionForDiscovery = null;
-                    (new Thread(new ConnectThread())).start();
-                } else if (btConnectionForDiscovery != null) {
+                    new ConnectThread().start();
+                } else {
                     btConnectionForDiscovery = null;
                     isConnecting = false;
                 }
+
                 try {
                     if(deviceDiscoveryReceiver != null)
                         UnityPlayer.currentActivity.unregisterReceiver(deviceDiscoveryReceiver);
@@ -362,10 +542,12 @@ public class BtInterface {
                     //Ignore
                 }
                 mBluetoothAdapter.cancelDiscovery();
+            }else if (this.btConnectionForDiscovery != null && con.equals(this.btConnectionForDiscovery.btConnection)){
+                this.btConnectionForDiscovery = null;
             }
         }
     }
-    private void startDiscoveryForConnection(ConnectionTrial btConnectionTrial){
+    private boolean startDiscoveryForConnection(ConnectionTrial btConnectionTrial){
         this.btConnectionForDiscovery = btConnectionTrial;
 
         if(deviceDiscoveryReceiver == null) deviceDiscoveryReceiver = new DeviceDiscoveryReceiver();
@@ -375,42 +557,138 @@ public class BtInterface {
 
         UnityPlayer.currentActivity.registerReceiver(deviceDiscoveryReceiver,action_found);
         UnityPlayer.currentActivity.registerReceiver(deviceDiscoveryReceiver,action_finished);
+
+        //TODO check if canceling the discovery is important
         if (mBluetoothAdapter.isDiscovering()) {
             mBluetoothAdapter.cancelDiscovery();
         }
-        mBluetoothAdapter.startDiscovery();
+        return mBluetoothAdapter.startDiscovery();
     }
-    private class ConnectThread implements Runnable {
 
-        private BluetoothSocket createSocket(boolean isChineseMobile, ConnectionTrial conAttempt) {//this method returns TRUE if Socket != null
-                //Found Device and trying to create socket
-                BluetoothSocket tmpSocket = null;
+    boolean startDiscovery(){
 
+        if(rssi_DiscoveryReceiver == null) rssi_DiscoveryReceiver = new RSSI_DiscoveryReceiver();
+
+        IntentFilter action_found = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        IntentFilter action_finished = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+
+        UnityPlayer.currentActivity.registerReceiver(rssi_DiscoveryReceiver,action_found);
+        UnityPlayer.currentActivity.registerReceiver(rssi_DiscoveryReceiver,action_finished);
+
+        //TODO check if canceling the discovery is important
+        if (mBluetoothAdapter.isDiscovering()) {
+            mBluetoothAdapter.cancelDiscovery();
+        }
+
+        return mBluetoothAdapter.startDiscovery();
+    }
+
+    private class NormalConnectThread extends Thread {
+        private final BluetoothSocket mmSocket;
+        private final BluetoothConnection btConnection;
+        public NormalConnectThread(BluetoothConnection btConnection,UUID MY_UUID,boolean isChinese,boolean isSecure) {
+            // Use a temporary object that is later assigned to mmSocket,
+            // because mmSocket is final
+            BluetoothSocket tmp = null;
+            BluetoothDevice device = btConnection.getDevice();
+
+            try {
+            if(isChinese){
+                Method m;
                 try {
+                    if(isSecure) {
+                        m = device.getClass().getMethod(CREATE_RFcomm_Socket, new Class[]{int.class});
+                    }else {
+                        m = device.getClass().getMethod(CREATE_INSECURE_RFcomm_Socket, new Class[]{int.class});
+                    }
+                    tmp = (BluetoothSocket) m.invoke(device, 1);
+                } catch (Exception e) {
+                    Log.v(TAG, e.getMessage());
+                    Log.v(TAG,"problem create socket,createChinese");
 
-                    if (isChineseMobile) {
-
-                        Method m;
-                        try {
-                            m = conAttempt.device.getClass().getMethod(CREATE_INSECURE_RFcomm_Socket, new Class[]{int.class});
-                            tmpSocket = (BluetoothSocket) m.invoke(conAttempt.device, 1);
-                        } catch (Exception e) {
-                            Log.v(TAG, e.getMessage());
-                        }
-                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-                        tmpSocket = Level10.getInstance().createRfcommSocket(conAttempt.device, conAttempt.uuid);
-
-                    } else
-                        tmpSocket = conAttempt.device.createRfcommSocketToServiceRecord(conAttempt.uuid);//for API 9
-                } catch (IOException mainError) {
-                    Log.v(TAG, mainError.getMessage());
                 }
 
-                return tmpSocket;
+            }
+            else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1 && !isSecure) {
+                tmp = device.createInsecureRfcommSocketToServiceRecord(MY_UUID);
+            } else {
+                tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
+            }
 
+            } catch (IOException e) {
+                Log.v(TAG,e.getMessage());
+                Log.v(TAG,"problem create socket,createRfcommSocketToServiceRecord");
+            }
+            this.mmSocket = tmp;
+            this.btConnection = btConnection;
+        }
+
+        public void run() {
+            Log.v(TAG,"Started running connecting");
+            // Cancel discovery because it will slow down the connection
+            mBluetoothAdapter.cancelDiscovery();
+
+            try {
+                // Connect the device through the socket. This will block
+                // until it succeeds or throws an exception
+                mmSocket.connect();
+            } catch (IOException connectException) {
+                Log.v(TAG,connectException.getMessage());
+                Log.v(TAG,"problem cwhile connecting");
+                // Unable to connect; close the socket and get out
+                try {
+                    mmSocket.close();
+                } catch (IOException closeException) {
+                    Log.v(TAG,closeException.getMessage());
+                    Log.v(TAG,"problem closing");
+                }
+                return;
+            }
+
+            // Do work to manage the connection (in a separate thread)
+            btConnection.setSucket(mmSocket);
+            btConnection.RaiseCONNECTED();
+            btConnection.initializeStreams();
         }
 
 
+        /** Will cancel an in-progress connection, and close the socket */
+        public void cancel() {
+            try {
+                mmSocket.close();
+            } catch (IOException e) { }
+        }
+    }
+    private class ConnectThread extends Thread {
+        //int reflexCounter = 1;
+
+        BluetoothSocket createSocket(boolean isChineseMobile, ConnectionTrial conAttempt) {//this method returns TRUE if Socket != null
+            //Found Device and trying to create socket
+            BluetoothSocket tmpSocket = null;
+
+            try {
+
+                if (isChineseMobile) {
+
+                    Method m;
+                    try {
+                        m = conAttempt.device.getClass().getMethod(CREATE_INSECURE_RFcomm_Socket, new Class[]{int.class});
+                        tmpSocket = (BluetoothSocket) m.invoke(conAttempt.device, 1);
+                    } catch (Exception e) {
+                        Log.v(TAG, e.getMessage());
+                    }
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+                    tmpSocket = Level10.getInstance().createRfcommSocket(conAttempt.device, conAttempt.uuid);
+
+                } else
+                    tmpSocket = conAttempt.device.createRfcommSocketToServiceRecord(conAttempt.uuid);//for API 9
+            } catch (IOException mainError) {
+                Log.v(TAG, mainError.getMessage());
+            }
+
+            return tmpSocket;
+
+        }
 
 
         public void run() {
@@ -469,20 +747,20 @@ public class BtInterface {
 
 
 
-                            synchronized (ConnectThreadLock){
-                                if(conAttempt.isWillStop()) {
-                                    try {
-                                        socket.close();
-                                    }catch (IOException ioE){
-                                        //ignore
-                                    }
-                                    //Considered success and break. it's success because the user has closed it.
-                                    break;
+                        synchronized (ConnectThreadLock){
+                            if(conAttempt.isWillStop()) {
+                                try {
+                                    socket.close();
+                                }catch (IOException ioE){
+                                    //ignore
                                 }
-                                if(success) {
-                                    conAttempt.btConnection.setSucket(socket);
-                                }
+                                //Considered success and break. it's success because the user has closed it.
+                                break;
                             }
+                            if(success) {
+                                conAttempt.btConnection.setSucket(socket);
+                            }
+                        }
 
                         if(success){
                             conAttempt.btConnection.RaiseCONNECTED();
@@ -538,17 +816,22 @@ public class BtInterface {
                 acceptThread = new AcceptThread(UUID.fromString(serverUUID), time, willConnectOneDevice);
             }
         }
-            IntentFilter filter_scan_mode = new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
-            if(serverReceiver == null) serverReceiver = new ServerReceiver();
-            UnityPlayer.currentActivity.registerReceiver(serverReceiver, filter_scan_mode);
+        IntentFilter filter_scan_mode = new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+        if(serverReceiver == null) serverReceiver = new ServerReceiver();
+        UnityPlayer.currentActivity.registerReceiver(serverReceiver, filter_scan_mode);
 
 
-            Intent discoverableIntent = new
-                    Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,time);
-            UnityPlayer.currentActivity.startActivity(discoverableIntent);
+        makeDiscoverable(time);
 
     }
+
+    void makeDiscoverable(int time){
+        Intent discoverableIntent = new
+                Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,time);
+        UnityPlayer.currentActivity.startActivity(discoverableIntent);
+    }
+
     private void startServer(){//Shouldn't be called while server running, abort first
         synchronized (acceptThreadLock) {
             if (acceptThread != null) (new Thread(acceptThread)).start();
@@ -633,18 +916,18 @@ public class BtInterface {
         public void run() {
             isAccepting = true;
             BluetoothSocket socket = null;
+            int tolleranceCounter = 0;
             // Keep listening until exception occurs or a socket is returned
             while ( true) {
                 try {
-                    Log.v("unity","ACCEPTING");
                         if (mmServerSocket != null) socket = mmServerSocket.accept(this.discoverable_Time_Duration*1000);
                 } catch (IOException e) {
 
                     e.printStackTrace();
-                    Log.v(TAG, "Accepting Socket Failed to IOException");
                     //TODO: ADDING TOLLERANCE FOR THE TIME AVAILABLE FOR SERVER
-                        if (!this.willStop) {
+                        if (!this.willStop && tolleranceCounter <3) {
                             this.mmServerSocket = createServerSocket();
+                            tolleranceCounter++;
                             continue;
                         }else break;
                 }
@@ -684,7 +967,7 @@ public class BtInterface {
             }
         }
         private void manageConnectedSocket(BluetoothSocket socket){
-            PluginToUnity.ControlMessages.socket = socket;//Saving it to pick it by unity
+            PluginToUnity.socket = socket;//Saving it to pick it by unity
             PluginToUnity.ControlMessages.SERVER_DISCOVERED_DEVICE.send();
         }
     }

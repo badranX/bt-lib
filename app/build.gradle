@@ -1,11 +1,19 @@
 apply plugin: 'com.android.library'
 android {
-    compileSdkVersion 20
-    buildToolsVersion "22.0.1"
+
+    buildToolsVersion "23.0.3"
+    compileSdkVersion 21;
+    //buildToolsVersion "24.0.0 rc3"
+    //buildToolsVersion "19.1.0";
 
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 19
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 
     buildTypes {
@@ -14,27 +22,21 @@ android {
             proguardFiles  'proguard-rules.txt'
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_6
-        targetCompatibility JavaVersion.VERSION_1_6
-    }
 }
 
 dependencies {
 
         provided files('libs/classes.jar')
-
-
 }
 
 
 //def UnityProjectPath = '/Users/a/DEV'
 //def UnityProjectPath = '/Users/a/Delete/Assets/Plugins/Android'
 //def UnityProjectPath = '/Users/a/Desktop/Main Terminal/Assets/Plugins/Android'
-//def UnityProjectPath = '/Users/hunter/DEV/Unity/BtLibrary/Assets/Plugins/Android'
-def UnityProjectPath = 'C:\\Users\\hp\\Documents\\New Unity Project 5\\Assets\\Plugins\\Android'
-def comndStr = 'C:\\Python27\\python.exe'
-//def  comndStr = 'python'
+def UnityProjectPath = '/Users/hunter/DEV/Unity/BtLib2/Assets/Plugins/Android'
+//def UnityProjectPath = 'C:\\Users\\hp\\Documents\\New Unity Project 5\\Assets\\Plugins\\Android'
+//def comndStr = 'C:\\Python27\\python.exe'
+def  comndStr = 'python'
 //def pythonFile = 'C:\\Users\\hp\\Desktop\\ASunity.py'
 def pythonFile = getProjectDir().toString() + "/ASunity.py";
 

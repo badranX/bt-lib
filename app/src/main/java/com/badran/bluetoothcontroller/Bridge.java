@@ -88,7 +88,7 @@ public class Bridge {
                         PluginToUnity.ControlMessages.BLUETOOTH_OFF.send();
                         break;
                     case BluetoothAdapter.STATE_TURNING_OFF:
-
+                        BluetoothConnection.closeAll();
                         break;
                     case BluetoothAdapter.STATE_ON:
                         PluginToUnity.ControlMessages.BLUETOOTH_ON.send();
@@ -128,9 +128,10 @@ public class Bridge {
     BluetoothDevicePickerReceiver mBluetoothPickerReceiver;
     public  void showDevices () {
         if(mBluetoothPickerReceiver == null) mBluetoothPickerReceiver = new BluetoothDevicePickerReceiver();
-        IntentFilter deviceSelectedFilter = new IntentFilter();
-        deviceSelectedFilter.addAction(BluetoothDevicePicker.ACTION_DEVICE_SELECTED);
-        UnityPlayer.currentActivity.registerReceiver(mBluetoothPickerReceiver, deviceSelectedFilter);
+            IntentFilter deviceSelectedFilter = new IntentFilter();
+            deviceSelectedFilter.addAction(BluetoothDevicePicker.ACTION_DEVICE_SELECTED);
+            UnityPlayer.currentActivity.registerReceiver(mBluetoothPickerReceiver, deviceSelectedFilter);
+
 
         UnityPlayer.currentActivity.startActivity(new Intent(BluetoothDevicePicker.ACTION_LAUNCH)
                 .putExtra(BluetoothDevicePicker.EXTRA_NEED_AUTH, false)
@@ -162,8 +163,13 @@ public class Bridge {
     }
 
 
+    public boolean startDiscovery(){
+        return BtInterface.getInstance().startDiscovery();
+    }
 
-
+    public void makeDiscoverable(int time) {
+        BtInterface.getInstance().makeDiscoverable(time);
+    }
     public  void initServer( String unityUUID,int time,boolean oneDevice) {
         BtInterface.getInstance().initServer(unityUUID, time,oneDevice);
     }
@@ -179,14 +185,14 @@ public class Bridge {
         return  null;
     }
 
-
-    public  BluetoothConnection getDiscoveredDevice (int id){
-        if(PluginToUnity.ControlMessages.socket != null) {
+    //Serever Discoverd device
+    public  BluetoothConnection getDiscoveredDeviceForServer (int id){
+        if(PluginToUnity.socket != null) {
 
             BluetoothConnection btConnection = new BluetoothConnection(id);
-            btConnection.socket = PluginToUnity.ControlMessages.socket;
+            btConnection.socket = PluginToUnity.socket;
             btConnection.connectionMode = BluetoothConnection.ConnectionMode.UsingSocket;
-            btConnection.setSucket(PluginToUnity.ControlMessages.socket);
+            btConnection.setSucket(PluginToUnity.socket);
             return btConnection;
         }return null;
     }
@@ -208,9 +214,42 @@ public class Bridge {
 
     }
 
+    // The following commented function doesn't allow dublicate instances
+//    public  BluetoothConnection[]  getPairedDevices (){
+//        Set<BluetoothDevice> setPairedDevices;
+//
+//        setPairedDevices = mBluetoothAdapter.getBondedDevices();
+//        BluetoothConnection[] returned = new BluetoothConnection[setPairedDevices.size()];
+//        int i =0;
+//        for (BluetoothDevice pairedDevice : setPairedDevices) {
+//            BluetoothConnection bt = BluetoothConnection.getInstFromDevice(pairedDevice);
+//            if(bt != null) {
+//                returned[i] = bt;
+//            }else {
+//                BluetoothConnection btConnection = new BluetoothConnection();
+//                btConnection.setDevice(pairedDevice);
+//                returned[i] = btConnection;
+//            }
+//            i++;
+//        }
+//        return returned;
+//    }
+
+    /*
+    //Not Server Discoverd devices, but general devices
+    //When id == 0 it means that Unity already has a reference, and it need to skip
+    public  BluetoothConnection  getNextDiscoveredDevice (int id){
+        BluetoothConnection bt =PluginToUnity.getNextDiscoveredDevice();
+        if(bt != null && id != 0) {
+            bt.setID(id);
+            return bt;
+        }return null;
+    }
+*/
     public void OnDestroy(){
         deRegisterStateReceiver();
         BtInterface.getInstance().OnDestroy();
+            BluetoothConnection.closeAll();
     }
 }
 

@@ -6,7 +6,6 @@ import java.io.InputStream;
 import android.bluetooth.BluetoothSocket;
 
 //import android.util.Log;
-import android.util.Log;
 import android.util.SparseArray;
 
 
@@ -32,12 +31,13 @@ class BtReader {
 
 
     private class BtElement {
+        boolean isDynamicSize;
         BluetoothSocket socket;
         InputStream inputStream;
         final public Object ReadWriteBufferKey = new Object();
         int id;
         volatile boolean stopReading = false;
-        private CircularArrayList buffer = new CircularArrayList(2);
+        private CircularArrayList buffer;
 
         public boolean IsDataAvailable(){
             synchronized (ReadWriteBufferKey){
@@ -53,6 +53,11 @@ class BtReader {
         public byte[] PollPacket (int id){
             synchronized (ReadWriteBufferKey) {
                 return buffer.pollPacket(id);
+            }
+        }
+        public byte[] PollAllPackets(int id){
+            synchronized (ReadWriteBufferKey) {
+                return buffer.pollAllPackets(id);
             }
         }
         public byte[] PollAll (int id){
@@ -96,10 +101,12 @@ class BtReader {
         }
 
 
-        public BtElement(BluetoothSocket socket, InputStream inputStream, int id) {
+        public BtElement(BluetoothSocket socket, InputStream inputStream, int id,int bufferSize,boolean isDynamicSize) {
             this.socket = socket;
             this.inputStream = inputStream;
             this.id = id;
+            this.isDynamicSize = isDynamicSize;
+            this.buffer = new CircularArrayList(bufferSize);
         }
 
     }
@@ -218,25 +225,25 @@ class BtReader {
         BtElement element;
         if(btConnection.readingThreadID == 0 && ReadingThreads.Get(btConnection.readingThreadID) == null ){
             rtd = new ReadingThreadData(btConnection.readingThreadID);
-            element = new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID());
+            element = new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID(),btConnection.bufferSize,btConnection.isBufferDynamic);
             rtd.AddReader(btConnection.getID(), element);
             ReadingThreads.Add(btConnection.readingThreadID, rtd);
             packetize(btConnection, element);
             rtd.StartSingletonThread(element);
 
         }else if (btConnection.readingThreadID == 0 && (rtd = ReadingThreads.Get(btConnection.readingThreadID)) != null) {
-            element = new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID());
+            element = new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID(),btConnection.bufferSize,btConnection.isBufferDynamic);
             rtd.AddReader(btConnection.getID(), element);
             packetize(btConnection,element);
             rtd.StartSingletonThread(element);
         }else if ((rtd = ReadingThreads.Get(btConnection.readingThreadID)) != null) {
-            element =  new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID());
+            element =  new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID(),btConnection.bufferSize,btConnection.isBufferDynamic);
             rtd.AddReader(btConnection.getID(), element);
             packetize(btConnection,element);
             rtd.StartThread();
         }else {
             rtd = new ReadingThreadData(btConnection.readingThreadID);
-            element = new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID());
+            element = new BtElement(btConnection.socket, btConnection.inputStream,btConnection.getID(),btConnection.bufferSize,btConnection.isBufferDynamic);
             rtd.AddReader(btConnection.getID(), element);
             ReadingThreads.Add(btConnection.readingThreadID, rtd);
             packetize(btConnection,element);
@@ -339,6 +346,17 @@ class BtReader {
         return empty;
     }
 
+    public  byte[] ReadAllPackets(int id, int threadId) {
+        ReadingThreadData rtd = ReadingThreads.Get(threadId);
+        BtElement e;
+        if (rtd != null) {
+            e = rtd.GetReader(id);
+            if (e != null) {
+                return e.PollAllPackets(id);
+            }
+        }
+        return empty;
+    }
 
     private class BtReceiver implements Runnable {
         private BtReader.ReadingThreadData rtd;
@@ -375,15 +393,15 @@ class BtReader {
                             {
                                 if (element.Size() < element.Capacity())
                                 {
-                                    byte ch;
-                                    if ((ch = (byte)element.inputStream.read()) >= 0)
-                                    {
-                                        if (element.AddByte(ch)) {
-                                            PluginToUnity.ControlMessages.DATA_AVAILABLE.send(element.id);
-                                        }
+                                    int ch;
 
+                                    if ((ch = element.inputStream.read()) >= 0)
+                                    {
+                                            if (element.AddByte((byte)ch)) {
+                                                PluginToUnity.ControlMessages.DATA_AVAILABLE.send(element.id);
+                                            }
                                     }
-                                }else {
+                                }else if(element.isDynamicSize) {
                                     element.Resize();
                                 }
                             }
@@ -391,21 +409,23 @@ class BtReader {
                     }
                     catch (IOException e)
                     {
-                        PluginToUnity.ControlMessages.READING_ERROR.send(element.id);
+                        if(!element.stopReading) {
+                            PluginToUnity.ControlMessages.READING_ERROR.send(element.id);
+                        }
                     }
                 }
                 if (element.stopReading)
                 {
-                    try
-                    {
-                        if (element.inputStream != null) {
-                            element.inputStream.close();
-                        }
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
+//                    try
+//                    {
+//                        if (element.inputStream != null) {
+//                            element.inputStream.close();
+//                        }
+//                    }
+//                    catch (IOException e)
+//                    {
+//                        e.printStackTrace();
+//                    }
                     this.rtd.RemoveReader(element.id);
 
                     PluginToUnity.ControlMessages.READING_STOPPED.send(element.id);
@@ -423,6 +443,7 @@ class BtReader {
                 {
                     if (element.inputStream != null) {
                         element.inputStream.close();
+                        element.inputStream = null;
                     }
                 }
                 catch (IOException e)
@@ -452,18 +473,17 @@ class BtReader {
             while ( !element.stopReading) {
                 try {
                     if (element.inputStream.available() > 0) {
-
                             synchronized (element.ReadWriteBufferKey) {
                                 if (element.Size() < element.Capacity()){
-                                byte ch;
-                                if ((ch = (byte) element.inputStream.read()) >= 0) {
-                                    if (element.AddByte(ch)) {
+                                int ch;
+                                if ((ch = element.inputStream.read()) >= 0)
+                                {
+                                    if (element.AddByte((byte)ch)) {
                                         PluginToUnity.ControlMessages.DATA_AVAILABLE.send(element.id);
                                     }
                                 }
-                            } else {
+                            } else if(element.isDynamicSize) {
                                     element.Resize();
-                                    Log.v("unity . plugin", "size  now is :: " + element.Capacity());
                                 }
                         }
                     }
@@ -474,7 +494,10 @@ class BtReader {
             }
 
             try {
-                if (element.inputStream != null) element.inputStream.close();
+                if (element.inputStream != null) {
+                    element.inputStream.close();
+                    element.inputStream = null;
+                }
             }catch(IOException e){
                 e.printStackTrace();
             }

@@ -67,7 +67,6 @@ class BtSender {
             }
         }
 
-
     }
 
     void addCloseJob(BufferedOutputStream bufferedOutputStream)
@@ -126,6 +125,7 @@ class BtSender {
                                 {
                                     job.bufferedOutputStream.flush();
                                     job.bufferedOutputStream.close();
+                                    job.bufferedOutputStream = null;
                                 }
                             }
                             catch (IOException e)
