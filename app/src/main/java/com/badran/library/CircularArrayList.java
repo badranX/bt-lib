@@ -1,6 +1,7 @@
 package com.badran.library;
 
 
+import android.os.Debug;
 import android.util.Log;
 
 import com.badran.bluetoothcontroller.PluginToUnity;
@@ -252,20 +253,17 @@ public class CircularArrayList {
 
         //same As pollArraySize() but used for packetization, so it doesn't send to unity
 
-
         int end = wrapIndex(head + size);
 
         if(end >= head) {
-            System.arraycopy(buf, head, e, startIndex, end  );
+            System.arraycopy(buf, head, e, startIndex, size  );
 
         }else {
-            e = new byte[size];
             int len = n - head;
             System.arraycopy(buf, head, e, startIndex, len  );//n-1 is the actual capacity
             System.arraycopy(buf, 0, e, startIndex + len, end);
         }
         head = end; // this end had excluded from copying _still hasn't been read
-
     }
 
     public byte[] pollArrayOfSize(int size, int id) {//endIndex or Size of Array
@@ -312,63 +310,43 @@ public class CircularArrayList {
         return temp;
     }
 
-    public byte[] pollAllPackets(int id){
-        switch (mode){
-            case LENGTH_PACKET :
-                if(lengthPacketsCounter > 0) {
-                    if(lengthPacketsCounter == 0) return empty;
-                    int s = lengthPacketsCounter*packetSize;
-                    byte[] temp2d = new byte[s];
 
-                    pollArray(temp2d, 0, s);
 
-                    lengthPacketsCounter = 0;
+    public byte[] pollAllPackets(int id){//Works only for END_BYTE_PACKET
 
-                    return temp2d;
-                }
-
-            case END_BYTE_PACKET:
                 if(marks.isEmpty()) return empty;
 
-                int lastIndx= marks.peek();
+                int lastIndx= marks.peekLast();
                 //s = size of the whole packets
                 int s = lastIndx - head + (lastIndx < head ? n : 0);
-                int numOfMarks = marks.size();
+                int numOfMarks = marks.size() - 1;
 
-                int headerSize = 4 + (numOfMarks - 1)*4;//each int cost 4 bytes, the last mark isn't useful
+                int headerSize = 4 + (numOfMarks )*4;//each int cost 4 bytes, the last mark isn't useful
                 byte[] temp2d = new byte[s + headerSize];
-                IntToBytes(temp2d, 0, numOfMarks - 1);//Number of marks at the start of the array
+                IntToBytes(temp2d, 0, numOfMarks );//Number of marks at the start of the array
 
 
-                if(numOfMarks > 1) {
+                if(numOfMarks > 0) {
                     //Insert all Marks inside the Array as header
-                    Iterator<Integer> iterator = marks.iterator();
                     int index = 4;//the first 4 used by the Num. of marks
 
-                    int reached_size = headerSize;
+                    int prePacketSize=0;
+                    while(marks.size() > 1 ) {
+                        int bytTail = marks.poll();
+                        int packetSize = bytTail - head + (bytTail < head ? n : 0) - prePacketSize;
+                        IntToBytes(temp2d, index, packetSize);//every indx will contain the size from zero up to the last indx of the packet
+                        prePacketSize += packetSize;
 
-                    if(iterator.hasNext()) iterator.next();//remove the first element as it's just the start index, we don't need to send it to unity
-
-                    while (iterator.hasNext()) {
-                        int bytTail = iterator.next();
-                        int packetSize = bytTail - head + (bytTail < head ? n : 0);
-                        IntToBytes(temp2d, index, reached_size);//every indx will contain the size from zero up to the last indx of the packet
-                        reached_size += packetSize;
                         index += 4;
+
                     }
+
                 }
+                marks.clear();
 
                 pollArray(temp2d,headerSize, s);//Num of Marks is the first index of the actual data
 
                 return temp2d;
-
-            case NO_PACKETIZATION:
-                int size = size();
-                if(size == 0) return empty;
-                byte[] temp = pollArray(size);
-                return temp;
-        }
-        return empty;
 
     }
     public byte[] pollPacket(int id) {

@@ -661,27 +661,29 @@ public class BtInterface {
     }
     private class ConnectThread extends Thread {
         //int reflexCounter = 1;
-
-        BluetoothSocket createSocket(boolean isChineseMobile, ConnectionTrial conAttempt) {//this method returns TRUE if Socket != null
+        private BluetoothSocket createSocket(boolean isChineseMobile, ConnectionTrial conAttempt) {//this method returns TRUE if Socket != null
             //Found Device and trying to create socket
             BluetoothSocket tmpSocket = null;
-
+            BluetoothDevice device = conAttempt.device;
+            if(device == null) return null;
             try {
 
                 if (isChineseMobile) {
 
                     Method m;
                     try {
-                        m = conAttempt.device.getClass().getMethod(CREATE_INSECURE_RFcomm_Socket, new Class[]{int.class});
-                        tmpSocket = (BluetoothSocket) m.invoke(conAttempt.device, 1);
+                        m = device.getClass().getMethod(CREATE_INSECURE_RFcomm_Socket, new Class[]{int.class});
+                        tmpSocket = (BluetoothSocket) m.invoke(device, 1);
+                        //reflexCounter = reflexCounter > 2 ? 1 : reflexCounter + 1;
                     } catch (Exception e) {
                         Log.v(TAG, e.getMessage());
                     }
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-                    tmpSocket = Level10.getInstance().createRfcommSocket(conAttempt.device, conAttempt.uuid);
+
+                    tmpSocket = device.createInsecureRfcommSocketToServiceRecord(conAttempt.uuid);
 
                 } else
-                    tmpSocket = conAttempt.device.createRfcommSocketToServiceRecord(conAttempt.uuid);//for API 9
+                    tmpSocket = device.createRfcommSocketToServiceRecord(conAttempt.uuid);//for API 9
             } catch (IOException mainError) {
                 Log.v(TAG, mainError.getMessage());
             }
@@ -691,10 +693,11 @@ public class BtInterface {
         }
 
 
+
+
         public void run() {
             int counter;
             while (true) {
-
                 ConnectionTrial conAttempt;
 
                 synchronized (ConnectThreadLock) {
@@ -704,24 +707,35 @@ public class BtInterface {
                     }
                     //TODO peek to element and poll it when it's not needed for discovery.
                     //Every ConAttempt must have a device reference or it already asked for discovery to find a reference
-                    conAttempt = btConnectionsQueue.poll();
+                    conAttempt = btConnectionsQueue.peek();
 
                     //check if close has been called || it's already connected
-                    if(conAttempt.isWillStop() || conAttempt.btConnection.isConnected) continue;
+                    if(conAttempt.isWillStop() || conAttempt.btConnection.isConnected) {
+                        btConnectionsQueue.poll();
+                        continue;
+                    }
 
                     if(conAttempt.isNeedDiscovery) { //if device is not found yet, need to start discovery
-                        startDiscoveryForConnection(conAttempt);
-                        break;//thread must end
+                        //TODO bug when device isn't found, it act is if it find it
+                        if(startDiscoveryForConnection(conAttempt)) {
+                            break;//thread must end
+                        }else {
+                            Log.v("unity","Failed to start discovery for the unpaired device");
+                            btConnectionsQueue.poll();
+                            continue;
+                        }
                     }
+                    conAttempt = btConnectionsQueue.poll();
+
                 }
 
 
-                boolean isChineseMobile = false;
-
+                boolean isChineseMobile = conAttempt.isBrutalConnection;
                 BluetoothSocket socket = null;
                 counter = 0;
                 boolean success = true;
                 do {
+
                     socket = createSocket(isChineseMobile, conAttempt );
 
                     if (socket != null) {
@@ -737,9 +751,8 @@ public class BtInterface {
                                 socket.connect();
                             }
                         } catch (IOException e) {
-                            Log.v(TAG, "Connection Failed");
-                            Log.v(TAG, e.getMessage());
-                            e.printStackTrace();
+                            //Log.v(TAG, e.getMessage());
+                            //e.printStackTrace();
 
                             success = false;
                             //The reason : UUID COULD BE DIFFERENT .MODULE_UUID_WRONG
@@ -766,19 +779,21 @@ public class BtInterface {
                             conAttempt.btConnection.RaiseCONNECTED();
                             conAttempt.btConnection.initializeStreams();
                             break; //success no need for trials
-                        }else {
-                            try {
-                                socket.close();
-                            }catch (IOException ioE){
-                                //ignore
-                            }
                         }
                     }else {
                         success = false;
                     }
 
+                    if(socket != null && !success) {
+                        try {
+                            socket.close();
+                        }catch (IOException ioE){
+                            //ignore
+                        }
+                    }
                     counter++;
                     if(counter >= conAttempt.trialsCount){
+
                         break;
                     }
 
@@ -788,10 +803,22 @@ public class BtInterface {
                         Log.v(TAG, "Sleep Thread Interrupt Exception");
                     }
 
-                    isChineseMobile = !isChineseMobile;
-
 
                 } while (true);
+
+                synchronized (ConnectThreadLock) {
+
+                    if(success) {
+                        Queue<ConnectionTrial> list = sparseTrials.get(conAttempt.btConnection.getID());
+                        if (list != null) {
+                            btConnectionsQueue.removeAll(list);
+                            sparseTrials.remove(conAttempt.btConnection.getID());
+                        }
+                    }else {
+                        Queue<ConnectionTrial> list = sparseTrials.get(conAttempt.btConnection.getID());
+                        if(list != null) list.poll();
+                    }
+                }
                 if(!success) {
                     conAttempt.btConnection.RaiseMODULE_OFF();
                 }
@@ -801,6 +828,7 @@ public class BtInterface {
 
 
     }
+
     //Accepting Thread
 
     private volatile AcceptThread acceptThread;

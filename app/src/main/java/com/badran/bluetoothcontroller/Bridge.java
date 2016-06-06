@@ -14,6 +14,9 @@ import com.unity3d.player.UnityPlayer;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
+
+
+import java.util.LinkedList;
 import java.util.Set;
 
 public class Bridge {
@@ -180,6 +183,7 @@ public class Bridge {
             BluetoothConnection btConnection = new BluetoothConnection(id);
             btConnection.connectionMode = BluetoothConnection.ConnectionMode.UsingBluetoothDeviceReference;
             btConnection.setDevice(PickedBtDevice);
+
             return btConnection;
         }
         return  null;
@@ -212,6 +216,50 @@ public class Bridge {
         }
         return returned;
 
+    }
+
+    public byte[] TEST(byte[] x) {
+
+        x[0] =100;
+        int startingIndex = 4;
+         LinkedList<Integer> marks = new LinkedList<Integer>() ;
+        marks.add(10);
+
+        marks.add(30);
+        marks.add(40);
+        int marksSize = marks.size();
+        byte [] r = new byte[(marksSize -1 )*4 + 4];
+
+         IntToBytes(r,0,marksSize - 1);
+
+        if(marksSize > 1) {
+            //Insert all Marks inside the Array as header
+            int index = 4;//the first 4 used by the Num. of marks
+
+           // int reached_size = headerSize;
+
+
+            while(marks.size() > 1 ) {
+                int bytTail = marks.poll();
+                //int packetSize = bytTail - head + (bytTail < head ? n : 0);
+                IntToBytes(r, index, bytTail);//every indx will contain the size from zero up to the last indx of the packet
+                //reached_size += packetSize;
+                index += 4;
+            }
+
+        }
+
+        marks.clear();
+
+     return r;
+
+
+    }
+    void IntToBytes(byte[] out, int index,int val){
+        out[index] = (byte)val;
+        out[index + 1] = (byte)(val >>> 8);
+        out[index + 2] = (byte)(val >>> 16);
+        out[index + 3] = (byte)(val >>> 24);
     }
 
     // The following commented function doesn't allow dublicate instances

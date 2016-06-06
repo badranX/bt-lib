@@ -44,12 +44,12 @@ public class BluetoothConnection {
      int readingThreadID = 0;//default Value
 
     //SetupData
-    private final String UUID_SERIAL = "00001101-0000-1000-8000-00805F9B34FB";
+    //private final String UUID_SERIAL = "00001101-0000-1000-8000-00805F9B34FB";
     private static Map<BluetoothDevice,BluetoothConnection> map = new HashMap<BluetoothDevice, BluetoothConnection>();
     private static Map<String,BluetoothConnection> mapAddress = new HashMap<String, BluetoothConnection>();
-    public  String name;
-    public  String mac;
-    public String SPP_UUID;
+      String name;
+      String mac;
+    String SPP_UUID = "00001101-0000-1000-8000-00805F9B34FB";
     private BluetoothDevice device;
 
      enum ConnectionMode {
@@ -74,12 +74,10 @@ public class BluetoothConnection {
     public BluetoothConnection (int id) {
         this.id = id;
         this.IdAssigned = true;
-        this.SPP_UUID = UUID_SERIAL;
     }
 
     public BluetoothConnection () {
         this.IdAssigned = false;
-        this.SPP_UUID = UUID_SERIAL;
     }
 
 
@@ -140,7 +138,6 @@ public class BluetoothConnection {
         this.isEndBytePacketized = true;
         BtReader.getInstance().setEndByte(this.id, this.readingThreadID, byt);
     }
-
 
     public boolean isDataAvailable(){
         return  BtReader.getInstance().IsDataAvailable(this.id, this.readingThreadID);
@@ -302,9 +299,13 @@ public class BluetoothConnection {
 
 
     public String getName (){//return data from the founded device
+
         BluetoothDevice d = this.getDevice();
-        if(d != null)
+        if(d != null) {
             return d.getName();
+
+        }
+
         return this.name;
     }
 
@@ -340,6 +341,7 @@ public class BluetoothConnection {
         this.isBufferDynamic = false;
         this.bufferSize = size;
     }
+
 
     public void sendBytes(byte[] msg) {
         if(this.socket != null && this.bufferedOutputStream != null)

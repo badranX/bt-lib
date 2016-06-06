@@ -13,16 +13,21 @@
     </filters>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="unity" />
+    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="unit" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c0adf5a2-833c-4422-99a9-4e14f4bd5d42" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BluetoothConnection$ReadingMode.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/library/NativeBuffer.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BluetoothConnection$ReadingMode.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/build/intermediates/manifest/tmp/manifestMerger2418184187343831018.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/build/intermediates/manifest/tmp/manifestMerger53371361225113521.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/androidTest/debug/com/badran/bluetoothcontroller/R$drawable.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/androidTest/debug/com/badran/bluetoothcontroller/R$string.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/androidTest/debug/com/badran/bluetoothcontroller/R$style.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/androidTest/debug/com/badran/bluetoothcontroller/R.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/androidTest/debug/com/badran/bluetoothcontroller/test/BuildConfig.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/androidTest/debug/com/badran/bluetoothcontroller/test/R$attr.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/androidTest/debug/com/badran/bluetoothcontroller/test/R$drawable.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/androidTest/debug/com/badran/bluetoothcontroller/test/R$string.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/androidTest/debug/com/badran/bluetoothcontroller/test/R$style.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/androidTest/debug/com/badran/bluetoothcontroller/test/R.class" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/cache.properties.lock" afterPath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/cache.properties.lock" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/fileHashes.bin" afterPath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/fileHashes.bin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/fileSnapshots.bin" afterPath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/fileSnapshots.bin" />
@@ -30,114 +35,30 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/taskArtifacts.bin" afterPath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/taskArtifacts.bin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/bundles/debug/classes.jar" afterPath="$PROJECT_DIR$/app/build/intermediates/bundles/debug/classes.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/bundles/release/classes.jar" afterPath="$PROJECT_DIR$/app/build/intermediates/bundles/release/classes.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/androidTest/debug/com/badran/bluetoothcontroller/R.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/androidTest/debug/com/badran/bluetoothcontroller/R.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/androidTest/debug/com/badran/bluetoothcontroller/test/R.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/androidTest/debug/com/badran/bluetoothcontroller/test/R.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BluetoothConnection$ConnectionMode.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BluetoothConnection$ConnectionMode.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BluetoothConnection.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BluetoothConnection.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BluetoothDevicePicker.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BluetoothDevicePicker.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/Bridge$1.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/Bridge$1.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/Bridge$BluetoothDevicePickerReceiver.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/Bridge$BluetoothDevicePickerReceiver.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/Bridge$BtStateReceiver.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/Bridge$BtStateReceiver.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/Bridge.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/Bridge.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtInterface$1.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtInterface$1.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtInterface$AcceptThread.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtInterface$AcceptThread.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtInterface$ConnectThread.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtInterface$ConnectThread.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtInterface$ConnectionTrial.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtInterface$ConnectionTrial.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtInterface$DeviceDiscoveryReceiver.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtInterface$DeviceDiscoveryReceiver.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtInterface$ServerReceiver.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtInterface$ServerReceiver.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtInterface.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtInterface.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtReader$BtElement.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtReader$BtElement.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtReader$BtReceiver.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtReader$BtReceiver.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtReader$ReadingThreadData.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtReader$ReadingThreadData.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtReader$ReadingThreads.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtReader$ReadingThreads.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtReader$SingleBtReceiver.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtReader$SingleBtReceiver.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtReader.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtReader.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtSender$1.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtSender$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtSender$BtSenderThread.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtSender$BtSenderThread.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtSender$Job.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtSender$Job.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtSender.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BtSender.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BuildConfig.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/BuildConfig.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/Level10.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/Level10.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/PluginToUnity$ControlMessages.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/PluginToUnity$ControlMessages.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/PluginToUnity.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/PluginToUnity.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/R$attr.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/R$attr.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/R$drawable.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/R$drawable.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/R$string.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/R$string.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/R$style.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/R$style.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/R.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/bluetoothcontroller/R.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/library/CircularArrayList$1.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/library/CircularArrayList$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/library/CircularArrayList$MODES.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/library/CircularArrayList$MODES.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/library/CircularArrayList.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/badran/library/CircularArrayList.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BluetoothConnection$ConnectionMode.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BluetoothConnection$ConnectionMode.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BluetoothConnection.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BluetoothConnection.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BluetoothDevicePicker.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BluetoothDevicePicker.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/Bridge$1.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/Bridge$1.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/Bridge$BluetoothDevicePickerReceiver.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/Bridge$BluetoothDevicePickerReceiver.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/Bridge$BtStateReceiver.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/Bridge$BtStateReceiver.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/Bridge.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/Bridge.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtInterface$1.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtInterface$1.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtInterface$AcceptThread.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtInterface$AcceptThread.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtInterface$ConnectThread.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtInterface$ConnectThread.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtInterface$ConnectionTrial.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtInterface$ConnectionTrial.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtInterface$DeviceDiscoveryReceiver.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtInterface$DeviceDiscoveryReceiver.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtInterface$ServerReceiver.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtInterface$ServerReceiver.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtInterface.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtInterface.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtReader$BtElement.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtReader$BtElement.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtReader$BtReceiver.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtReader$BtReceiver.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtReader$ReadingThreadData.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtReader$ReadingThreadData.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtReader$ReadingThreads.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtReader$ReadingThreads.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtReader$SingleBtReceiver.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtReader$SingleBtReceiver.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtReader.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtReader.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtSender$1.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtSender$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtSender$BtSenderThread.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtSender$BtSenderThread.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtSender$Job.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtSender$Job.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtSender.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BtSender.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BuildConfig.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/BuildConfig.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/Level10.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/Level10.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/PluginToUnity$ControlMessages.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/PluginToUnity$ControlMessages.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/PluginToUnity.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/PluginToUnity.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/R$attr.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/R$attr.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/R$drawable.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/R$drawable.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/R$string.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/R$string.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/R$style.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/R$style.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/R.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/bluetoothcontroller/R.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/library/CircularArrayList$1.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/library/CircularArrayList$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/library/CircularArrayList$MODES.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/library/CircularArrayList$MODES.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/library/CircularArrayList.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/release/com/badran/library/CircularArrayList.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/res/resources-debug-androidTest.ap_" afterPath="$PROJECT_DIR$/app/build/intermediates/res/resources-debug-androidTest.ap_" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/outputs/aar/app-debug.aar" afterPath="$PROJECT_DIR$/app/build/outputs/aar/app-debug.aar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/outputs/aar/app-release.aar" afterPath="$PROJECT_DIR$/app/build/outputs/aar/app-release.aar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/app/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/bundles/debug/res/values-v11/values-v11.xml" afterPath="$PROJECT_DIR$/app/build/intermediates/bundles/debug/res/values-v11/values-v11.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/bundles/debug/res/values-v14/values-v14.xml" afterPath="$PROJECT_DIR$/app/build/intermediates/bundles/debug/res/values-v14/values-v14.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/bundles/debug/res/values/values.xml" afterPath="$PROJECT_DIR$/app/build/intermediates/bundles/debug/res/values/values.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/bundles/release/res/values-v11/values-v11.xml" afterPath="$PROJECT_DIR$/app/build/intermediates/bundles/release/res/values-v11/values-v11.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/bundles/release/res/values-v14/values-v14.xml" afterPath="$PROJECT_DIR$/app/build/intermediates/bundles/release/res/values-v14/values-v14.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/bundles/release/res/values/values.xml" afterPath="$PROJECT_DIR$/app/build/intermediates/bundles/release/res/values/values.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/incremental/mergeAssets/androidTest/debug/merger.xml" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental/mergeAssets/androidTest/debug/merger.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/incremental/mergeAssets/debug/merger.xml" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental/mergeAssets/debug/merger.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/incremental/mergeAssets/release/merger.xml" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental/mergeAssets/release/merger.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/incremental/mergeResourcesandroidTest/debug/merger.xml" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental/mergeResourcesandroidTest/debug/merger.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/incremental/packageResourcesdebug/merger.xml" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental/packageResourcesdebug/merger.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/incremental/packageResourcesrelease/merger.xml" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental/packageResourcesrelease/merger.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/res/merged/androidTest/debug/values-v11/values-v11.xml" afterPath="$PROJECT_DIR$/app/build/intermediates/res/merged/androidTest/debug/values-v11/values-v11.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/res/merged/androidTest/debug/values-v14/values-v14.xml" afterPath="$PROJECT_DIR$/app/build/intermediates/res/merged/androidTest/debug/values-v14/values-v14.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/res/merged/androidTest/debug/values/values.xml" afterPath="$PROJECT_DIR$/app/build/intermediates/res/merged/androidTest/debug/values/values.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/tmp/packageReleaseJar/MANIFEST.MF" afterPath="$PROJECT_DIR$/app/build/tmp/packageReleaseJar/MANIFEST.MF" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BluetoothConnection.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BluetoothConnection.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/Bridge.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/Bridge.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BtInterface.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BtInterface.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BtReader.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BtReader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BtSender.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BtSender.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/PluginToUnity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/PluginToUnity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/badran/library/CircularArrayList.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/badran/library/CircularArrayList.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bluetoothcontrollerjavaside.iml" afterPath="$PROJECT_DIR$/bluetoothcontrollerjavaside.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/local.properties" afterPath="$PROJECT_DIR$/local.properties" />
     </list>
     <ignored path="bluetoothcontrollerjavaside.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -181,8 +102,8 @@
       <file leaf-file-name="BluetoothConnection.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BluetoothConnection.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-106.25926">
-              <caret line="163" column="29" selection-start-line="163" selection-start-column="29" selection-end-line="163" selection-end-column="29" />
+            <state vertical-scroll-proportion="-6.814815">
+              <caret line="124" column="42" selection-start-line="124" selection-start-column="42" selection-end-line="124" selection-end-column="42" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -193,82 +114,65 @@
       <file leaf-file-name="BtReader.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BtReader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="31.703703">
-              <caret line="398" column="32" selection-start-line="398" selection-start-column="32" selection-end-line="398" selection-end-column="32" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BluetoothDevicePicker.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BluetoothDevicePicker.java">
-          <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+              <caret line="59" column="35" selection-start-line="59" selection-start-column="35" selection-end-line="59" selection-end-column="35" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BtInterface.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="BtInterface.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BtInterface.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.55172414">
-              <caret line="758" column="29" selection-start-line="758" selection-start-column="29" selection-end-line="758" selection-end-column="29" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="747" column="25" selection-start-line="747" selection-start-column="25" selection-end-line="747" selection-end-column="25" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1631#1632#0" expanded="true" />
-                <element signature="e#1675#1676#0" expanded="true" />
-                <element signature="e#2226#2243#0" expanded="true" />
-                <element signature="e#2317#2341#0" expanded="true" />
-                <element signature="e#17688#19999#0" expanded="true" />
-                <element signature="e#19998#19999#0" expanded="true" />
-                <element signature="e#34759#34760#0" expanded="true" />
-                <element signature="e#34801#34802#0" expanded="true" />
-                <element signature="e#34836#34837#0" expanded="true" />
-                <element signature="e#34903#34904#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BluetoothAdapter.java" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/Library/Android/sdk/sources/android-17/android/bluetooth/BluetoothAdapter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="948" column="46" selection-start-line="948" selection-start-column="46" selection-end-line="948" selection-end-column="46" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Level10.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/Level10.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="30" column="4" selection-start-line="30" selection-start-column="4" selection-end-line="30" selection-end-column="18" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CircularArrayList.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="CircularArrayList.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/library/CircularArrayList.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-14.037037">
-              <caret line="196" column="0" selection-start-line="196" selection-start-column="0" selection-end-line="196" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.33333334">
+              <caret line="320" column="38" selection-start-line="320" selection-start-column="38" selection-end-line="320" selection-end-column="38" />
+              <folding>
+                <element signature="e#11312#11321#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LinkedList.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$USER_HOME$/Library/Android/sdk/platforms/android-21/android.jar!/java/util/LinkedList.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-3.2222223">
+              <caret line="117" column="13" selection-start-line="117" selection-start-column="13" selection-end-line="117" selection-end-column="13" />
+              <folding>
+                <element signature="e#2793#2794#0" expanded="true" />
+                <element signature="e#2844#2845#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Arrays.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$USER_HOME$/Library/Android/sdk/platforms/android-21/android.jar!/java/util/Arrays.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-3.2222223">
+              <caret line="400" column="25" selection-start-line="400" selection-start-column="25" selection-end-line="400" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="System.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$USER_HOME$/Library/Android/sdk/platforms/android-21/android.jar!/java/lang/System.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-3.2222223">
+              <caret line="36" column="30" selection-start-line="36" selection-start-column="30" selection-end-line="36" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -278,7 +182,20 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/Bridge.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="251" column="35" selection-start-line="251" selection-start-column="33" selection-end-line="251" selection-end-column="35" />
+              <caret line="234" column="23" selection-start-line="234" selection-start-column="23" selection-end-line="234" selection-end-column="23" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#7243#7252#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PluginToUnity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/PluginToUnity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -288,7 +205,7 @@
         <entry file="file://$PROJECT_DIR$/app/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+              <caret line="20" column="31" selection-start-line="20" selection-start-column="31" selection-end-line="20" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -1335,7 +1252,7 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="4378356531000" />
+        <entry key="$PROJECT_DIR$" value="4378425827000" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -1646,12 +1563,12 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BtSender.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/Level10.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/PluginToUnity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/Bridge.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/badran/library/CircularArrayList.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BtReader.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BluetoothConnection.java" />
         <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BtInterface.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BluetoothConnection.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/Bridge.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/badran/library/CircularArrayList.java" />
       </list>
     </option>
   </component>
@@ -1663,7 +1580,7 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="23" />
+    <option name="y" value="25" />
     <option name="width" value="1920" />
     <option name="height" value="977" />
   </component>
@@ -1731,6 +1648,10 @@
               <option name="myItemId" value="badran" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="library" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -1756,10 +1677,10 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
-      <pane id="ProjectPane" />
       <pane id="PackagesPane" />
+      <pane id="ProjectPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -2056,7 +1977,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1920" height="977" extended-state="6" />
+    <frame x="0" y="25" width="1920" height="977" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -2072,7 +1993,7 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14430244" sideWeight="0.51993066" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329849" sideWeight="0.43982962" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329849" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14430244" sideWeight="0.50606585" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329849" sideWeight="0.48509052" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32960597" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -2134,48 +2055,17 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="10" />
+      <option name="time" value="11" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BtReader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="440" column="51" selection-start-line="440" selection-start-column="51" selection-end-line="440" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BtSender.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="125" column="33" selection-start-line="125" selection-start-column="33" selection-end-line="125" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Library/Android/sdk/sources/android-23/java/io/BufferedOutputStream.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="82" column="29" selection-start-line="82" selection-start-column="29" selection-end-line="82" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BtInterface.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="468" column="26" selection-start-line="468" selection-start-column="26" selection-end-line="468" selection-end-column="26" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1631#1632#0" expanded="true" />
-            <element signature="e#1675#1676#0" expanded="true" />
-            <element signature="e#2226#2243#0" expanded="true" />
-            <element signature="e#2317#2341#0" expanded="true" />
-            <element signature="e#17688#19999#0" expanded="true" />
-            <element signature="e#19998#19999#0" expanded="true" />
-            <element signature="e#34759#34760#0" expanded="true" />
-            <element signature="e#34801#34802#0" expanded="true" />
-            <element signature="e#34836#34837#0" expanded="true" />
-            <element signature="e#34903#34904#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2246,16 +2136,6 @@
           <caret line="468" column="26" selection-start-line="468" selection-start-column="26" selection-end-line="468" selection-end-column="26" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1631#1632#0" expanded="true" />
-            <element signature="e#1675#1676#0" expanded="true" />
-            <element signature="e#2226#2243#0" expanded="true" />
-            <element signature="e#2317#2341#0" expanded="true" />
-            <element signature="e#17688#19999#0" expanded="true" />
-            <element signature="e#19998#19999#0" expanded="true" />
-            <element signature="e#34759#34760#0" expanded="true" />
-            <element signature="e#34801#34802#0" expanded="true" />
-            <element signature="e#34836#34837#0" expanded="true" />
-            <element signature="e#34903#34904#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2447,35 +2327,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/PluginToUnity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Library/Android/sdk/sources/android-15/java/io/InputStream.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="156" column="24" selection-start-line="156" selection-start-column="24" selection-end-line="156" selection-end-column="24" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/Level10.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BluetoothDevicePicker.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="30" column="4" selection-start-line="30" selection-start-column="4" selection-end-line="30" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/Bridge.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="251" column="35" selection-start-line="251" selection-start-column="33" selection-end-line="251" selection-end-column="35" />
-          <folding />
+          <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
         </state>
       </provider>
     </entry>
@@ -2487,39 +2349,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BtReader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="31.703703">
-          <caret line="398" column="32" selection-start-line="398" selection-start-column="32" selection-end-line="398" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BluetoothDevicePicker.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/Level10.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+          <caret line="30" column="4" selection-start-line="30" selection-start-column="4" selection-end-line="30" selection-end-column="18" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/library/CircularArrayList.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.037037">
-          <caret line="196" column="0" selection-start-line="196" selection-start-column="0" selection-end-line="196" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BluetoothConnection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-106.25926">
-          <caret line="163" column="29" selection-start-line="163" selection-start-column="29" selection-end-line="163" selection-end-column="29" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2534,27 +2368,91 @@
     <entry file="file://$PROJECT_DIR$/app/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <caret line="20" column="31" selection-start-line="20" selection-start-column="31" selection-end-line="20" selection-end-column="31" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/PluginToUnity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/Library/Android/sdk/platforms/android-21/android.jar!/java/lang/System.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.2222223">
+          <caret line="36" column="30" selection-start-line="36" selection-start-column="30" selection-end-line="36" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/Library/Android/sdk/platforms/android-21/android.jar!/java/util/Arrays.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.2222223">
+          <caret line="400" column="25" selection-start-line="400" selection-start-column="25" selection-end-line="400" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/Library/Android/sdk/platforms/android-21/android.jar!/java/util/LinkedList.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.2222223">
+          <caret line="117" column="13" selection-start-line="117" selection-start-column="13" selection-end-line="117" selection-end-column="13" />
+          <folding>
+            <element signature="e#2793#2794#0" expanded="true" />
+            <element signature="e#2844#2845#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BtInterface.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.55172414">
-          <caret line="758" column="29" selection-start-line="758" selection-start-column="29" selection-end-line="758" selection-end-column="29" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="747" column="25" selection-start-line="747" selection-start-column="25" selection-end-line="747" selection-end-column="25" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1631#1632#0" expanded="true" />
-            <element signature="e#1675#1676#0" expanded="true" />
-            <element signature="e#2226#2243#0" expanded="true" />
-            <element signature="e#2317#2341#0" expanded="true" />
-            <element signature="e#17688#19999#0" expanded="true" />
-            <element signature="e#19998#19999#0" expanded="true" />
-            <element signature="e#34759#34760#0" expanded="true" />
-            <element signature="e#34801#34802#0" expanded="true" />
-            <element signature="e#34836#34837#0" expanded="true" />
-            <element signature="e#34903#34904#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/Bridge.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="234" column="23" selection-start-line="234" selection-start-column="23" selection-end-line="234" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#7243#7252#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BluetoothConnection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.814815">
+          <caret line="124" column="42" selection-start-line="124" selection-start-column="42" selection-end-line="124" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/bluetoothcontroller/BtReader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="59" column="35" selection-start-line="59" selection-start-column="35" selection-end-line="59" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/badran/library/CircularArrayList.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="320" column="38" selection-start-line="320" selection-start-column="38" selection-end-line="320" selection-end-column="38" />
+          <folding>
+            <element signature="e#11312#11321#0" expanded="true" />
           </folding>
         </state>
       </provider>
