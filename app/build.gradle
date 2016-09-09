@@ -12,14 +12,14 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_6
+        targetCompatibility JavaVersion.VERSION_1_6
     }
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles  'proguard-rules.txt'
+            minifyEnabled true
+            proguardFiles  '/Users/hunter/DEV/AndroidStudioProjects/BtLibJava/bluetoothcontrollerjavaside/proguard.cfg'
         }
     }
 }
@@ -33,7 +33,7 @@ dependencies {
 //def UnityProjectPath = '/Users/a/DEV'
 //def UnityProjectPath = '/Users/a/Delete/Assets/Plugins/Android'
 //def UnityProjectPath = '/Users/a/Desktop/Main Terminal/Assets/Plugins/Android'
-def UnityProjectPath = '/Users/hunter/DEV/Unity/BtLib2/Assets/Plugins/Android'
+def UnityProjectPath = '/Users/hunter/DEV/Unity/New Unity Project 15/Assets/Plugins/Android'
 //def UnityProjectPath = 'C:\\Users\\hp\\Documents\\New Unity Project 5\\Assets\\Plugins\\Android'
 //def comndStr = 'C:\\Python27\\python.exe'
 def  comndStr = 'python'

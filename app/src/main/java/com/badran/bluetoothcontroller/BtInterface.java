@@ -274,7 +274,7 @@ public class BtInterface {
         boolean useMac = setupData.connectionMode == BluetoothConnection.ConnectionMode.UsingMac;
         for (BluetoothDevice pairedDevice : setPairedDevices) {
             if (useMac)
-                foundModule = pairedDevice.getAddress().equals(setupData.mac);
+                foundModule = pairedDevice.getAddress().equalsIgnoreCase(setupData.mac);
             else
                 foundModule = pairedDevice.getName().equals(setupData.name);
 
@@ -336,9 +336,9 @@ public class BtInterface {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
 
+
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if(device == null) return;
-
                 if(!mBluetoothAdapter.getBondedDevices().contains(device)) {
                     if(AlreadyFoundDevices == null) AlreadyFoundDevices = new HashSet<BluetoothDevice>();
                     AlreadyFoundDevices.add(device);
@@ -365,7 +365,6 @@ public class BtInterface {
                     }
 
                     if (foundIt) {
-
                         setupData.setDevice(device);
                         setupData.connectionMode = BluetoothConnection.ConnectionMode.UsingBluetoothDeviceReference;
                         synchronized (ConnectThreadLock) {
@@ -381,7 +380,6 @@ public class BtInterface {
                         //finished discovery so we need to check if the connection thread needs to continue
                         //No need for synchronization as while this reciever is registered and discovering the thread is off
                         if ( btConnectionForDiscovery  != null && btConnectionsQueue.size() > 0 ) {
-
                             btConnectionForDiscovery.btConnection.RaiseMODULE_OFF();
 
                             synchronized (ConnectThreadLock) {

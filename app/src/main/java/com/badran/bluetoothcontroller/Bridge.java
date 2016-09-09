@@ -90,14 +90,11 @@ public class Bridge {
                     case BluetoothAdapter.STATE_OFF:
                         PluginToUnity.ControlMessages.BLUETOOTH_OFF.send();
                         break;
-                    case BluetoothAdapter.STATE_TURNING_OFF:
-                        BluetoothConnection.closeAll();
-                        break;
+
                     case BluetoothAdapter.STATE_ON:
                         PluginToUnity.ControlMessages.BLUETOOTH_ON.send();
                         break;
-                    case BluetoothAdapter.STATE_TURNING_ON:
-                        break;
+
                 }
             }
         }
