@@ -2719,7 +2719,7 @@ _____________________________________________________________________
 
 Interfaces (count = 0):
 
-Constant Pool (count = 283):
+Constant Pool (count = 289):
   - Integer [8388608]
   - String [XXXXXXXXXXXXXYYYYYYYYYYYYYYYYXIIIIIII]
   - String [android.bluetooth.adapter.action.REQUEST_ENABLE]
@@ -2768,6 +2768,7 @@ Constant Pool (count = 283):
   - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/content/BroadcastReceiver;]
   - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/h;]
   - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/j;]
+  - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/l;]
   - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/m;]
   - Fieldref [com/badran/bluetoothcontroller/e.b Ljava/lang/Object;]
   - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
@@ -2798,6 +2799,7 @@ Constant Pool (count = 283):
   - Methodref [com/badran/bluetoothcontroller/c.<init> (Lcom/badran/bluetoothcontroller/Bridge;B)V]
   - Methodref [com/badran/bluetoothcontroller/d.<init> (Lcom/badran/bluetoothcontroller/Bridge;)V]
   - Methodref [com/badran/bluetoothcontroller/e.a ()Lcom/badran/bluetoothcontroller/e;]
+  - Methodref [com/badran/bluetoothcontroller/e.cancelDiscovery ()Z]
   - Methodref [com/badran/bluetoothcontroller/e.makeDiscoverable (I)V]
   - Methodref [com/badran/bluetoothcontroller/e.startDiscovery ()Z]
   - Methodref [com/badran/bluetoothcontroller/h.<init> (Lcom/badran/bluetoothcontroller/e;Ljava/util/UUID;IZ)V]
@@ -2837,11 +2839,13 @@ Constant Pool (count = 283):
   - NameAndType [a Lcom/badran/bluetoothcontroller/d;]
   - NameAndType [a Lcom/badran/bluetoothcontroller/h;]
   - NameAndType [a Lcom/badran/bluetoothcontroller/j;]
+  - NameAndType [a Lcom/badran/bluetoothcontroller/l;]
   - NameAndType [a Lcom/badran/bluetoothcontroller/m;]
   - NameAndType [add (Ljava/lang/Object;)Z]
   - NameAndType [addAction (Ljava/lang/String;)V]
   - NameAndType [b Landroid/bluetooth/BluetoothDevice;]
   - NameAndType [b Ljava/lang/Object;]
+  - NameAndType [cancelDiscovery ()Z]
   - NameAndType [clear ()V]
   - NameAndType [currentActivity Landroid/app/Activity;]
   - NameAndType [d Lcom/badran/bluetoothcontroller/a;]
@@ -2919,6 +2923,7 @@ Constant Pool (count = 283):
   - Utf8 [Lcom/badran/bluetoothcontroller/d;]
   - Utf8 [Lcom/badran/bluetoothcontroller/h;]
   - Utf8 [Lcom/badran/bluetoothcontroller/j;]
+  - Utf8 [Lcom/badran/bluetoothcontroller/l;]
   - Utf8 [Lcom/badran/bluetoothcontroller/m;]
   - Utf8 [Ljava/lang/Object;]
   - Utf8 [OnDestroy]
@@ -2944,6 +2949,7 @@ Constant Pool (count = 283):
   - Utf8 [android/content/IntentFilter]
   - Utf8 [askEnableBluetooth]
   - Utf8 [b]
+  - Utf8 [cancelDiscovery]
   - Utf8 [clear]
   - Utf8 [com/badran/bluetoothcontroller/BluetoothConnection]
   - Utf8 [com/badran/bluetoothcontroller/Bridge]
@@ -3020,16 +3026,16 @@ Fields (count = 5):
     Access flags: 0x2
       = private android.bluetooth.BluetoothDevice b
 
-Methods (count = 23):
+Methods (count = 24):
   - Method:       <init>()V
     Access flags: 0x4
       = protected Bridge()
     Class member attributes (count = 1):
     - Code attribute instructions (code length = 11, locals = 1, stack = 1):
       [0] aload_0 v0
-      [1] invokespecial #86
+      [1] invokespecial #88
         - Methodref [java/lang/Object.<init> ()V]
-      [4] invokestatic #59
+      [4] invokestatic #60
         - Methodref [android/bluetooth/BluetoothAdapter.getDefaultAdapter ()Landroid/bluetooth/BluetoothAdapter;]
       [7] putstatic #38
         - Fieldref [com/badran/bluetoothcontroller/Bridge.a Landroid/bluetooth/BluetoothAdapter;]
@@ -3047,7 +3053,7 @@ Methods (count = 23):
       [6] new #18
         - Class [com/badran/bluetoothcontroller/Bridge]
       [9] dup
-      [10] invokespecial #73
+      [10] invokespecial #74
         - Methodref [com/badran/bluetoothcontroller/Bridge.<init> ()V]
       [13] putstatic #39
         - Fieldref [com/badran/bluetoothcontroller/Bridge.a Lcom/badran/bluetoothcontroller/Bridge;]
@@ -3077,7 +3083,7 @@ Methods (count = 23):
         - Class [com/badran/bluetoothcontroller/BluetoothConnection]
       [3] dup
       [4] iload_1 v1
-      [5] invokespecial #69
+      [5] invokespecial #70
         - Methodref [com/badran/bluetoothcontroller/BluetoothConnection.<init> (I)V]
       [8] areturn
       Code attribute exceptions (count = 0):
@@ -3092,14 +3098,14 @@ Methods (count = 23):
       [3] dup
       [4] ldc #3
         - String [android.bluetooth.adapter.action.REQUEST_ENABLE]
-      [6] invokespecial #61
+      [6] invokespecial #62
         - Methodref [android/content/Intent.<init> (Ljava/lang/String;)V]
       [9] astore_1 v1
-      [10] getstatic #51
+      [10] getstatic #52
         - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
       [13] aload_1 v1
       [14] bipush 8
-      [16] invokevirtual #54
+      [16] invokevirtual #55
         - Methodref [android/app/Activity.startActivityForResult (Landroid/content/Intent;I)V]
       [19] return
       Code attribute exceptions (count = 0):
@@ -3118,7 +3124,7 @@ Methods (count = 23):
         - Class [com/badran/bluetoothcontroller/d]
       [11] dup
       [12] aload_0 v0
-      [13] invokespecial #77
+      [13] invokespecial #78
         - Methodref [com/badran/bluetoothcontroller/d.<init> (Lcom/badran/bluetoothcontroller/Bridge;)V]
       [16] putfield #41
         - Fieldref [com/badran/bluetoothcontroller/Bridge.a Lcom/badran/bluetoothcontroller/d;]
@@ -3127,16 +3133,16 @@ Methods (count = 23):
       [22] dup
       [23] ldc #5
         - String [android.bluetooth.adapter.action.STATE_CHANGED]
-      [25] invokespecial #66
+      [25] invokespecial #67
         - Methodref [android/content/IntentFilter.<init> (Ljava/lang/String;)V]
       [28] astore_1 v1
-      [29] getstatic #51
+      [29] getstatic #52
         - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
       [32] aload_0 v0
       [33] getfield #41
         - Fieldref [com/badran/bluetoothcontroller/Bridge.a Lcom/badran/bluetoothcontroller/d;]
       [36] aload_1 v1
-      [37] invokevirtual #52
+      [37] invokevirtual #53
         - Methodref [android/app/Activity.registerReceiver (Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;]
       [40] pop
       [41] return
@@ -3153,12 +3159,12 @@ Methods (count = 23):
       [1] getfield #41
         - Fieldref [com/badran/bluetoothcontroller/Bridge.a Lcom/badran/bluetoothcontroller/d;]
       [4] ifnull +13 (target=17)
-      [7] getstatic #51
+      [7] getstatic #52
         - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
       [10] aload_0 v0
       [11] getfield #41
         - Fieldref [com/badran/bluetoothcontroller/Bridge.a Lcom/badran/bluetoothcontroller/d;]
-      [14] invokevirtual #55
+      [14] invokevirtual #56
         - Methodref [android/app/Activity.unregisterReceiver (Landroid/content/BroadcastReceiver;)V]
       [17] return
       [18] pop
@@ -3180,7 +3186,7 @@ Methods (count = 23):
       [3] ifnull +10 (target=13)
       [6] getstatic #38
         - Fieldref [com/badran/bluetoothcontroller/Bridge.a Landroid/bluetooth/BluetoothAdapter;]
-      [9] invokevirtual #57
+      [9] invokevirtual #58
         - Methodref [android/bluetooth/BluetoothAdapter.enable ()Z]
       [12] ireturn
       [13] iconst_0
@@ -3199,7 +3205,7 @@ Methods (count = 23):
       [3] ifnull +10 (target=13)
       [6] getstatic #38
         - Fieldref [com/badran/bluetoothcontroller/Bridge.a Landroid/bluetooth/BluetoothAdapter;]
-      [9] invokevirtual #56
+      [9] invokevirtual #57
         - Methodref [android/bluetooth/BluetoothAdapter.disable ()Z]
       [12] ireturn
       [13] iconst_0
@@ -3218,7 +3224,7 @@ Methods (count = 23):
       [3] ifnull +10 (target=13)
       [6] getstatic #38
         - Fieldref [com/badran/bluetoothcontroller/Bridge.a Landroid/bluetooth/BluetoothAdapter;]
-      [9] invokevirtual #60
+      [9] invokevirtual #61
         - Methodref [android/bluetooth/BluetoothAdapter.isEnabled ()Z]
       [12] ireturn
       [13] iconst_0
@@ -3242,54 +3248,54 @@ Methods (count = 23):
       [11] dup
       [12] aload_0 v0
       [13] iconst_0
-      [14] invokespecial #76
+      [14] invokespecial #77
         - Methodref [com/badran/bluetoothcontroller/c.<init> (Lcom/badran/bluetoothcontroller/Bridge;B)V]
       [17] putfield #40
         - Fieldref [com/badran/bluetoothcontroller/Bridge.a Lcom/badran/bluetoothcontroller/c;]
       [20] new #16
         - Class [android/content/IntentFilter]
       [23] dup
-      [24] invokespecial #65
+      [24] invokespecial #66
         - Methodref [android/content/IntentFilter.<init> ()V]
       [27] dup
       [28] astore_1 v1
       [29] ldc #6
         - String [android.bluetooth.devicepicker.action.DEVICE_SELECTED]
-      [31] invokevirtual #67
+      [31] invokevirtual #68
         - Methodref [android/content/IntentFilter.addAction (Ljava/lang/String;)V]
-      [34] getstatic #51
+      [34] getstatic #52
         - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
       [37] aload_0 v0
       [38] getfield #40
         - Fieldref [com/badran/bluetoothcontroller/Bridge.a Lcom/badran/bluetoothcontroller/c;]
       [41] aload_1 v1
-      [42] invokevirtual #52
+      [42] invokevirtual #53
         - Methodref [android/app/Activity.registerReceiver (Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;]
       [45] pop
-      [46] getstatic #51
+      [46] getstatic #52
         - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
       [49] new #15
         - Class [android/content/Intent]
       [52] dup
       [53] ldc #7
         - String [android.bluetooth.devicepicker.action.LAUNCH]
-      [55] invokespecial #61
+      [55] invokespecial #62
         - Methodref [android/content/Intent.<init> (Ljava/lang/String;)V]
       [58] ldc #9
         - String [android.bluetooth.devicepicker.extra.NEED_AUTH]
       [60] iconst_0
-      [61] invokevirtual #63
+      [61] invokevirtual #64
         - Methodref [android/content/Intent.putExtra (Ljava/lang/String;Z)Landroid/content/Intent;]
       [64] ldc #8
         - String [android.bluetooth.devicepicker.extra.FILTER_TYPE]
       [66] iconst_0
-      [67] invokevirtual #62
+      [67] invokevirtual #63
         - Methodref [android/content/Intent.putExtra (Ljava/lang/String;I)Landroid/content/Intent;]
       [70] ldc #1
         - Integer [8388608]
-      [72] invokevirtual #64
+      [72] invokevirtual #65
         - Methodref [android/content/Intent.setFlags (I)Landroid/content/Intent;]
-      [75] invokevirtual #53
+      [75] invokevirtual #54
         - Methodref [android/app/Activity.startActivity (Landroid/content/Intent;)V]
       [78] return
       Code attribute exceptions (count = 0):
@@ -3301,10 +3307,22 @@ Methods (count = 23):
       = public boolean startDiscovery()
     Class member attributes (count = 1):
     - Code attribute instructions (code length = 7, locals = 1, stack = 1):
-      [0] invokestatic #78
+      [0] invokestatic #79
+        - Methodref [com/badran/bluetoothcontroller/e.a ()Lcom/badran/bluetoothcontroller/e;]
+      [3] invokevirtual #82
+        - Methodref [com/badran/bluetoothcontroller/e.startDiscovery ()Z]
+      [6] ireturn
+      Code attribute exceptions (count = 0):
+      Code attribute attributes (attribute count = 0):
+  - Method:       cancelDiscovery()Z
+    Access flags: 0x1
+      = public boolean cancelDiscovery()
+    Class member attributes (count = 1):
+    - Code attribute instructions (code length = 7, locals = 1, stack = 1):
+      [0] invokestatic #79
         - Methodref [com/badran/bluetoothcontroller/e.a ()Lcom/badran/bluetoothcontroller/e;]
       [3] invokevirtual #80
-        - Methodref [com/badran/bluetoothcontroller/e.startDiscovery ()Z]
+        - Methodref [com/badran/bluetoothcontroller/e.cancelDiscovery ()Z]
       [6] ireturn
       Code attribute exceptions (count = 0):
       Code attribute attributes (attribute count = 0):
@@ -3313,11 +3331,11 @@ Methods (count = 23):
       = public void makeDiscoverable(int)
     Class member attributes (count = 1):
     - Code attribute instructions (code length = 9, locals = 2, stack = 1):
-      [0] invokestatic #78
+      [0] invokestatic #79
         - Methodref [com/badran/bluetoothcontroller/e.a ()Lcom/badran/bluetoothcontroller/e;]
       [3] pop
       [4] iload_1 v1
-      [5] invokestatic #79
+      [5] invokestatic #81
         - Methodref [com/badran/bluetoothcontroller/e.makeDiscoverable (I)V]
       [8] return
       Code attribute exceptions (count = 0):
@@ -3327,7 +3345,7 @@ Methods (count = 23):
       = public void initServer(java.lang.String,int,boolean)
     Class member attributes (count = 1):
     - Code attribute instructions (code length = 135, locals = 6, stack = 7):
-      [0] invokestatic #78
+      [0] invokestatic #79
         - Methodref [com/badran/bluetoothcontroller/e.a ()Lcom/badran/bluetoothcontroller/e;]
       [3] aload_1 v1
       [4] iload_2 v2
@@ -3346,17 +3364,17 @@ Methods (count = 23):
       [22] dup
       [23] aload_1 v1
       [24] aload_2 v2
-      [25] invokestatic #92
+      [25] invokestatic #94
         - Methodref [java/util/UUID.fromString (Ljava/lang/String;)Ljava/util/UUID;]
       [28] iload_3 v3
       [29] iload v4
-      [31] invokespecial #81
+      [31] invokespecial #83
         - Methodref [com/badran/bluetoothcontroller/h.<init> (Lcom/badran/bluetoothcontroller/e;Ljava/util/UUID;IZ)V]
       [34] putfield #47
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/h;]
       [37] goto +49 (target=86)
       [40] aload_1 v1
-      [41] getfield #50
+      [41] getfield #51
         - Fieldref [com/badran/bluetoothcontroller/e.b Ljava/lang/Object;]
       [44] dup
       [45] astore v5
@@ -3364,7 +3382,7 @@ Methods (count = 23):
       [48] aload_1 v1
       [49] getfield #47
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/h;]
-      [52] invokevirtual #82
+      [52] invokevirtual #84
         - Methodref [com/badran/bluetoothcontroller/h.h ()V]
       [55] aload_1 v1
       [56] new #24
@@ -3372,11 +3390,11 @@ Methods (count = 23):
       [59] dup
       [60] aload_1 v1
       [61] aload_2 v2
-      [62] invokestatic #92
+      [62] invokestatic #94
         - Methodref [java/util/UUID.fromString (Ljava/lang/String;)Ljava/util/UUID;]
       [65] iload_3 v3
       [66] iload v4
-      [68] invokespecial #81
+      [68] invokespecial #83
         - Methodref [com/badran/bluetoothcontroller/h.<init> (Lcom/badran/bluetoothcontroller/e;Ljava/util/UUID;IZ)V]
       [71] putfield #47
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/h;]
@@ -3393,11 +3411,11 @@ Methods (count = 23):
       [89] dup
       [90] ldc #4
         - String [android.bluetooth.adapter.action.SCAN_MODE_CHANGED]
-      [92] invokespecial #66
+      [92] invokespecial #67
         - Methodref [android/content/IntentFilter.<init> (Ljava/lang/String;)V]
       [95] astore v5
       [97] aload_1 v1
-      [98] getfield #49
+      [98] getfield #50
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/m;]
       [101] ifnonnull +16 (target=117)
       [104] aload_1 v1
@@ -3406,21 +3424,21 @@ Methods (count = 23):
       [108] dup
       [109] aload_1 v1
       [110] iconst_0
-      [111] invokespecial #83
+      [111] invokespecial #85
         - Methodref [com/badran/bluetoothcontroller/m.<init> (Lcom/badran/bluetoothcontroller/e;B)V]
-      [114] putfield #49
+      [114] putfield #50
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/m;]
-      [117] getstatic #51
+      [117] getstatic #52
         - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
       [120] aload_1 v1
-      [121] getfield #49
+      [121] getfield #50
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/m;]
       [124] aload v5
-      [126] invokevirtual #52
+      [126] invokevirtual #53
         - Methodref [android/app/Activity.registerReceiver (Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;]
       [129] pop
       [130] iload_3 v3
-      [131] invokestatic #79
+      [131] invokestatic #81
         - Methodref [com/badran/bluetoothcontroller/e.makeDiscoverable (I)V]
       [134] return
       Code attribute exceptions (count = 2):
@@ -3445,7 +3463,7 @@ Methods (count = 23):
         - Class [com/badran/bluetoothcontroller/BluetoothConnection]
       [10] dup
       [11] iload_1 v1
-      [12] invokespecial #69
+      [12] invokespecial #70
         - Methodref [com/badran/bluetoothcontroller/BluetoothConnection.<init> (I)V]
       [15] dup
       [16] astore_1 v1
@@ -3457,7 +3475,7 @@ Methods (count = 23):
       [24] aload_0 v0
       [25] getfield #42
         - Fieldref [com/badran/bluetoothcontroller/Bridge.b Landroid/bluetooth/BluetoothDevice;]
-      [28] invokevirtual #71
+      [28] invokevirtual #72
         - Methodref [com/badran/bluetoothcontroller/BluetoothConnection.a (Landroid/bluetooth/BluetoothDevice;)V]
       [31] aload_1 v1
       [32] areturn
@@ -3479,7 +3497,7 @@ Methods (count = 23):
         - Class [com/badran/bluetoothcontroller/BluetoothConnection]
       [9] dup
       [10] iload_1 v1
-      [11] invokespecial #69
+      [11] invokespecial #70
         - Methodref [com/badran/bluetoothcontroller/BluetoothConnection.<init> (I)V]
       [14] dup
       [15] astore_1 v1
@@ -3495,7 +3513,7 @@ Methods (count = 23):
       [29] aload_1 v1
       [30] getstatic #45
         - Fieldref [com/badran/bluetoothcontroller/b.a Landroid/bluetooth/BluetoothSocket;]
-      [33] invokevirtual #72
+      [33] invokevirtual #73
         - Methodref [com/badran/bluetoothcontroller/BluetoothConnection.a (Landroid/bluetooth/BluetoothSocket;)V]
       [36] aload_1 v1
       [37] areturn
@@ -3512,11 +3530,11 @@ Methods (count = 23):
     - Code attribute instructions (code length = 74, locals = 6, stack = 3):
       [0] getstatic #38
         - Fieldref [com/badran/bluetoothcontroller/Bridge.a Landroid/bluetooth/BluetoothAdapter;]
-      [3] invokevirtual #58
+      [3] invokevirtual #59
         - Methodref [android/bluetooth/BluetoothAdapter.getBondedDevices ()Ljava/util/Set;]
       [6] dup
       [7] astore_1 v1
-      [8] invokeinterface #96, 256
+      [8] invokeinterface #98, 256
         - InterfaceMethodref [java/util/Set.size ()I]
       [13] anewarray #17
         - Class [com/badran/bluetoothcontroller/BluetoothConnection]
@@ -3524,15 +3542,15 @@ Methods (count = 23):
       [17] iconst_0
       [18] istore_3 v3
       [19] aload_1 v1
-      [20] invokeinterface #95, 256
+      [20] invokeinterface #97, 256
         - InterfaceMethodref [java/util/Set.iterator ()Ljava/util/Iterator;]
       [25] astore_1 v1
       [26] aload_1 v1
-      [27] invokeinterface #93, 256
+      [27] invokeinterface #95, 256
         - InterfaceMethodref [java/util/Iterator.hasNext ()Z]
       [32] ifeq +40 (target=72)
       [35] aload_1 v1
-      [36] invokeinterface #94, 256
+      [36] invokeinterface #96, 256
         - InterfaceMethodref [java/util/Iterator.next ()Ljava/lang/Object;]
       [41] checkcast #14
         - Class [android/bluetooth/BluetoothDevice]
@@ -3540,12 +3558,12 @@ Methods (count = 23):
       [46] new #17
         - Class [com/badran/bluetoothcontroller/BluetoothConnection]
       [49] dup
-      [50] invokespecial #68
+      [50] invokespecial #69
         - Methodref [com/badran/bluetoothcontroller/BluetoothConnection.<init> ()V]
       [53] dup
       [54] astore v5
       [56] aload v4
-      [58] invokevirtual #71
+      [58] invokevirtual #72
         - Methodref [com/badran/bluetoothcontroller/BluetoothConnection.a (Landroid/bluetooth/BluetoothDevice;)V]
       [61] aload_2 v2
       [62] iload_3 v3
@@ -3572,32 +3590,32 @@ Methods (count = 23):
       [5] new #33
         - Class [java/util/LinkedList]
       [8] dup
-      [9] invokespecial #87
+      [9] invokespecial #89
         - Methodref [java/util/LinkedList.<init> ()V]
       [12] dup
       [13] astore_1 v1
       [14] bipush 10
-      [16] invokestatic #85
+      [16] invokestatic #87
         - Methodref [java/lang/Integer.valueOf (I)Ljava/lang/Integer;]
-      [19] invokevirtual #88
+      [19] invokevirtual #90
         - Methodref [java/util/LinkedList.add (Ljava/lang/Object;)Z]
       [22] pop
       [23] aload_1 v1
       [24] bipush 30
-      [26] invokestatic #85
+      [26] invokestatic #87
         - Methodref [java/lang/Integer.valueOf (I)Ljava/lang/Integer;]
-      [29] invokevirtual #88
+      [29] invokevirtual #90
         - Methodref [java/util/LinkedList.add (Ljava/lang/Object;)Z]
       [32] pop
       [33] aload_1 v1
       [34] bipush 40
-      [36] invokestatic #85
+      [36] invokestatic #87
         - Methodref [java/lang/Integer.valueOf (I)Ljava/lang/Integer;]
-      [39] invokevirtual #88
+      [39] invokevirtual #90
         - Methodref [java/util/LinkedList.add (Ljava/lang/Object;)Z]
       [42] pop
       [43] aload_1 v1
-      [44] invokevirtual #91
+      [44] invokevirtual #93
         - Methodref [java/util/LinkedList.size ()I]
       [47] dup
       [48] istore_2 v2
@@ -3614,7 +3632,7 @@ Methods (count = 23):
       [60] iload_2 v2
       [61] iconst_1
       [62] isub
-      [63] invokestatic #74
+      [63] invokestatic #75
         - Methodref [com/badran/bluetoothcontroller/Bridge.a ([BII)V]
       [66] iload_2 v2
       [67] iconst_1
@@ -3622,27 +3640,27 @@ Methods (count = 23):
       [71] iconst_4
       [72] istore_2 v2
       [73] aload_1 v1
-      [74] invokevirtual #91
+      [74] invokevirtual #93
         - Methodref [java/util/LinkedList.size ()I]
       [77] iconst_1
       [78] ificmple +28 (target=106)
       [81] aload_1 v1
-      [82] invokevirtual #90
+      [82] invokevirtual #92
         - Methodref [java/util/LinkedList.poll ()Ljava/lang/Object;]
       [85] checkcast #28
         - Class [java/lang/Integer]
-      [88] invokevirtual #84
+      [88] invokevirtual #86
         - Methodref [java/lang/Integer.intValue ()I]
       [91] istore v4
       [93] aload_3 v3
       [94] iload_2 v2
       [95] iload v4
-      [97] invokestatic #74
+      [97] invokestatic #75
         - Methodref [com/badran/bluetoothcontroller/Bridge.a ([BII)V]
       [100] iinc v2, 4
       [103] goto -30 (target=73)
       [106] aload_1 v1
-      [107] invokevirtual #89
+      [107] invokevirtual #91
         - Methodref [java/util/LinkedList.clear ()V]
       [110] aload_3 v3
       [111] areturn
@@ -3694,19 +3712,19 @@ Methods (count = 23):
     Access flags: 0x1
       = public void OnDestroy()
     Class member attributes (count = 1):
-    - Code attribute instructions (code length = 68, locals = 2, stack = 2):
+    - Code attribute instructions (code length = 89, locals = 2, stack = 2):
       [0] aload_0 v0
-      [1] invokevirtual #75
+      [1] invokevirtual #76
         - Methodref [com/badran/bluetoothcontroller/Bridge.deRegisterStateReceiver ()V]
-      [4] invokestatic #78
+      [4] invokestatic #79
         - Methodref [com/badran/bluetoothcontroller/e.a ()Lcom/badran/bluetoothcontroller/e;]
       [7] astore_1 v1
-      [8] getstatic #51
+      [8] getstatic #52
         - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
       [11] aload_1 v1
       [12] getfield #46
         - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/content/BroadcastReceiver;]
-      [15] invokevirtual #55
+      [15] invokevirtual #56
         - Methodref [android/app/Activity.unregisterReceiver (Landroid/content/BroadcastReceiver;)V]
       [18] goto +4 (target=22)
       [21] pop
@@ -3714,47 +3732,65 @@ Methods (count = 23):
       [23] getfield #48
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/j;]
       [26] ifnull +13 (target=39)
-      [29] getstatic #51
+      [29] getstatic #52
         - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
       [32] aload_1 v1
       [33] getfield #48
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/j;]
-      [36] invokevirtual #55
+      [36] invokevirtual #56
         - Methodref [android/app/Activity.unregisterReceiver (Landroid/content/BroadcastReceiver;)V]
       [39] goto +4 (target=43)
       [42] pop
       [43] aload_1 v1
       [44] getfield #49
-        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/m;]
-      [47] ifnull +17 (target=64)
-      [50] getstatic #51
+        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/l;]
+      [47] ifnull +13 (target=60)
+      [50] getstatic #52
         - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
       [53] aload_1 v1
       [54] getfield #49
-        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/m;]
-      [57] invokevirtual #55
+        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/l;]
+      [57] invokevirtual #56
         - Methodref [android/app/Activity.unregisterReceiver (Landroid/content/BroadcastReceiver;)V]
       [60] goto +4 (target=64)
       [63] pop
-      [64] invokestatic #70
+      [64] aload_1 v1
+      [65] getfield #50
+        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/m;]
+      [68] ifnull +17 (target=85)
+      [71] getstatic #52
+        - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
+      [74] aload_1 v1
+      [75] getfield #50
+        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/m;]
+      [78] invokevirtual #56
+        - Methodref [android/app/Activity.unregisterReceiver (Landroid/content/BroadcastReceiver;)V]
+      [81] goto +4 (target=85)
+      [84] pop
+      [85] invokestatic #71
         - Methodref [com/badran/bluetoothcontroller/BluetoothConnection.a ()V]
-      [67] return
-      Code attribute exceptions (count = 3):
+      [88] return
+      Code attribute exceptions (count = 4):
       - ExceptionInfo (8 -> 18: 21):
       - Class [java/lang/IllegalArgumentException]
       - ExceptionInfo (22 -> 39: 42):
       - Class [java/lang/IllegalArgumentException]
-      - ExceptionInfo (50 -> 60: 63):
+      - ExceptionInfo (43 -> 60: 63):
+      - Class [java/lang/IllegalArgumentException]
+      - ExceptionInfo (71 -> 81: 84):
       - Class [java/lang/IllegalArgumentException]
       Code attribute attributes (attribute count = 1):
-      - Stack map table attribute (count = 7):
+      - Stack map table attribute (count = 10):
         - [21] Var: [T][a:com/badran/bluetoothcontroller/e], Stack: [a:java/lang/IllegalArgumentException]
         - [22] Var: ..., Stack: (empty)
         - [39] Var: ..., Stack: (empty)
         - [42] Var: ..., Stack: [a:java/lang/IllegalArgumentException]
         - [43] Var: ..., Stack: (empty)
-        - [63] Var: , Stack: [a:java/lang/IllegalArgumentException]
+        - [60] Var: ..., Stack: (empty)
+        - [63] Var: ..., Stack: [a:java/lang/IllegalArgumentException]
         - [64] Var: ..., Stack: (empty)
+        - [84] Var: , Stack: [a:java/lang/IllegalArgumentException]
+        - [85] Var: ..., Stack: (empty)
   - Method:       a(Lcom/badran/bluetoothcontroller/Bridge;Landroid/bluetooth/BluetoothDevice;)Landroid/bluetooth/BluetoothDevice;
     Access flags: 0x1008
       = static synthetic android.bluetooth.BluetoothDevice a(com.badran.bluetoothcontroller.Bridge,android.bluetooth.BluetoothDevice)
@@ -4250,7 +4286,7 @@ _____________________________________________________________________
 
 Interfaces (count = 0):
 
-Constant Pool (count = 239):
+Constant Pool (count = 244):
   - String [android.bluetooth.adapter.action.DISCOVERY_FINISHED]
   - String [android.bluetooth.adapter.action.REQUEST_DISCOVERABLE]
   - String [android.bluetooth.adapter.extra.DISCOVERABLE_DURATION]
@@ -4272,6 +4308,7 @@ Constant Pool (count = 239):
   - Class [com/badran/bluetoothcontroller/j]
   - Class [com/badran/bluetoothcontroller/l]
   - Class [com/unity3d/player/UnityPlayer]
+  - Class [java/lang/IllegalArgumentException]
   - Class [java/lang/Object]
   - Class [java/lang/String]
   - Class [java/lang/Thread]
@@ -4303,6 +4340,7 @@ Constant Pool (count = 239):
   - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
   - Methodref [android/app/Activity.registerReceiver (Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;]
   - Methodref [android/app/Activity.startActivity (Landroid/content/Intent;)V]
+  - Methodref [android/app/Activity.unregisterReceiver (Landroid/content/BroadcastReceiver;)V]
   - Methodref [android/bluetooth/BluetoothAdapter.cancelDiscovery ()Z]
   - Methodref [android/bluetooth/BluetoothAdapter.getBondedDevices ()Ljava/util/Set;]
   - Methodref [android/bluetooth/BluetoothAdapter.getDefaultAdapter ()Landroid/bluetooth/BluetoothAdapter;]
@@ -4380,6 +4418,7 @@ Constant Pool (count = 239):
   - NameAndType [start ()V]
   - NameAndType [startActivity (Landroid/content/Intent;)V]
   - NameAndType [startDiscovery ()Z]
+  - NameAndType [unregisterReceiver (Landroid/content/BroadcastReceiver;)V]
   - Utf8 [()I]
   - Utf8 [()Landroid/bluetooth/BluetoothAdapter;]
   - Utf8 [()Lcom/badran/bluetoothcontroller/e;]
@@ -4393,6 +4432,7 @@ Constant Pool (count = 239):
   - Utf8 [(I)V]
   - Utf8 [(ILjava/lang/Object;)V]
   - Utf8 [(Landroid/bluetooth/BluetoothDevice;)V]
+  - Utf8 [(Landroid/content/BroadcastReceiver;)V]
   - Utf8 [(Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;]
   - Utf8 [(Landroid/content/Intent;)V]
   - Utf8 [(Lcom/badran/bluetoothcontroller/BluetoothConnection;)Z]
@@ -4400,7 +4440,6 @@ Constant Pool (count = 239):
   - Utf8 [(Lcom/badran/bluetoothcontroller/e;)Lcom/badran/bluetoothcontroller/b;]
   - Utf8 [(Lcom/badran/bluetoothcontroller/e;)Lcom/badran/bluetoothcontroller/h;]
   - Utf8 [(Lcom/badran/bluetoothcontroller/e;)Lcom/badran/bluetoothcontroller/j;]
-  - Utf8 [(Lcom/badran/bluetoothcontroller/e;)Lcom/badran/bluetoothcontroller/l;]
   - Utf8 [(Lcom/badran/bluetoothcontroller/e;)Lcom/badran/bluetoothcontroller/m;]
   - Utf8 [(Lcom/badran/bluetoothcontroller/e;)Ljava/lang/Object;]
   - Utf8 [(Lcom/badran/bluetoothcontroller/e;)V]
@@ -4472,6 +4511,7 @@ Constant Pool (count = 239):
   - Utf8 [isDiscovering]
   - Utf8 [iterator]
   - Utf8 [j]
+  - Utf8 [java/lang/IllegalArgumentException]
   - Utf8 [java/lang/Object]
   - Utf8 [java/lang/String]
   - Utf8 [java/lang/Thread]
@@ -4489,6 +4529,7 @@ Constant Pool (count = 239):
   - Utf8 [start]
   - Utf8 [startActivity]
   - Utf8 [startDiscovery]
+  - Utf8 [unregisterReceiver]
 
 Fields (count = 14):
   - Field:        a Landroid/bluetooth/BluetoothAdapter;
@@ -4501,8 +4542,8 @@ Fields (count = 14):
     Access flags: 0x0
       = com.badran.bluetoothcontroller.j a
   - Field:        a Lcom/badran/bluetoothcontroller/l;
-    Access flags: 0x2
-      = private com.badran.bluetoothcontroller.l a
+    Access flags: 0x0
+      = com.badran.bluetoothcontroller.l a
   - Field:        j Z
     Access flags: 0x40
       = volatile boolean j
@@ -4541,64 +4582,64 @@ Methods (count = 17):
     Class member attributes (count = 1):
     - Code attribute instructions (code length = 117, locals = 3, stack = 4):
       [0] aload_0 v0
-      [1] invokespecial #73
+      [1] invokespecial #75
         - Methodref [java/lang/Object.<init> ()V]
       [4] aload_0 v0
       [5] iconst_0
-      [6] putfield #49
+      [6] putfield #50
         - Fieldref [com/badran/bluetoothcontroller/e.j Z]
       [9] aload_0 v0
-      [10] new #27
+      [10] new #28
         - Class [java/util/LinkedList]
       [13] dup
-      [14] invokespecial #78
+      [14] invokespecial #80
         - Methodref [java/util/LinkedList.<init> ()V]
-      [17] putfield #46
+      [17] putfield #47
         - Fieldref [com/badran/bluetoothcontroller/e.a Ljava/util/Queue;]
       [20] aload_0 v0
       [21] new #12
         - Class [android/util/SparseArray]
       [24] dup
-      [25] invokespecial #63
+      [25] invokespecial #65
         - Methodref [android/util/SparseArray.<init> ()V]
-      [28] putfield #38
+      [28] putfield #39
         - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/util/SparseArray;]
       [31] aload_0 v0
-      [32] new #22
+      [32] new #23
         - Class [java/lang/Object]
       [35] dup
-      [36] invokespecial #73
+      [36] invokespecial #75
         - Methodref [java/lang/Object.<init> ()V]
-      [39] putfield #45
+      [39] putfield #46
         - Fieldref [com/badran/bluetoothcontroller/e.a Ljava/lang/Object;]
       [42] aload_0 v0
       [43] new #17
         - Class [com/badran/bluetoothcontroller/f]
       [46] dup
       [47] aload_0 v0
-      [48] invokespecial #69
+      [48] invokespecial #71
         - Methodref [com/badran/bluetoothcontroller/f.<init> (Lcom/badran/bluetoothcontroller/e;)V]
-      [51] putfield #37
+      [51] putfield #38
         - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/content/BroadcastReceiver;]
       [54] aload_0 v0
-      [55] new #22
+      [55] new #23
         - Class [java/lang/Object]
       [58] dup
-      [59] invokespecial #73
+      [59] invokespecial #75
         - Methodref [java/lang/Object.<init> ()V]
-      [62] putfield #48
+      [62] putfield #49
         - Fieldref [com/badran/bluetoothcontroller/e.b Ljava/lang/Object;]
       [65] aload_0 v0
-      [66] invokestatic #55
+      [66] invokestatic #57
         - Methodref [android/bluetooth/BluetoothAdapter.getDefaultAdapter ()Landroid/bluetooth/BluetoothAdapter;]
-      [69] putfield #36
+      [69] putfield #37
         - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/bluetooth/BluetoothAdapter;]
       [72] new #11
         - Class [android/content/IntentFilter]
       [75] dup
       [76] ldc #5
         - String [android.bluetooth.device.action.ACL_DISCONNECT_REQUESTED]
-      [78] invokespecial #62
+      [78] invokespecial #64
         - Methodref [android/content/IntentFilter.<init> (Ljava/lang/String;)V]
       [81] astore_1 v1
       [82] new #11
@@ -4606,25 +4647,25 @@ Methods (count = 17):
       [85] dup
       [86] ldc #4
         - String [android.bluetooth.device.action.ACL_DISCONNECTED]
-      [88] invokespecial #62
+      [88] invokespecial #64
         - Methodref [android/content/IntentFilter.<init> (Ljava/lang/String;)V]
       [91] astore_2 v2
-      [92] getstatic #50
+      [92] getstatic #51
         - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
       [95] aload_0 v0
-      [96] getfield #37
+      [96] getfield #38
         - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/content/BroadcastReceiver;]
       [99] aload_1 v1
-      [100] invokevirtual #51
+      [100] invokevirtual #52
         - Methodref [android/app/Activity.registerReceiver (Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;]
       [103] pop
-      [104] getstatic #50
+      [104] getstatic #51
         - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
       [107] aload_0 v0
-      [108] getfield #37
+      [108] getfield #38
         - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/content/BroadcastReceiver;]
       [111] aload_2 v2
-      [112] invokevirtual #51
+      [112] invokevirtual #52
         - Methodref [android/app/Activity.registerReceiver (Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;]
       [115] pop
       [116] return
@@ -4635,17 +4676,17 @@ Methods (count = 17):
       = public static com.badran.bluetoothcontroller.e a()
     Class member attributes (count = 1):
     - Code attribute instructions (code length = 20, locals = 0, stack = 2):
-      [0] getstatic #40
+      [0] getstatic #41
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/e;]
       [3] ifnonnull +13 (target=16)
       [6] new #16
         - Class [com/badran/bluetoothcontroller/e]
       [9] dup
-      [10] invokespecial #68
+      [10] invokespecial #70
         - Methodref [com/badran/bluetoothcontroller/e.<init> ()V]
-      [13] putstatic #40
+      [13] putstatic #41
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/e;]
-      [16] getstatic #40
+      [16] getstatic #41
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/e;]
       [19] areturn
       Code attribute exceptions (count = 0):
@@ -4658,68 +4699,68 @@ Methods (count = 17):
     Class member attributes (count = 1):
     - Code attribute instructions (code length = 121, locals = 5, stack = 6):
       [0] aload_0 v0
-      [1] getfield #45
+      [1] getfield #46
         - Fieldref [com/badran/bluetoothcontroller/e.a Ljava/lang/Object;]
       [4] dup
       [5] astore_2 v2
       [6] monitorenter
       [7] aload_0 v0
-      [8] getfield #46
+      [8] getfield #47
         - Fieldref [com/badran/bluetoothcontroller/e.a Ljava/util/Queue;]
       [11] aload_1 v1
-      [12] invokeinterface #81, 512
+      [12] invokeinterface #83, 512
         - InterfaceMethodref [java/util/Queue.add (Ljava/lang/Object;)Z]
       [17] pop
       [18] aload_1 v1
-      [19] getfield #35
+      [19] getfield #36
         - Fieldref [com/badran/bluetoothcontroller/b.a Lcom/badran/bluetoothcontroller/BluetoothConnection;]
-      [22] invokevirtual #67
+      [22] invokevirtual #69
         - Methodref [com/badran/bluetoothcontroller/BluetoothConnection.getID ()I]
       [25] istore_3 v3
       [26] aload_0 v0
-      [27] getfield #38
+      [27] getfield #39
         - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/util/SparseArray;]
       [30] iload_3 v3
-      [31] invokevirtual #64
+      [31] invokevirtual #66
         - Methodref [android/util/SparseArray.get (I)Ljava/lang/Object;]
-      [34] checkcast #28
+      [34] checkcast #29
         - Class [java/util/Queue]
       [37] dup
       [38] astore v4
       [40] ifnonnull +33 (target=73)
-      [43] new #27
+      [43] new #28
         - Class [java/util/LinkedList]
       [46] dup
-      [47] invokespecial #78
+      [47] invokespecial #80
         - Methodref [java/util/LinkedList.<init> ()V]
       [50] dup
       [51] astore v4
       [53] aload_1 v1
-      [54] invokeinterface #81, 512
+      [54] invokeinterface #83, 512
         - InterfaceMethodref [java/util/Queue.add (Ljava/lang/Object;)Z]
       [59] pop
       [60] aload_0 v0
-      [61] getfield #38
+      [61] getfield #39
         - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/util/SparseArray;]
       [64] iload_3 v3
       [65] aload v4
-      [67] invokevirtual #65
+      [67] invokevirtual #67
         - Methodref [android/util/SparseArray.put (ILjava/lang/Object;)V]
       [70] goto +12 (target=82)
       [73] aload v4
       [75] aload_1 v1
-      [76] invokeinterface #81, 512
+      [76] invokeinterface #83, 512
         - InterfaceMethodref [java/util/Queue.add (Ljava/lang/Object;)Z]
       [81] pop
       [82] aload_0 v0
-      [83] getfield #49
+      [83] getfield #50
         - Fieldref [com/badran/bluetoothcontroller/e.j Z]
       [86] ifne +27 (target=113)
       [89] aload_0 v0
       [90] iconst_1
-      [91] putfield #49
+      [91] putfield #50
         - Fieldref [com/badran/bluetoothcontroller/e.j Z]
-      [94] new #24
+      [94] new #25
         - Class [java/lang/Thread]
       [97] dup
       [98] new #18
@@ -4727,11 +4768,11 @@ Methods (count = 17):
       [101] dup
       [102] aload_0 v0
       [103] iconst_0
-      [104] invokespecial #70
+      [104] invokespecial #72
         - Methodref [com/badran/bluetoothcontroller/i.<init> (Lcom/badran/bluetoothcontroller/e;B)V]
-      [107] invokespecial #76
+      [107] invokespecial #78
         - Methodref [java/lang/Thread.<init> (Ljava/lang/Runnable;)V]
-      [110] invokevirtual #77
+      [110] invokevirtual #79
         - Methodref [java/lang/Thread.start ()V]
       [113] aload_2 v2
       [114] monitorexit
@@ -4758,15 +4799,15 @@ Methods (count = 17):
       [0] iconst_0
       [1] istore_2 v2
       [2] aload_0 v0
-      [3] getfield #36
+      [3] getfield #37
         - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/bluetooth/BluetoothAdapter;]
-      [6] invokevirtual #54
+      [6] invokevirtual #56
         - Methodref [android/bluetooth/BluetoothAdapter.getBondedDevices ()Ljava/util/Set;]
       [9] astore_3 v3
       [10] aload_1 v1
-      [11] getfield #30
+      [11] getfield #31
         - Fieldref [com/badran/bluetoothcontroller/BluetoothConnection.a Lcom/badran/bluetoothcontroller/a;]
-      [14] getstatic #33
+      [14] getstatic #34
         - Fieldref [com/badran/bluetoothcontroller/a.b Lcom/badran/bluetoothcontroller/a;]
       [17] ifacmpne +7 (target=24)
       [20] iconst_1
@@ -4774,15 +4815,15 @@ Methods (count = 17):
       [24] iconst_0
       [25] istore v4
       [27] aload_3 v3
-      [28] invokeinterface #82, 256
+      [28] invokeinterface #84, 256
         - InterfaceMethodref [java/util/Set.iterator ()Ljava/util/Iterator;]
       [33] astore_3 v3
       [34] aload_3 v3
-      [35] invokeinterface #79, 256
+      [35] invokeinterface #81, 256
         - InterfaceMethodref [java/util/Iterator.hasNext ()Z]
       [40] ifeq +71 (target=111)
       [43] aload_3 v3
-      [44] invokeinterface #80, 256
+      [44] invokeinterface #82, 256
         - InterfaceMethodref [java/util/Iterator.next ()Ljava/lang/Object;]
       [49] checkcast #9
         - Class [android/bluetooth/BluetoothDevice]
@@ -4790,55 +4831,55 @@ Methods (count = 17):
       [54] iload v4
       [56] ifeq +19 (target=75)
       [59] aload v5
-      [61] invokevirtual #58
+      [61] invokevirtual #60
         - Methodref [android/bluetooth/BluetoothDevice.getAddress ()Ljava/lang/String;]
       [64] aload_1 v1
-      [65] getfield #31
+      [65] getfield #32
         - Fieldref [com/badran/bluetoothcontroller/BluetoothConnection.a Ljava/lang/String;]
-      [68] invokevirtual #75
+      [68] invokevirtual #77
         - Methodref [java/lang/String.equalsIgnoreCase (Ljava/lang/String;)Z]
       [71] istore_2 v2
       [72] goto +16 (target=88)
       [75] aload v5
-      [77] invokevirtual #59
+      [77] invokevirtual #61
         - Methodref [android/bluetooth/BluetoothDevice.getName ()Ljava/lang/String;]
       [80] aload_1 v1
-      [81] getfield #32
+      [81] getfield #33
         - Fieldref [com/badran/bluetoothcontroller/BluetoothConnection.name Ljava/lang/String;]
-      [84] invokevirtual #74
+      [84] invokevirtual #76
         - Methodref [java/lang/String.equals (Ljava/lang/Object;)Z]
       [87] istore_2 v2
       [88] iload_2 v2
       [89] ifeq +19 (target=108)
       [92] aload_1 v1
-      [93] getstatic #34
+      [93] getstatic #35
         - Fieldref [com/badran/bluetoothcontroller/a.d Lcom/badran/bluetoothcontroller/a;]
-      [96] putfield #30
+      [96] putfield #31
         - Fieldref [com/badran/bluetoothcontroller/BluetoothConnection.a Lcom/badran/bluetoothcontroller/a;]
       [99] aload_1 v1
       [100] aload v5
-      [102] invokevirtual #66
+      [102] invokevirtual #68
         - Methodref [com/badran/bluetoothcontroller/BluetoothConnection.a (Landroid/bluetooth/BluetoothDevice;)V]
       [105] goto +6 (target=111)
       [108] goto -74 (target=34)
       [111] iload_2 v2
       [112] ifne +97 (target=209)
       [115] aload_0 v0
-      [116] getfield #47
+      [116] getfield #48
         - Fieldref [com/badran/bluetoothcontroller/e.a Ljava/util/Set;]
       [119] ifnull +90 (target=209)
       [122] aload_0 v0
-      [123] getfield #47
+      [123] getfield #48
         - Fieldref [com/badran/bluetoothcontroller/e.a Ljava/util/Set;]
-      [126] invokeinterface #82, 256
+      [126] invokeinterface #84, 256
         - InterfaceMethodref [java/util/Set.iterator ()Ljava/util/Iterator;]
       [131] astore_3 v3
       [132] aload_3 v3
-      [133] invokeinterface #79, 256
+      [133] invokeinterface #81, 256
         - InterfaceMethodref [java/util/Iterator.hasNext ()Z]
       [138] ifeq +71 (target=209)
       [141] aload_3 v3
-      [142] invokeinterface #80, 256
+      [142] invokeinterface #82, 256
         - InterfaceMethodref [java/util/Iterator.next ()Ljava/lang/Object;]
       [147] checkcast #9
         - Class [android/bluetooth/BluetoothDevice]
@@ -4846,34 +4887,34 @@ Methods (count = 17):
       [152] iload v4
       [154] ifeq +19 (target=173)
       [157] aload v5
-      [159] invokevirtual #58
+      [159] invokevirtual #60
         - Methodref [android/bluetooth/BluetoothDevice.getAddress ()Ljava/lang/String;]
       [162] aload_1 v1
-      [163] getfield #31
+      [163] getfield #32
         - Fieldref [com/badran/bluetoothcontroller/BluetoothConnection.a Ljava/lang/String;]
-      [166] invokevirtual #74
+      [166] invokevirtual #76
         - Methodref [java/lang/String.equals (Ljava/lang/Object;)Z]
       [169] istore_2 v2
       [170] goto +16 (target=186)
       [173] aload v5
-      [175] invokevirtual #59
+      [175] invokevirtual #61
         - Methodref [android/bluetooth/BluetoothDevice.getName ()Ljava/lang/String;]
       [178] aload_1 v1
-      [179] getfield #32
+      [179] getfield #33
         - Fieldref [com/badran/bluetoothcontroller/BluetoothConnection.name Ljava/lang/String;]
-      [182] invokevirtual #74
+      [182] invokevirtual #76
         - Methodref [java/lang/String.equals (Ljava/lang/Object;)Z]
       [185] istore_2 v2
       [186] iload_2 v2
       [187] ifeq +19 (target=206)
       [190] aload_1 v1
-      [191] getstatic #34
+      [191] getstatic #35
         - Fieldref [com/badran/bluetoothcontroller/a.d Lcom/badran/bluetoothcontroller/a;]
-      [194] putfield #30
+      [194] putfield #31
         - Fieldref [com/badran/bluetoothcontroller/BluetoothConnection.a Lcom/badran/bluetoothcontroller/a;]
       [197] aload_1 v1
       [198] aload v5
-      [200] invokevirtual #66
+      [200] invokevirtual #68
         - Methodref [com/badran/bluetoothcontroller/BluetoothConnection.a (Landroid/bluetooth/BluetoothDevice;)V]
       [203] goto +6 (target=209)
       [206] goto -74 (target=132)
@@ -4900,75 +4941,111 @@ Methods (count = 17):
     Class member attributes (count = 1):
     - Code attribute instructions (code length = 89, locals = 3, stack = 4):
       [0] aload_0 v0
-      [1] getfield #43
-        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/l;]
-      [4] ifnonnull +15 (target=19)
-      [7] aload_0 v0
-      [8] new #20
-        - Class [com/badran/bluetoothcontroller/l]
-      [11] dup
-      [12] aload_0 v0
-      [13] invokespecial #72
-        - Methodref [com/badran/bluetoothcontroller/l.<init> (Lcom/badran/bluetoothcontroller/e;)V]
-      [16] putfield #43
-        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/l;]
-      [19] new #11
-        - Class [android/content/IntentFilter]
-      [22] dup
-      [23] ldc #6
-        - String [android.bluetooth.device.action.FOUND]
-      [25] invokespecial #62
-        - Methodref [android/content/IntentFilter.<init> (Ljava/lang/String;)V]
-      [28] astore_1 v1
-      [29] new #11
-        - Class [android/content/IntentFilter]
-      [32] dup
-      [33] ldc #1
-        - String [android.bluetooth.adapter.action.DISCOVERY_FINISHED]
-      [35] invokespecial #62
-        - Methodref [android/content/IntentFilter.<init> (Ljava/lang/String;)V]
-      [38] astore_2 v2
-      [39] getstatic #50
-        - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
-      [42] aload_0 v0
-      [43] getfield #43
-        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/l;]
-      [46] aload_1 v1
-      [47] invokevirtual #51
-        - Methodref [android/app/Activity.registerReceiver (Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;]
-      [50] pop
-      [51] getstatic #50
-        - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
-      [54] aload_0 v0
-      [55] getfield #43
-        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/l;]
-      [58] aload_2 v2
-      [59] invokevirtual #51
-        - Methodref [android/app/Activity.registerReceiver (Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;]
-      [62] pop
-      [63] aload_0 v0
-      [64] getfield #36
+      [1] getfield #37
         - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/bluetooth/BluetoothAdapter;]
-      [67] invokevirtual #56
+      [4] invokevirtual #58
         - Methodref [android/bluetooth/BluetoothAdapter.isDiscovering ()Z]
-      [70] ifeq +11 (target=81)
-      [73] aload_0 v0
-      [74] getfield #36
+      [7] ifeq +11 (target=18)
+      [10] aload_0 v0
+      [11] getfield #37
         - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/bluetooth/BluetoothAdapter;]
-      [77] invokevirtual #53
+      [14] invokevirtual #55
         - Methodref [android/bluetooth/BluetoothAdapter.cancelDiscovery ()Z]
+      [17] pop
+      [18] aload_0 v0
+      [19] getfield #44
+        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/l;]
+      [22] ifnonnull +59 (target=81)
+      [25] aload_0 v0
+      [26] new #20
+        - Class [com/badran/bluetoothcontroller/l]
+      [29] dup
+      [30] aload_0 v0
+      [31] invokespecial #74
+        - Methodref [com/badran/bluetoothcontroller/l.<init> (Lcom/badran/bluetoothcontroller/e;)V]
+      [34] putfield #44
+        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/l;]
+      [37] new #11
+        - Class [android/content/IntentFilter]
+      [40] dup
+      [41] ldc #6
+        - String [android.bluetooth.device.action.FOUND]
+      [43] invokespecial #64
+        - Methodref [android/content/IntentFilter.<init> (Ljava/lang/String;)V]
+      [46] astore_1 v1
+      [47] new #11
+        - Class [android/content/IntentFilter]
+      [50] dup
+      [51] ldc #1
+        - String [android.bluetooth.adapter.action.DISCOVERY_FINISHED]
+      [53] invokespecial #64
+        - Methodref [android/content/IntentFilter.<init> (Ljava/lang/String;)V]
+      [56] astore_2 v2
+      [57] getstatic #51
+        - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
+      [60] aload_0 v0
+      [61] getfield #44
+        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/l;]
+      [64] aload_1 v1
+      [65] invokevirtual #52
+        - Methodref [android/app/Activity.registerReceiver (Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;]
+      [68] pop
+      [69] getstatic #51
+        - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
+      [72] aload_0 v0
+      [73] getfield #44
+        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/l;]
+      [76] aload_2 v2
+      [77] invokevirtual #52
+        - Methodref [android/app/Activity.registerReceiver (Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;]
       [80] pop
       [81] aload_0 v0
-      [82] getfield #36
+      [82] getfield #37
         - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/bluetooth/BluetoothAdapter;]
-      [85] invokevirtual #57
+      [85] invokevirtual #59
         - Methodref [android/bluetooth/BluetoothAdapter.startDiscovery ()Z]
       [88] ireturn
       Code attribute exceptions (count = 0):
       Code attribute attributes (attribute count = 1):
       - Stack map table attribute (count = 2):
-        - [19] Var: ..., Stack: (empty)
+        - [18] Var: ..., Stack: (empty)
         - [81] Var: ..., Stack: (empty)
+  - Method:       cancelDiscovery()Z
+    Access flags: 0x10
+      = final boolean cancelDiscovery()
+    Class member attributes (count = 1):
+    - Code attribute instructions (code length = 34, locals = 1, stack = 2):
+      [0] aload_0 v0
+      [1] getfield #44
+        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/l;]
+      [4] ifnull +18 (target=22)
+      [7] getstatic #51
+        - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
+      [10] aload_0 v0
+      [11] getfield #44
+        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/l;]
+      [14] invokevirtual #54
+        - Methodref [android/app/Activity.unregisterReceiver (Landroid/content/BroadcastReceiver;)V]
+      [17] aload_0 v0
+      [18] aconst_null
+      [19] putfield #44
+        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/l;]
+      [22] goto +4 (target=26)
+      [25] pop
+      [26] aload_0 v0
+      [27] getfield #37
+        - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/bluetooth/BluetoothAdapter;]
+      [30] invokevirtual #55
+        - Methodref [android/bluetooth/BluetoothAdapter.cancelDiscovery ()Z]
+      [33] ireturn
+      Code attribute exceptions (count = 1):
+      - ExceptionInfo (0 -> 22: 25):
+      - Class [java/lang/IllegalArgumentException]
+      Code attribute attributes (attribute count = 1):
+      - Stack map table attribute (count = 3):
+        - [22] Var: ..., Stack: (empty)
+        - [25] Var: ..., Stack: [a:java/lang/IllegalArgumentException]
+        - [26] Var: ..., Stack: (empty)
   - Method:       makeDiscoverable(I)V
     Access flags: 0x8
       = static void makeDiscoverable(int)
@@ -4979,20 +5056,20 @@ Methods (count = 17):
       [3] dup
       [4] ldc #2
         - String [android.bluetooth.adapter.action.REQUEST_DISCOVERABLE]
-      [6] invokespecial #60
+      [6] invokespecial #62
         - Methodref [android/content/Intent.<init> (Ljava/lang/String;)V]
       [9] dup
       [10] astore_1 v1
       [11] ldc #3
         - String [android.bluetooth.adapter.extra.DISCOVERABLE_DURATION]
       [13] iload_0 v0
-      [14] invokevirtual #61
+      [14] invokevirtual #63
         - Methodref [android/content/Intent.putExtra (Ljava/lang/String;I)Landroid/content/Intent;]
       [17] pop
-      [18] getstatic #50
+      [18] getstatic #51
         - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
       [21] aload_1 v1
-      [22] invokevirtual #52
+      [22] invokevirtual #53
         - Methodref [android/app/Activity.startActivity (Landroid/content/Intent;)V]
       [25] return
       Code attribute exceptions (count = 0):
@@ -5005,24 +5082,24 @@ Methods (count = 17):
       [0] aload_0 v0
       [1] dup
       [2] astore_0 v0
-      [3] getfield #48
+      [3] getfield #49
         - Fieldref [com/badran/bluetoothcontroller/e.b Ljava/lang/Object;]
       [6] dup
       [7] astore_1 v1
       [8] monitorenter
       [9] aload_0 v0
-      [10] getfield #41
+      [10] getfield #42
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/h;]
       [13] ifnull +17 (target=30)
-      [16] new #24
+      [16] new #25
         - Class [java/lang/Thread]
       [19] dup
       [20] aload_0 v0
-      [21] getfield #41
+      [21] getfield #42
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/h;]
-      [24] invokespecial #76
+      [24] invokespecial #78
         - Methodref [java/lang/Thread.<init> (Ljava/lang/Runnable;)V]
-      [27] invokevirtual #77
+      [27] invokevirtual #79
         - Methodref [java/lang/Thread.start ()V]
       [30] aload_1 v1
       [31] monitorexit
@@ -5045,7 +5122,7 @@ Methods (count = 17):
     Class member attributes (count = 1):
     - Code attribute instructions (code length = 5, locals = 1, stack = 1):
       [0] aload_0 v0
-      [1] getfield #44
+      [1] getfield #45
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/m;]
       [4] areturn
       Code attribute exceptions (count = 0):
@@ -5056,7 +5133,7 @@ Methods (count = 17):
     Class member attributes (count = 1):
     - Code attribute instructions (code length = 5, locals = 1, stack = 1):
       [0] aload_0 v0
-      [1] getfield #39
+      [1] getfield #40
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/b;]
       [4] areturn
       Code attribute exceptions (count = 0):
@@ -5067,7 +5144,7 @@ Methods (count = 17):
     Class member attributes (count = 1):
     - Code attribute instructions (code length = 5, locals = 1, stack = 1):
       [0] aload_0 v0
-      [1] getfield #45
+      [1] getfield #46
         - Fieldref [com/badran/bluetoothcontroller/e.a Ljava/lang/Object;]
       [4] areturn
       Code attribute exceptions (count = 0):
@@ -5080,7 +5157,7 @@ Methods (count = 17):
       [0] aload_0 v0
       [1] aconst_null
       [2] dup_x1
-      [3] putfield #39
+      [3] putfield #40
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/b;]
       [6] areturn
       Code attribute exceptions (count = 0):
@@ -5093,7 +5170,7 @@ Methods (count = 17):
       [0] aload_0 v0
       [1] iconst_0
       [2] dup_x1
-      [3] putfield #49
+      [3] putfield #50
         - Fieldref [com/badran/bluetoothcontroller/e.j Z]
       [6] ireturn
       Code attribute exceptions (count = 0):
@@ -5104,19 +5181,8 @@ Methods (count = 17):
     Class member attributes (count = 1):
     - Code attribute instructions (code length = 5, locals = 1, stack = 1):
       [0] aload_0 v0
-      [1] getfield #42
-        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/j;]
-      [4] areturn
-      Code attribute exceptions (count = 0):
-      Code attribute attributes (attribute count = 0):
-  - Method:       a(Lcom/badran/bluetoothcontroller/e;)Lcom/badran/bluetoothcontroller/l;
-    Access flags: 0x1008
-      = static synthetic com.badran.bluetoothcontroller.l a(com.badran.bluetoothcontroller.e)
-    Class member attributes (count = 1):
-    - Code attribute instructions (code length = 5, locals = 1, stack = 1):
-      [0] aload_0 v0
       [1] getfield #43
-        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/l;]
+        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/j;]
       [4] areturn
       Code attribute exceptions (count = 0):
       Code attribute attributes (attribute count = 0):
@@ -5128,79 +5194,79 @@ Methods (count = 17):
       [0] aload_0 v0
       [1] dup
       [2] astore_0 v0
-      [3] aload_1 v1
-      [4] putfield #39
-        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/b;]
-      [7] aload_0 v0
-      [8] getfield #42
-        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/j;]
-      [11] ifnonnull +15 (target=26)
-      [14] aload_0 v0
-      [15] new #19
-        - Class [com/badran/bluetoothcontroller/j]
-      [18] dup
-      [19] aload_0 v0
-      [20] invokespecial #71
-        - Methodref [com/badran/bluetoothcontroller/j.<init> (Lcom/badran/bluetoothcontroller/e;)V]
-      [23] putfield #42
-        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/j;]
-      [26] new #11
-        - Class [android/content/IntentFilter]
-      [29] dup
-      [30] ldc #6
-        - String [android.bluetooth.device.action.FOUND]
-      [32] invokespecial #62
-        - Methodref [android/content/IntentFilter.<init> (Ljava/lang/String;)V]
-      [35] astore_1 v1
-      [36] new #11
-        - Class [android/content/IntentFilter]
-      [39] dup
-      [40] ldc #1
-        - String [android.bluetooth.adapter.action.DISCOVERY_FINISHED]
-      [42] invokespecial #62
-        - Methodref [android/content/IntentFilter.<init> (Ljava/lang/String;)V]
-      [45] astore_2 v2
-      [46] getstatic #50
-        - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
-      [49] aload_0 v0
-      [50] getfield #42
-        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/j;]
-      [53] aload_1 v1
-      [54] invokevirtual #51
-        - Methodref [android/app/Activity.registerReceiver (Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;]
-      [57] pop
-      [58] getstatic #50
-        - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
-      [61] aload_0 v0
-      [62] getfield #42
-        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/j;]
-      [65] aload_2 v2
-      [66] invokevirtual #51
-        - Methodref [android/app/Activity.registerReceiver (Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;]
-      [69] pop
-      [70] aload_0 v0
-      [71] getfield #36
+      [3] getfield #37
         - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/bluetooth/BluetoothAdapter;]
-      [74] invokevirtual #56
+      [6] invokevirtual #58
         - Methodref [android/bluetooth/BluetoothAdapter.isDiscovering ()Z]
-      [77] ifeq +11 (target=88)
-      [80] aload_0 v0
-      [81] getfield #36
+      [9] ifeq +11 (target=20)
+      [12] aload_0 v0
+      [13] getfield #37
         - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/bluetooth/BluetoothAdapter;]
-      [84] invokevirtual #53
+      [16] invokevirtual #55
         - Methodref [android/bluetooth/BluetoothAdapter.cancelDiscovery ()Z]
+      [19] pop
+      [20] aload_0 v0
+      [21] aload_1 v1
+      [22] putfield #40
+        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/b;]
+      [25] aload_0 v0
+      [26] getfield #43
+        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/j;]
+      [29] ifnonnull +15 (target=44)
+      [32] aload_0 v0
+      [33] new #19
+        - Class [com/badran/bluetoothcontroller/j]
+      [36] dup
+      [37] aload_0 v0
+      [38] invokespecial #73
+        - Methodref [com/badran/bluetoothcontroller/j.<init> (Lcom/badran/bluetoothcontroller/e;)V]
+      [41] putfield #43
+        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/j;]
+      [44] new #11
+        - Class [android/content/IntentFilter]
+      [47] dup
+      [48] ldc #6
+        - String [android.bluetooth.device.action.FOUND]
+      [50] invokespecial #64
+        - Methodref [android/content/IntentFilter.<init> (Ljava/lang/String;)V]
+      [53] astore_1 v1
+      [54] new #11
+        - Class [android/content/IntentFilter]
+      [57] dup
+      [58] ldc #1
+        - String [android.bluetooth.adapter.action.DISCOVERY_FINISHED]
+      [60] invokespecial #64
+        - Methodref [android/content/IntentFilter.<init> (Ljava/lang/String;)V]
+      [63] astore_2 v2
+      [64] getstatic #51
+        - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
+      [67] aload_0 v0
+      [68] getfield #43
+        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/j;]
+      [71] aload_1 v1
+      [72] invokevirtual #52
+        - Methodref [android/app/Activity.registerReceiver (Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;]
+      [75] pop
+      [76] getstatic #51
+        - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
+      [79] aload_0 v0
+      [80] getfield #43
+        - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/j;]
+      [83] aload_2 v2
+      [84] invokevirtual #52
+        - Methodref [android/app/Activity.registerReceiver (Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;]
       [87] pop
       [88] aload_0 v0
-      [89] getfield #36
+      [89] getfield #37
         - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/bluetooth/BluetoothAdapter;]
-      [92] invokevirtual #57
+      [92] invokevirtual #59
         - Methodref [android/bluetooth/BluetoothAdapter.startDiscovery ()Z]
       [95] ireturn
       Code attribute exceptions (count = 0):
       Code attribute attributes (attribute count = 1):
       - Stack map table attribute (count = 2):
-        - [26] Var: -1, Stack: (empty)
-        - [88] Var: ..., Stack: (empty)
+        - [20] Var: ..., Stack: (empty)
+        - [44] Var: -1, Stack: (empty)
   - Method:       a(Lcom/badran/bluetoothcontroller/e;)Lcom/badran/bluetoothcontroller/h;
     Access flags: 0x1008
       = static synthetic com.badran.bluetoothcontroller.h a(com.badran.bluetoothcontroller.e)
@@ -5209,7 +5275,7 @@ Methods (count = 17):
       [0] aload_0 v0
       [1] aconst_null
       [2] dup_x1
-      [3] putfield #41
+      [3] putfield #42
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/h;]
       [6] areturn
       Code attribute exceptions (count = 0):
@@ -5220,7 +5286,7 @@ Methods (count = 17):
     Class member attributes (count = 1):
     - Code attribute instructions (code length = 5, locals = 0, stack = 1):
       [0] aconst_null
-      [1] putstatic #40
+      [1] putstatic #41
         - Fieldref [com/badran/bluetoothcontroller/e.a Lcom/badran/bluetoothcontroller/e;]
       [4] return
       Code attribute exceptions (count = 0):
@@ -7716,24 +7782,25 @@ _____________________________________________________________________
 
 Interfaces (count = 0):
 
-Constant Pool (count = 135):
+Constant Pool (count = 133):
   - String [#$]
   - String [BtConnector]
+  - String [Discover Finished]
+  - String [PLUGIN . UNITY]
   - String [android.bluetooth.adapter.action.DISCOVERY_FINISHED]
   - String [android.bluetooth.device.action.FOUND]
   - String [android.bluetooth.device.extra.DEVICE]
   - String [android.bluetooth.device.extra.RSSI]
-  - Class [android/app/Activity]
   - Class [android/bluetooth/BluetoothAdapter]
   - Class [android/bluetooth/BluetoothDevice]
   - Class [android/content/BroadcastReceiver]
   - Class [android/content/Context]
   - Class [android/content/Intent]
+  - Class [android/util/Log]
   - Class [com/badran/bluetoothcontroller/e]
   - Class [com/badran/bluetoothcontroller/l]
   - Class [com/badran/bluetoothcontroller/w]
   - Class [com/unity3d/player/UnityPlayer]
-  - Class [java/lang/IllegalArgumentException]
   - Class [java/lang/Short]
   - Class [java/lang/String]
   - Class [java/lang/StringBuilder]
@@ -7743,9 +7810,8 @@ Constant Pool (count = 135):
   - Fieldref [com/badran/bluetoothcontroller/e.a Ljava/util/Set;]
   - Fieldref [com/badran/bluetoothcontroller/l.b Lcom/badran/bluetoothcontroller/e;]
   - Fieldref [com/badran/bluetoothcontroller/w.o Lcom/badran/bluetoothcontroller/w;]
+  - Fieldref [com/badran/bluetoothcontroller/w.p Lcom/badran/bluetoothcontroller/w;]
   - Fieldref [com/badran/bluetoothcontroller/w.value Ljava/lang/String;]
-  - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
-  - Methodref [android/app/Activity.unregisterReceiver (Landroid/content/BroadcastReceiver;)V]
   - Methodref [android/bluetooth/BluetoothAdapter.getBondedDevices ()Ljava/util/Set;]
   - Methodref [android/bluetooth/BluetoothDevice.getAddress ()Ljava/lang/String;]
   - Methodref [android/bluetooth/BluetoothDevice.getName ()Ljava/lang/String;]
@@ -7753,8 +7819,8 @@ Constant Pool (count = 135):
   - Methodref [android/content/Intent.getAction ()Ljava/lang/String;]
   - Methodref [android/content/Intent.getParcelableExtra (Ljava/lang/String;)Landroid/os/Parcelable;]
   - Methodref [android/content/Intent.getShortExtra (Ljava/lang/String;S)S]
-  - Methodref [com/badran/bluetoothcontroller/e.a (Lcom/badran/bluetoothcontroller/e;)Lcom/badran/bluetoothcontroller/j;]
-  - Methodref [com/badran/bluetoothcontroller/e.a (Lcom/badran/bluetoothcontroller/e;)Lcom/badran/bluetoothcontroller/l;]
+  - Methodref [android/util/Log.v (Ljava/lang/String;Ljava/lang/String;)I]
+  - Methodref [com/badran/bluetoothcontroller/w.send ()V]
   - Methodref [com/unity3d/player/UnityPlayer.UnitySendMessage (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V]
   - Methodref [java/lang/Short.toString (S)Ljava/lang/String;]
   - Methodref [java/lang/String.equals (Ljava/lang/Object;)Z]
@@ -7766,15 +7832,12 @@ Constant Pool (count = 135):
   - InterfaceMethodref [java/util/Set.contains (Ljava/lang/Object;)Z]
   - NameAndType [<init> ()V]
   - NameAndType [UnitySendMessage (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V]
-  - NameAndType [a (Lcom/badran/bluetoothcontroller/e;)Lcom/badran/bluetoothcontroller/j;]
-  - NameAndType [a (Lcom/badran/bluetoothcontroller/e;)Lcom/badran/bluetoothcontroller/l;]
   - NameAndType [a Landroid/bluetooth/BluetoothAdapter;]
   - NameAndType [a Ljava/util/Set;]
   - NameAndType [add (Ljava/lang/Object;)Z]
   - NameAndType [append (Ljava/lang/String;)Ljava/lang/StringBuilder;]
   - NameAndType [b Lcom/badran/bluetoothcontroller/e;]
   - NameAndType [contains (Ljava/lang/Object;)Z]
-  - NameAndType [currentActivity Landroid/app/Activity;]
   - NameAndType [equals (Ljava/lang/Object;)Z]
   - NameAndType [getAction ()Ljava/lang/String;]
   - NameAndType [getAddress ()Ljava/lang/String;]
@@ -7783,34 +7846,35 @@ Constant Pool (count = 135):
   - NameAndType [getParcelableExtra (Ljava/lang/String;)Landroid/os/Parcelable;]
   - NameAndType [getShortExtra (Ljava/lang/String;S)S]
   - NameAndType [o Lcom/badran/bluetoothcontroller/w;]
+  - NameAndType [p Lcom/badran/bluetoothcontroller/w;]
+  - NameAndType [send ()V]
   - NameAndType [toString ()Ljava/lang/String;]
   - NameAndType [toString (S)Ljava/lang/String;]
-  - NameAndType [unregisterReceiver (Landroid/content/BroadcastReceiver;)V]
+  - NameAndType [v (Ljava/lang/String;Ljava/lang/String;)I]
   - NameAndType [value Ljava/lang/String;]
   - Utf8 [#$]
   - Utf8 [()Ljava/lang/String;]
   - Utf8 [()Ljava/util/Set;]
   - Utf8 [()V]
-  - Utf8 [(Landroid/content/BroadcastReceiver;)V]
   - Utf8 [(Landroid/content/Context;Landroid/content/Intent;)V]
-  - Utf8 [(Lcom/badran/bluetoothcontroller/e;)Lcom/badran/bluetoothcontroller/j;]
-  - Utf8 [(Lcom/badran/bluetoothcontroller/e;)Lcom/badran/bluetoothcontroller/l;]
   - Utf8 [(Lcom/badran/bluetoothcontroller/e;)V]
   - Utf8 [(Ljava/lang/Object;)Z]
   - Utf8 [(Ljava/lang/String;)Landroid/os/Parcelable;]
   - Utf8 [(Ljava/lang/String;)Ljava/lang/StringBuilder;]
+  - Utf8 [(Ljava/lang/String;Ljava/lang/String;)I]
   - Utf8 [(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V]
   - Utf8 [(Ljava/lang/String;S)S]
   - Utf8 [(S)Ljava/lang/String;]
   - Utf8 [<init>]
   - Utf8 [BtConnector]
   - Utf8 [Code]
-  - Utf8 [Landroid/app/Activity;]
+  - Utf8 [Discover Finished]
   - Utf8 [Landroid/bluetooth/BluetoothAdapter;]
   - Utf8 [Lcom/badran/bluetoothcontroller/e;]
   - Utf8 [Lcom/badran/bluetoothcontroller/w;]
   - Utf8 [Ljava/lang/String;]
   - Utf8 [Ljava/util/Set;]
+  - Utf8 [PLUGIN . UNITY]
   - Utf8 [StackMapTable]
   - Utf8 [UnitySendMessage]
   - Utf8 [a]
@@ -7819,12 +7883,12 @@ Constant Pool (count = 135):
   - Utf8 [android.bluetooth.device.action.FOUND]
   - Utf8 [android.bluetooth.device.extra.DEVICE]
   - Utf8 [android.bluetooth.device.extra.RSSI]
-  - Utf8 [android/app/Activity]
   - Utf8 [android/bluetooth/BluetoothAdapter]
   - Utf8 [android/bluetooth/BluetoothDevice]
   - Utf8 [android/content/BroadcastReceiver]
   - Utf8 [android/content/Context]
   - Utf8 [android/content/Intent]
+  - Utf8 [android/util/Log]
   - Utf8 [append]
   - Utf8 [b]
   - Utf8 [com/badran/bluetoothcontroller/e]
@@ -7832,7 +7896,6 @@ Constant Pool (count = 135):
   - Utf8 [com/badran/bluetoothcontroller/w]
   - Utf8 [com/unity3d/player/UnityPlayer]
   - Utf8 [contains]
-  - Utf8 [currentActivity]
   - Utf8 [equals]
   - Utf8 [getAction]
   - Utf8 [getAddress]
@@ -7840,7 +7903,6 @@ Constant Pool (count = 135):
   - Utf8 [getName]
   - Utf8 [getParcelableExtra]
   - Utf8 [getShortExtra]
-  - Utf8 [java/lang/IllegalArgumentException]
   - Utf8 [java/lang/Short]
   - Utf8 [java/lang/String]
   - Utf8 [java/lang/StringBuilder]
@@ -7848,8 +7910,10 @@ Constant Pool (count = 135):
   - Utf8 [java/util/Set]
   - Utf8 [o]
   - Utf8 [onReceive]
+  - Utf8 [p]
+  - Utf8 [send]
   - Utf8 [toString]
-  - Utf8 [unregisterReceiver]
+  - Utf8 [v]
   - Utf8 [value]
 
 Fields (count = 1):
@@ -7865,7 +7929,7 @@ Methods (count = 2):
     - Code attribute instructions (code length = 10, locals = 2, stack = 2):
       [0] aload_0 v0
       [1] aload_1 v1
-      [2] putfield #25
+      [2] putfield #26
         - Fieldref [com/badran/bluetoothcontroller/l.b Lcom/badran/bluetoothcontroller/e;]
       [5] aload_0 v0
       [6] invokespecial #33
@@ -7877,39 +7941,39 @@ Methods (count = 2):
     Access flags: 0x11
       = public final void onReceive(android.content.Context,android.content.Intent)
     Class member attributes (count = 1):
-    - Code attribute instructions (code length = 194, locals = 5, stack = 4):
+    - Code attribute instructions (code length = 183, locals = 5, stack = 4):
       [0] aload_2 v2
       [1] invokevirtual #34
         - Methodref [android/content/Intent.getAction ()Ljava/lang/String;]
       [4] astore_1 v1
-      [5] ldc #4
+      [5] ldc #6
         - String [android.bluetooth.device.action.FOUND]
       [7] aload_1 v1
       [8] invokevirtual #41
         - Methodref [java/lang/String.equals (Ljava/lang/Object;)Z]
       [11] ifeq +148 (target=159)
       [14] aload_2 v2
-      [15] ldc #5
+      [15] ldc #7
         - String [android.bluetooth.device.extra.DEVICE]
       [17] invokevirtual #35
         - Methodref [android/content/Intent.getParcelableExtra (Ljava/lang/String;)Landroid/os/Parcelable;]
-      [20] checkcast #9
+      [20] checkcast #10
         - Class [android/bluetooth/BluetoothDevice]
       [23] dup
       [24] astore_1 v1
       [25] ifnonnull +4 (target=29)
       [28] return
       [29] aload_2 v2
-      [30] ldc #6
+      [30] ldc #8
         - String [android.bluetooth.device.extra.RSSI]
       [32] sipush -32768
       [35] invokevirtual #36
         - Methodref [android/content/Intent.getShortExtra (Ljava/lang/String;S)S]
       [38] istore_2 v2
       [39] aload_0 v0
-      [40] getfield #25
+      [40] getfield #26
         - Fieldref [com/badran/bluetoothcontroller/l.b Lcom/badran/bluetoothcontroller/e;]
-      [43] getfield #23
+      [43] getfield #24
         - Fieldref [com/badran/bluetoothcontroller/e.a Landroid/bluetooth/BluetoothAdapter;]
       [46] invokevirtual #30
         - Methodref [android/bluetooth/BluetoothAdapter.getBondedDevices ()Ljava/util/Set;]
@@ -7918,31 +7982,31 @@ Methods (count = 2):
         - InterfaceMethodref [java/util/Set.contains (Ljava/lang/Object;)Z]
       [55] ifne +41 (target=96)
       [58] aload_0 v0
-      [59] getfield #25
+      [59] getfield #26
         - Fieldref [com/badran/bluetoothcontroller/l.b Lcom/badran/bluetoothcontroller/e;]
-      [62] getfield #24
+      [62] getfield #25
         - Fieldref [com/badran/bluetoothcontroller/e.a Ljava/util/Set;]
       [65] ifnonnull +17 (target=82)
       [68] aload_0 v0
-      [69] getfield #25
+      [69] getfield #26
         - Fieldref [com/badran/bluetoothcontroller/l.b Lcom/badran/bluetoothcontroller/e;]
-      [72] new #21
+      [72] new #22
         - Class [java/util/HashSet]
       [75] dup
       [76] invokespecial #45
         - Methodref [java/util/HashSet.<init> ()V]
-      [79] putfield #24
+      [79] putfield #25
         - Fieldref [com/badran/bluetoothcontroller/e.a Ljava/util/Set;]
       [82] aload_0 v0
-      [83] getfield #25
+      [83] getfield #26
         - Fieldref [com/badran/bluetoothcontroller/l.b Lcom/badran/bluetoothcontroller/e;]
-      [86] getfield #24
+      [86] getfield #25
         - Fieldref [com/badran/bluetoothcontroller/e.a Ljava/util/Set;]
       [89] aload_1 v1
       [90] invokeinterface #46, 512
         - InterfaceMethodref [java/util/Set.add (Ljava/lang/Object;)Z]
       [95] pop
-      [96] getstatic #26
+      [96] getstatic #27
         - Fieldref [com/badran/bluetoothcontroller/w.o Lcom/badran/bluetoothcontroller/w;]
       [99] aload_1 v1
       [100] invokevirtual #32
@@ -7960,9 +8024,9 @@ Methods (count = 2):
       [116] ldc #2
         - String [BtConnector]
       [118] aload_1 v1
-      [119] getfield #27
+      [119] getfield #29
         - Fieldref [com/badran/bluetoothcontroller/w.value Ljava/lang/String;]
-      [122] new #20
+      [122] new #21
         - Class [java/lang/StringBuilder]
       [125] dup
       [126] invokespecial #42
@@ -7989,41 +8053,32 @@ Methods (count = 2):
       [155] invokestatic #39
         - Methodref [com/unity3d/player/UnityPlayer.UnitySendMessage (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V]
       [158] return
-      [159] ldc #3
+      [159] ldc #5
         - String [android.bluetooth.adapter.action.DISCOVERY_FINISHED]
       [161] aload_1 v1
       [162] invokevirtual #41
         - Methodref [java/lang/String.equals (Ljava/lang/Object;)Z]
-      [165] ifeq +28 (target=193)
-      [168] aload_0 v0
-      [169] getfield #25
-        - Fieldref [com/badran/bluetoothcontroller/l.b Lcom/badran/bluetoothcontroller/e;]
+      [165] ifeq +17 (target=182)
+      [168] ldc #4
+        - String [PLUGIN . UNITY]
+      [170] ldc #3
+        - String [Discover Finished]
       [172] invokestatic #37
-        - Methodref [com/badran/bluetoothcontroller/e.a (Lcom/badran/bluetoothcontroller/e;)Lcom/badran/bluetoothcontroller/j;]
-      [175] ifnull +18 (target=193)
-      [178] getstatic #28
-        - Fieldref [com/unity3d/player/UnityPlayer.currentActivity Landroid/app/Activity;]
-      [181] aload_0 v0
-      [182] getfield #25
-        - Fieldref [com/badran/bluetoothcontroller/l.b Lcom/badran/bluetoothcontroller/e;]
-      [185] invokestatic #38
-        - Methodref [com/badran/bluetoothcontroller/e.a (Lcom/badran/bluetoothcontroller/e;)Lcom/badran/bluetoothcontroller/l;]
-      [188] invokevirtual #29
-        - Methodref [android/app/Activity.unregisterReceiver (Landroid/content/BroadcastReceiver;)V]
-      [191] return
-      [192] pop
-      [193] return
-      Code attribute exceptions (count = 1):
-      - ExceptionInfo (178 -> 191: 192):
-      - Class [java/lang/IllegalArgumentException]
+        - Methodref [android/util/Log.v (Ljava/lang/String;Ljava/lang/String;)I]
+      [175] pop
+      [176] getstatic #28
+        - Fieldref [com/badran/bluetoothcontroller/w.p Lcom/badran/bluetoothcontroller/w;]
+      [179] invokevirtual #38
+        - Methodref [com/badran/bluetoothcontroller/w.send ()V]
+      [182] return
+      Code attribute exceptions (count = 0):
       Code attribute attributes (attribute count = 1):
-      - Stack map table attribute (count = 6):
+      - Stack map table attribute (count = 5):
         - [29] Var: [a:com/badran/bluetoothcontroller/l][a:android/bluetooth/BluetoothDevice][a:android/content/Intent], Stack: 
         - [82] Var: [a:com/badran/bluetoothcontroller/l][a:android/bluetooth/BluetoothDevice][i], Stack: 
         - [96] Var: [T][a:android/bluetooth/BluetoothDevice][i], Stack: 
-        - [159] Var: [a:com/badran/bluetoothcontroller/l][a:java/lang/String], Stack: 
-        - [192] Var: , Stack: [a:java/lang/IllegalArgumentException]
-        - [193] Var: ..., Stack: (empty)
+        - [159] Var: [T][a:java/lang/String], Stack: 
+        - [182] Var: -2, Stack: (empty)
 
 Class file attributes (count = 0):
 
@@ -9833,165 +9888,182 @@ Methods (count = 10):
     Access flags: 0x11
       = public final boolean a(byte)
     Class member attributes (count = 1):
-    - Code attribute instructions (code length = 228, locals = 5, stack = 4):
+    - Code attribute instructions (code length = 248, locals = 6, stack = 4):
       [0] aload_0 v0
-      [1] getfield #17
+      [1] getfield #19
+        - Fieldref [com/badran/bluetoothcontroller/o.c Ljava/lang/Object;]
+      [4] dup
+      [5] astore_2 v2
+      [6] monitorenter
+      [7] aload_0 v0
+      [8] getfield #17
         - Fieldref [com/badran/bluetoothcontroller/o.a Lcom/badran/library/a;]
-      [4] iload_1 v1
-      [5] istore_2 v2
-      [6] dup
-      [7] astore_1 v1
-      [8] invokevirtual #46
-        - Methodref [com/badran/library/a.size ()I]
-      [11] dup
+      [11] iload_1 v1
       [12] istore_3 v3
-      [13] aload_1 v1
-      [14] getfield #29
+      [13] dup
+      [14] astore_1 v1
+      [15] invokevirtual #46
+        - Methodref [com/badran/library/a.size ()I]
+      [18] dup
+      [19] istore v4
+      [21] aload_1 v1
+      [22] getfield #29
         - Fieldref [com/badran/library/a.h I]
-      [17] iconst_1
-      [18] isub
-      [19] ificmpne +5 (target=24)
-      [22] iconst_0
-      [23] ireturn
-      [24] iconst_0
-      [25] istore v4
-      [27] getstatic #35
+      [25] iconst_1
+      [26] isub
+      [27] ificmpne +7 (target=34)
+      [30] iconst_0
+      [31] goto +209 (target=240)
+      [34] iconst_0
+      [35] istore v5
+      [37] getstatic #35
         - Fieldref [com/badran/library/b.b [I]
-      [30] aload_1 v1
-      [31] getfield #34
+      [40] aload_1 v1
+      [41] getfield #34
         - Fieldref [com/badran/library/a.m I]
-      [34] iconst_1
-      [35] isub
-      [36] iaload
-      [37] tableswitch (3 offsets, default=164) (target=201)
-        1: offset = 27, target = 64
-        2: offset = 79, target = 116
-        3: offset = 157, target = 194
-        default: offset = 164, target = 201
-      [64] aload_1 v1
-      [65] getfield #33
+      [44] iconst_1
+      [45] isub
+      [46] iaload
+      [47] tableswitch (3 offsets, default=167) (target=214)
+        1: offset = 25, target = 72
+        2: offset = 77, target = 124
+        3: offset = 159, target = 206
+        default: offset = 167, target = 214
+      [72] aload_1 v1
+      [73] getfield #33
         - Fieldref [com/badran/library/a.l I]
-      [68] aload_1 v1
-      [69] getfield #24
+      [76] aload_1 v1
+      [77] getfield #24
         - Fieldref [com/badran/library/a.a I]
-      [72] ificmpge +16 (target=88)
-      [75] aload_1 v1
-      [76] dup
-      [77] getfield #33
+      [80] ificmpge +16 (target=96)
+      [83] aload_1 v1
+      [84] dup
+      [85] getfield #33
         - Fieldref [com/badran/library/a.l I]
-      [80] iconst_1
-      [81] iadd
-      [82] putfield #33
-        - Fieldref [com/badran/library/a.l I]
-      [85] goto +116 (target=201)
-      [88] aload_1 v1
-      [89] iconst_0
+      [88] iconst_1
+      [89] iadd
       [90] putfield #33
         - Fieldref [com/badran/library/a.l I]
-      [93] aload_1 v1
-      [94] getfield #32
+      [93] goto +121 (target=214)
+      [96] aload_1 v1
+      [97] iconst_0
+      [98] putfield #33
+        - Fieldref [com/badran/library/a.l I]
+      [101] aload_1 v1
+      [102] getfield #32
         - Fieldref [com/badran/library/a.k I]
-      [97] ifne +6 (target=103)
-      [100] iconst_1
-      [101] istore v4
-      [103] aload_1 v1
-      [104] dup
-      [105] getfield #32
-        - Fieldref [com/badran/library/a.k I]
+      [105] ifne +6 (target=111)
       [108] iconst_1
-      [109] iadd
-      [110] putfield #32
+      [109] istore v5
+      [111] aload_1 v1
+      [112] dup
+      [113] getfield #32
         - Fieldref [com/badran/library/a.k I]
-      [113] goto +88 (target=201)
-      [116] aload_1 v1
-      [117] getfield #27
-        - Fieldref [com/badran/library/a.b B]
-      [120] iload_2 v2
-      [121] ificmpne +80 (target=201)
+      [116] iconst_1
+      [117] iadd
+      [118] putfield #32
+        - Fieldref [com/badran/library/a.k I]
+      [121] goto +93 (target=214)
       [124] aload_1 v1
-      [125] invokevirtual #46
+      [125] getfield #27
+        - Fieldref [com/badran/library/a.b B]
+      [128] iload_3 v3
+      [129] ificmpne +85 (target=214)
+      [132] aload_1 v1
+      [133] invokevirtual #46
         - Methodref [com/badran/library/a.size ()I]
-      [128] ifeq +33 (target=161)
-      [131] aload_1 v1
-      [132] getfield #25
+      [136] ifeq +33 (target=169)
+      [139] aload_1 v1
+      [140] getfield #25
         - Fieldref [com/badran/library/a.a Ljava/util/LinkedList;]
-      [135] invokevirtual #56
+      [143] invokevirtual #56
         - Methodref [java/util/LinkedList.peek ()Ljava/lang/Object;]
-      [138] ifnull +25 (target=163)
-      [141] aload_1 v1
-      [142] getfield #25
+      [146] ifnull +27 (target=173)
+      [149] aload_1 v1
+      [150] getfield #25
         - Fieldref [com/badran/library/a.a Ljava/util/LinkedList;]
-      [145] invokevirtual #56
+      [153] invokevirtual #56
         - Methodref [java/util/LinkedList.peek ()Ljava/lang/Object;]
-      [148] checkcast #10
+      [156] checkcast #10
         - Class [java/lang/Integer]
-      [151] invokevirtual #47
+      [159] invokevirtual #47
         - Methodref [java/lang/Integer.intValue ()I]
-      [154] aload_1 v1
-      [155] getfield #31
+      [162] aload_1 v1
+      [163] getfield #31
         - Fieldref [com/badran/library/a.j I]
-      [158] ificmpne +5 (target=163)
-      [161] iconst_0
-      [162] ireturn
-      [163] aload_1 v1
-      [164] getfield #25
+      [166] ificmpne +7 (target=173)
+      [169] iconst_0
+      [170] goto +70 (target=240)
+      [173] aload_1 v1
+      [174] getfield #25
         - Fieldref [com/badran/library/a.a Ljava/util/LinkedList;]
-      [167] invokevirtual #55
+      [177] invokevirtual #55
         - Methodref [java/util/LinkedList.isEmpty ()Z]
-      [170] ifeq +6 (target=176)
-      [173] iconst_1
-      [174] istore v4
-      [176] aload_1 v1
-      [177] getfield #25
+      [180] ifeq +6 (target=186)
+      [183] iconst_1
+      [184] istore v5
+      [186] aload_1 v1
+      [187] getfield #25
         - Fieldref [com/badran/library/a.a Ljava/util/LinkedList;]
-      [180] aload_1 v1
-      [181] getfield #31
+      [190] aload_1 v1
+      [191] getfield #31
         - Fieldref [com/badran/library/a.j I]
-      [184] invokestatic #48
+      [194] invokestatic #48
         - Methodref [java/lang/Integer.valueOf (I)Ljava/lang/Integer;]
-      [187] invokevirtual #52
+      [197] invokevirtual #52
         - Methodref [java/util/LinkedList.add (Ljava/lang/Object;)Z]
-      [190] pop
-      [191] iload v4
-      [193] ireturn
-      [194] iload_3 v3
-      [195] ifne +6 (target=201)
-      [198] iconst_1
-      [199] istore v4
-      [201] aload_1 v1
-      [202] getfield #28
+      [200] pop
+      [201] iload v5
+      [203] goto +37 (target=240)
+      [206] iload v4
+      [208] ifne +6 (target=214)
+      [211] iconst_1
+      [212] istore v5
+      [214] aload_1 v1
+      [215] getfield #28
         - Fieldref [com/badran/library/a.buf [B]
-      [205] aload_1 v1
-      [206] getfield #31
+      [218] aload_1 v1
+      [219] getfield #31
         - Fieldref [com/badran/library/a.j I]
-      [209] iload_2 v2
-      [210] bastore
-      [211] aload_1 v1
-      [212] aload_1 v1
-      [213] aload_1 v1
-      [214] getfield #31
+      [222] iload_3 v3
+      [223] bastore
+      [224] aload_1 v1
+      [225] aload_1 v1
+      [226] aload_1 v1
+      [227] getfield #31
         - Fieldref [com/badran/library/a.j I]
-      [217] iconst_1
-      [218] iadd
-      [219] invokevirtual #42
+      [230] iconst_1
+      [231] iadd
+      [232] invokevirtual #42
         - Methodref [com/badran/library/a.a (I)I]
-      [222] putfield #31
+      [235] putfield #31
         - Fieldref [com/badran/library/a.j I]
-      [225] iload v4
-      [227] ireturn
-      Code attribute exceptions (count = 0):
+      [238] iload v5
+      [240] aload_2 v2
+      [241] monitorexit
+      [242] ireturn
+      [243] astore_1 v1
+      [244] aload_2 v2
+      [245] monitorexit
+      [246] aload_1 v1
+      [247] athrow
+      Code attribute exceptions (count = 2):
+      - ExceptionInfo (7 -> 242: 243):
+      - ExceptionInfo (243 -> 246: 243):
       Code attribute attributes (attribute count = 1):
-      - Stack map table attribute (count = 10):
-        - [24] Var: [T][a:com/badran/library/a][i][i], Stack: 
-        - [64] Var: [T][a:com/badran/library/a][i][T][i], Stack: 
-        - [88] Var: ..., Stack: (empty)
-        - [103] Var: ..., Stack: (empty)
-        - [116] Var: ..., Stack: (empty)
-        - [161] Var: , Stack: 
-        - [163] Var: [T][a:com/badran/library/a][T][T][i], Stack: 
-        - [176] Var: ..., Stack: (empty)
-        - [194] Var: [T][a:com/badran/library/a][i][i][i], Stack: 
-        - [201] Var: [T][a:com/badran/library/a][i][T][i], Stack: 
+      - Stack map table attribute (count = 12):
+        - [34] Var: [T][a:com/badran/library/a][a:java/lang/Object][i][i], Stack: 
+        - [72] Var: [T][a:com/badran/library/a][a:java/lang/Object][i][T][i], Stack: 
+        - [96] Var: ..., Stack: (empty)
+        - [111] Var: ..., Stack: (empty)
+        - [124] Var: ..., Stack: (empty)
+        - [169] Var: [T][T][a:java/lang/Object], Stack: 
+        - [173] Var: [T][a:com/badran/library/a][a:java/lang/Object][T][T][i], Stack: 
+        - [186] Var: ..., Stack: (empty)
+        - [206] Var: [T][a:com/badran/library/a][a:java/lang/Object][i][i][i], Stack: 
+        - [214] Var: [T][a:com/badran/library/a][a:java/lang/Object][i][T][i], Stack: 
+        - [240] Var: [T][T][a:java/lang/Object], Stack: [i]
+        - [243] Var: ..., Stack: [a:java/lang/Throwable]
   - Method:       <init>(Landroid/bluetooth/BluetoothSocket;Ljava/io/InputStream;IIZ)V
     Access flags: 0x1
       = public o(android.bluetooth.BluetoothSocket,java.io.InputStream,int,int,boolean)
@@ -12009,8 +12081,9 @@ _____________________________________________________________________
 
 Interfaces (count = 0):
 
-Constant Pool (count = 158):
+Constant Pool (count = 165):
   - String []
+  - String [ACTION_DISCOVERY_FINISHED]
   - String [BLUETOOTH_OFF]
   - String [BLUETOOTH_ON]
   - String [BtConnector]
@@ -12027,6 +12100,7 @@ Constant Pool (count = 158):
   - String [READING_STOPPED]
   - String [SENDING_ERROR]
   - String [SERVER_DISCOVERED_DEVICE]
+  - String [TrACTION_DISCOVERY_FINISHED]
   - String [TrBluetoothOFF]
   - String [TrBluetoothON]
   - String [TrConnect]
@@ -12063,6 +12137,7 @@ Constant Pool (count = 158):
   - Fieldref [com/badran/bluetoothcontroller/w.m Lcom/badran/bluetoothcontroller/w;]
   - Fieldref [com/badran/bluetoothcontroller/w.n Lcom/badran/bluetoothcontroller/w;]
   - Fieldref [com/badran/bluetoothcontroller/w.o Lcom/badran/bluetoothcontroller/w;]
+  - Fieldref [com/badran/bluetoothcontroller/w.p Lcom/badran/bluetoothcontroller/w;]
   - Fieldref [com/badran/bluetoothcontroller/w.value Ljava/lang/String;]
   - Methodref [[Lcom/badran/bluetoothcontroller/w;.clone ()Ljava/lang/Object;]
   - Methodref [com/badran/bluetoothcontroller/w.<init> (Ljava/lang/String;ILjava/lang/String;)V]
@@ -12090,6 +12165,7 @@ Constant Pool (count = 158):
   - NameAndType [m Lcom/badran/bluetoothcontroller/w;]
   - NameAndType [n Lcom/badran/bluetoothcontroller/w;]
   - NameAndType [o Lcom/badran/bluetoothcontroller/w;]
+  - NameAndType [p Lcom/badran/bluetoothcontroller/w;]
   - NameAndType [toString (I)Ljava/lang/String;]
   - NameAndType [value Ljava/lang/String;]
   - NameAndType [valueOf (Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Enum;]
@@ -12106,6 +12182,7 @@ Constant Pool (count = 158):
   - Utf8 [(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V]
   - Utf8 [<clinit>]
   - Utf8 [<init>]
+  - Utf8 [ACTION_DISCOVERY_FINISHED]
   - Utf8 [BLUETOOTH_OFF]
   - Utf8 [BLUETOOTH_ON]
   - Utf8 [BtConnector]
@@ -12125,6 +12202,7 @@ Constant Pool (count = 158):
   - Utf8 [READING_STOPPED]
   - Utf8 [SENDING_ERROR]
   - Utf8 [SERVER_DISCOVERED_DEVICE]
+  - Utf8 [TrACTION_DISCOVERY_FINISHED]
   - Utf8 [TrBluetoothOFF]
   - Utf8 [TrBluetoothON]
   - Utf8 [TrConnect]
@@ -12162,13 +12240,14 @@ Constant Pool (count = 158):
   - Utf8 [m]
   - Utf8 [n]
   - Utf8 [o]
+  - Utf8 [p]
   - Utf8 [send]
   - Utf8 [toString]
   - Utf8 [value]
   - Utf8 [valueOf]
   - Utf8 [values]
 
-Fields (count = 17):
+Fields (count = 18):
   - Field:        a Lcom/badran/bluetoothcontroller/w;
     Access flags: 0x4019
       = public static final com.badran.bluetoothcontroller.w a
@@ -12214,6 +12293,9 @@ Fields (count = 17):
   - Field:        o Lcom/badran/bluetoothcontroller/w;
     Access flags: 0x4019
       = public static final com.badran.bluetoothcontroller.w o
+  - Field:        p Lcom/badran/bluetoothcontroller/w;
+    Access flags: 0x4019
+      = public static final com.badran.bluetoothcontroller.w p
   - Field:        value Ljava/lang/String;
     Access flags: 0x10
       = final java.lang.String value
@@ -12227,11 +12309,11 @@ Methods (count = 6):
       = public static com.badran.bluetoothcontroller.w[] values()
     Class member attributes (count = 1):
     - Code attribute instructions (code length = 10, locals = 0, stack = 1):
-      [0] getstatic #39
+      [0] getstatic #41
         - Fieldref [com/badran/bluetoothcontroller/w.a [Lcom/badran/bluetoothcontroller/w;]
-      [3] invokevirtual #55
+      [3] invokevirtual #58
         - Methodref [[Lcom/badran/bluetoothcontroller/w;.clone ()Ljava/lang/Object;]
-      [6] checkcast #33
+      [6] checkcast #35
         - Class [[Lcom/badran/bluetoothcontroller/w;]
       [9] areturn
       Code attribute exceptions (count = 0):
@@ -12241,12 +12323,12 @@ Methods (count = 6):
       = public static com.badran.bluetoothcontroller.w valueOf(java.lang.String)
     Class member attributes (count = 1):
     - Code attribute instructions (code length = 10, locals = 1, stack = 2):
-      [0] ldc #34
+      [0] ldc #36
         - Class [com/badran/bluetoothcontroller/w]
       [2] aload_0 v0
-      [3] invokestatic #59
+      [3] invokestatic #62
         - Methodref [java/lang/Enum.valueOf (Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Enum;]
-      [6] checkcast #34
+      [6] checkcast #36
         - Class [com/badran/bluetoothcontroller/w]
       [9] areturn
       Code attribute exceptions (count = 0):
@@ -12259,11 +12341,11 @@ Methods (count = 6):
       [0] aload_0 v0
       [1] aload_1 v1
       [2] iload_2 v2
-      [3] invokespecial #58
+      [3] invokespecial #61
         - Methodref [java/lang/Enum.<init> (Ljava/lang/String;I)V]
       [6] aload_0 v0
       [7] aload_3 v3
-      [8] putfield #54
+      [8] putfield #57
         - Fieldref [com/badran/bluetoothcontroller/w.value Ljava/lang/String;]
       [11] return
       Code attribute exceptions (count = 0):
@@ -12273,15 +12355,15 @@ Methods (count = 6):
       = public final void send(int)
     Class member attributes (count = 1):
     - Code attribute instructions (code length = 14, locals = 2, stack = 3):
-      [0] ldc #4
+      [0] ldc #5
         - String [BtConnector]
       [2] aload_0 v0
-      [3] getfield #54
+      [3] getfield #57
         - Fieldref [com/badran/bluetoothcontroller/w.value Ljava/lang/String;]
       [6] iload_1 v1
-      [7] invokestatic #60
+      [7] invokestatic #63
         - Methodref [java/lang/Integer.toString (I)Ljava/lang/String;]
-      [10] invokestatic #57
+      [10] invokestatic #60
         - Methodref [com/unity3d/player/UnityPlayer.UnitySendMessage (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V]
       [13] return
       Code attribute exceptions (count = 0):
@@ -12291,14 +12373,14 @@ Methods (count = 6):
       = public final void send()
     Class member attributes (count = 1):
     - Code attribute instructions (code length = 12, locals = 1, stack = 3):
-      [0] ldc #4
+      [0] ldc #5
         - String [BtConnector]
       [2] aload_0 v0
-      [3] getfield #54
+      [3] getfield #57
         - Fieldref [com/badran/bluetoothcontroller/w.value Ljava/lang/String;]
       [6] ldc #1
         - String []
-      [8] invokestatic #57
+      [8] invokestatic #60
         - Methodref [com/unity3d/player/UnityPlayer.UnitySendMessage (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V]
       [11] return
       Code attribute exceptions (count = 0):
@@ -12307,268 +12389,285 @@ Methods (count = 6):
     Access flags: 0x8
       = static void <clinit>()
     Class member attributes (count = 1):
-    - Code attribute instructions (code length = 342, locals = 0, stack = 5):
-      [0] new #34
+    - Code attribute instructions (code length = 365, locals = 0, stack = 5):
+      [0] new #36
         - Class [com/badran/bluetoothcontroller/w]
       [3] dup
-      [4] ldc #5
+      [4] ldc #6
         - String [CONNECTED]
       [6] iconst_0
-      [7] ldc #20
+      [7] ldc #22
         - String [TrConnect]
-      [9] invokespecial #56
+      [9] invokespecial #59
         - Methodref [com/badran/bluetoothcontroller/w.<init> (Ljava/lang/String;ILjava/lang/String;)V]
-      [12] putstatic #38
+      [12] putstatic #40
         - Fieldref [com/badran/bluetoothcontroller/w.a Lcom/badran/bluetoothcontroller/w;]
-      [15] new #34
+      [15] new #36
         - Class [com/badran/bluetoothcontroller/w]
       [18] dup
-      [19] ldc #8
+      [19] ldc #9
         - String [DISCONNECTED]
       [21] iconst_1
-      [22] ldc #22
+      [22] ldc #24
         - String [TrDisconnect]
-      [24] invokespecial #56
+      [24] invokespecial #59
         - Methodref [com/badran/bluetoothcontroller/w.<init> (Ljava/lang/String;ILjava/lang/String;)V]
-      [27] putstatic #40
+      [27] putstatic #42
         - Fieldref [com/badran/bluetoothcontroller/w.b Lcom/badran/bluetoothcontroller/w;]
-      [30] new #34
+      [30] new #36
         - Class [com/badran/bluetoothcontroller/w]
       [33] dup
-      [34] ldc #12
+      [34] ldc #13
         - String [NOT_FOUND]
       [36] iconst_2
-      [37] ldc #25
+      [37] ldc #27
         - String [TrModuleNotFound]
-      [39] invokespecial #56
+      [39] invokespecial #59
         - Methodref [com/badran/bluetoothcontroller/w.<init> (Ljava/lang/String;ILjava/lang/String;)V]
-      [42] putstatic #41
+      [42] putstatic #43
         - Fieldref [com/badran/bluetoothcontroller/w.c Lcom/badran/bluetoothcontroller/w;]
-      [45] new #34
+      [45] new #36
         - Class [com/badran/bluetoothcontroller/w]
       [48] dup
-      [49] ldc #11
+      [49] ldc #12
         - String [MODULE_OFF]
       [51] iconst_3
-      [52] ldc #26
+      [52] ldc #28
         - String [TrModuleOFF]
-      [54] invokespecial #56
+      [54] invokespecial #59
         - Methodref [com/badran/bluetoothcontroller/w.<init> (Ljava/lang/String;ILjava/lang/String;)V]
-      [57] putstatic #42
+      [57] putstatic #44
         - Fieldref [com/badran/bluetoothcontroller/w.d Lcom/badran/bluetoothcontroller/w;]
-      [60] new #34
+      [60] new #36
         - Class [com/badran/bluetoothcontroller/w]
       [63] dup
-      [64] ldc #16
+      [64] ldc #17
         - String [SENDING_ERROR]
       [66] iconst_4
-      [67] ldc #30
+      [67] ldc #32
         - String [TrSendingError]
-      [69] invokespecial #56
+      [69] invokespecial #59
         - Methodref [com/badran/bluetoothcontroller/w.<init> (Ljava/lang/String;ILjava/lang/String;)V]
-      [72] putstatic #43
+      [72] putstatic #45
         - Fieldref [com/badran/bluetoothcontroller/w.e Lcom/badran/bluetoothcontroller/w;]
-      [75] new #34
+      [75] new #36
         - Class [com/badran/bluetoothcontroller/w]
       [78] dup
-      [79] ldc #13
+      [79] ldc #14
         - String [READING_ERROR]
       [81] iconst_5
-      [82] ldc #27
+      [82] ldc #29
         - String [TrReadingError]
-      [84] invokespecial #56
+      [84] invokespecial #59
         - Methodref [com/badran/bluetoothcontroller/w.<init> (Ljava/lang/String;ILjava/lang/String;)V]
-      [87] putstatic #44
+      [87] putstatic #46
         - Fieldref [com/badran/bluetoothcontroller/w.f Lcom/badran/bluetoothcontroller/w;]
-      [90] new #34
+      [90] new #36
         - Class [com/badran/bluetoothcontroller/w]
       [93] dup
-      [94] ldc #10
+      [94] ldc #11
         - String [EMPTIED_DATA]
       [96] bipush 6
-      [98] ldc #24
+      [98] ldc #26
         - String [TrEmptiedData]
-      [100] invokespecial #56
+      [100] invokespecial #59
         - Methodref [com/badran/bluetoothcontroller/w.<init> (Ljava/lang/String;ILjava/lang/String;)V]
-      [103] putstatic #45
+      [103] putstatic #47
         - Fieldref [com/badran/bluetoothcontroller/w.g Lcom/badran/bluetoothcontroller/w;]
-      [106] new #34
+      [106] new #36
         - Class [com/badran/bluetoothcontroller/w]
       [109] dup
-      [110] ldc #6
+      [110] ldc #7
         - String [DATA_AVAILABLE]
       [112] bipush 7
-      [114] ldc #21
+      [114] ldc #23
         - String [TrDataAvailable]
-      [116] invokespecial #56
+      [116] invokespecial #59
         - Methodref [com/badran/bluetoothcontroller/w.<init> (Ljava/lang/String;ILjava/lang/String;)V]
-      [119] putstatic #46
+      [119] putstatic #48
         - Fieldref [com/badran/bluetoothcontroller/w.h Lcom/badran/bluetoothcontroller/w;]
-      [122] new #34
+      [122] new #36
         - Class [com/badran/bluetoothcontroller/w]
       [125] dup
-      [126] ldc #15
+      [126] ldc #16
         - String [READING_STOPPED]
       [128] bipush 8
-      [130] ldc #29
+      [130] ldc #31
         - String [TrReadingStopped]
-      [132] invokespecial #56
+      [132] invokespecial #59
         - Methodref [com/badran/bluetoothcontroller/w.<init> (Ljava/lang/String;ILjava/lang/String;)V]
-      [135] putstatic #47
+      [135] putstatic #49
         - Fieldref [com/badran/bluetoothcontroller/w.i Lcom/badran/bluetoothcontroller/w;]
-      [138] new #34
+      [138] new #36
         - Class [com/badran/bluetoothcontroller/w]
       [141] dup
-      [142] ldc #14
+      [142] ldc #15
         - String [READING_STARTED]
       [144] bipush 9
-      [146] ldc #28
+      [146] ldc #30
         - String [TrReadingStarted]
-      [148] invokespecial #56
+      [148] invokespecial #59
         - Methodref [com/badran/bluetoothcontroller/w.<init> (Ljava/lang/String;ILjava/lang/String;)V]
-      [151] putstatic #48
+      [151] putstatic #50
         - Fieldref [com/badran/bluetoothcontroller/w.j Lcom/badran/bluetoothcontroller/w;]
-      [154] new #34
+      [154] new #36
         - Class [com/badran/bluetoothcontroller/w]
       [157] dup
-      [158] ldc #7
+      [158] ldc #8
         - String [DEVICE_PICKED]
       [160] bipush 10
-      [162] ldc #32
+      [162] ldc #34
         - String [TriggerPicked]
-      [164] invokespecial #56
+      [164] invokespecial #59
         - Methodref [com/badran/bluetoothcontroller/w.<init> (Ljava/lang/String;ILjava/lang/String;)V]
-      [167] putstatic #49
+      [167] putstatic #51
         - Fieldref [com/badran/bluetoothcontroller/w.k Lcom/badran/bluetoothcontroller/w;]
-      [170] new #34
+      [170] new #36
         - Class [com/badran/bluetoothcontroller/w]
       [173] dup
-      [174] ldc #2
+      [174] ldc #3
         - String [BLUETOOTH_OFF]
       [176] bipush 11
-      [178] ldc #18
+      [178] ldc #20
         - String [TrBluetoothOFF]
-      [180] invokespecial #56
+      [180] invokespecial #59
         - Methodref [com/badran/bluetoothcontroller/w.<init> (Ljava/lang/String;ILjava/lang/String;)V]
-      [183] putstatic #50
+      [183] putstatic #52
         - Fieldref [com/badran/bluetoothcontroller/w.l Lcom/badran/bluetoothcontroller/w;]
-      [186] new #34
+      [186] new #36
         - Class [com/badran/bluetoothcontroller/w]
       [189] dup
-      [190] ldc #3
+      [190] ldc #4
         - String [BLUETOOTH_ON]
       [192] bipush 12
-      [194] ldc #19
+      [194] ldc #21
         - String [TrBluetoothON]
-      [196] invokespecial #56
+      [196] invokespecial #59
         - Methodref [com/badran/bluetoothcontroller/w.<init> (Ljava/lang/String;ILjava/lang/String;)V]
-      [199] putstatic #51
+      [199] putstatic #53
         - Fieldref [com/badran/bluetoothcontroller/w.m Lcom/badran/bluetoothcontroller/w;]
-      [202] new #34
+      [202] new #36
         - Class [com/badran/bluetoothcontroller/w]
       [205] dup
-      [206] ldc #17
+      [206] ldc #18
         - String [SERVER_DISCOVERED_DEVICE]
       [208] bipush 13
-      [210] ldc #31
+      [210] ldc #33
         - String [TrServerDiscoveredDevice]
-      [212] invokespecial #56
+      [212] invokespecial #59
         - Methodref [com/badran/bluetoothcontroller/w.<init> (Ljava/lang/String;ILjava/lang/String;)V]
-      [215] putstatic #52
+      [215] putstatic #54
         - Fieldref [com/badran/bluetoothcontroller/w.n Lcom/badran/bluetoothcontroller/w;]
-      [218] new #34
+      [218] new #36
         - Class [com/badran/bluetoothcontroller/w]
       [221] dup
-      [222] ldc #9
+      [222] ldc #10
         - String [DISCOVERED_DEVICE]
       [224] bipush 14
-      [226] ldc #23
+      [226] ldc #25
         - String [TrDiscoveredDevice]
-      [228] invokespecial #56
+      [228] invokespecial #59
         - Methodref [com/badran/bluetoothcontroller/w.<init> (Ljava/lang/String;ILjava/lang/String;)V]
-      [231] putstatic #53
+      [231] putstatic #55
         - Fieldref [com/badran/bluetoothcontroller/w.o Lcom/badran/bluetoothcontroller/w;]
-      [234] bipush 15
-      [236] anewarray #34
+      [234] new #36
         - Class [com/badran/bluetoothcontroller/w]
-      [239] dup
-      [240] iconst_0
-      [241] getstatic #38
+      [237] dup
+      [238] ldc #2
+        - String [ACTION_DISCOVERY_FINISHED]
+      [240] bipush 15
+      [242] ldc #19
+        - String [TrACTION_DISCOVERY_FINISHED]
+      [244] invokespecial #59
+        - Methodref [com/badran/bluetoothcontroller/w.<init> (Ljava/lang/String;ILjava/lang/String;)V]
+      [247] putstatic #56
+        - Fieldref [com/badran/bluetoothcontroller/w.p Lcom/badran/bluetoothcontroller/w;]
+      [250] bipush 16
+      [252] anewarray #36
+        - Class [com/badran/bluetoothcontroller/w]
+      [255] dup
+      [256] iconst_0
+      [257] getstatic #40
         - Fieldref [com/badran/bluetoothcontroller/w.a Lcom/badran/bluetoothcontroller/w;]
-      [244] aastore
-      [245] dup
-      [246] iconst_1
-      [247] getstatic #40
+      [260] aastore
+      [261] dup
+      [262] iconst_1
+      [263] getstatic #42
         - Fieldref [com/badran/bluetoothcontroller/w.b Lcom/badran/bluetoothcontroller/w;]
-      [250] aastore
-      [251] dup
-      [252] iconst_2
-      [253] getstatic #41
+      [266] aastore
+      [267] dup
+      [268] iconst_2
+      [269] getstatic #43
         - Fieldref [com/badran/bluetoothcontroller/w.c Lcom/badran/bluetoothcontroller/w;]
-      [256] aastore
-      [257] dup
-      [258] iconst_3
-      [259] getstatic #42
+      [272] aastore
+      [273] dup
+      [274] iconst_3
+      [275] getstatic #44
         - Fieldref [com/badran/bluetoothcontroller/w.d Lcom/badran/bluetoothcontroller/w;]
-      [262] aastore
-      [263] dup
-      [264] iconst_4
-      [265] getstatic #43
+      [278] aastore
+      [279] dup
+      [280] iconst_4
+      [281] getstatic #45
         - Fieldref [com/badran/bluetoothcontroller/w.e Lcom/badran/bluetoothcontroller/w;]
-      [268] aastore
-      [269] dup
-      [270] iconst_5
-      [271] getstatic #44
+      [284] aastore
+      [285] dup
+      [286] iconst_5
+      [287] getstatic #46
         - Fieldref [com/badran/bluetoothcontroller/w.f Lcom/badran/bluetoothcontroller/w;]
-      [274] aastore
-      [275] dup
-      [276] bipush 6
-      [278] getstatic #45
+      [290] aastore
+      [291] dup
+      [292] bipush 6
+      [294] getstatic #47
         - Fieldref [com/badran/bluetoothcontroller/w.g Lcom/badran/bluetoothcontroller/w;]
-      [281] aastore
-      [282] dup
-      [283] bipush 7
-      [285] getstatic #46
+      [297] aastore
+      [298] dup
+      [299] bipush 7
+      [301] getstatic #48
         - Fieldref [com/badran/bluetoothcontroller/w.h Lcom/badran/bluetoothcontroller/w;]
-      [288] aastore
-      [289] dup
-      [290] bipush 8
-      [292] getstatic #47
+      [304] aastore
+      [305] dup
+      [306] bipush 8
+      [308] getstatic #49
         - Fieldref [com/badran/bluetoothcontroller/w.i Lcom/badran/bluetoothcontroller/w;]
-      [295] aastore
-      [296] dup
-      [297] bipush 9
-      [299] getstatic #48
+      [311] aastore
+      [312] dup
+      [313] bipush 9
+      [315] getstatic #50
         - Fieldref [com/badran/bluetoothcontroller/w.j Lcom/badran/bluetoothcontroller/w;]
-      [302] aastore
-      [303] dup
-      [304] bipush 10
-      [306] getstatic #49
+      [318] aastore
+      [319] dup
+      [320] bipush 10
+      [322] getstatic #51
         - Fieldref [com/badran/bluetoothcontroller/w.k Lcom/badran/bluetoothcontroller/w;]
-      [309] aastore
-      [310] dup
-      [311] bipush 11
-      [313] getstatic #50
+      [325] aastore
+      [326] dup
+      [327] bipush 11
+      [329] getstatic #52
         - Fieldref [com/badran/bluetoothcontroller/w.l Lcom/badran/bluetoothcontroller/w;]
-      [316] aastore
-      [317] dup
-      [318] bipush 12
-      [320] getstatic #51
+      [332] aastore
+      [333] dup
+      [334] bipush 12
+      [336] getstatic #53
         - Fieldref [com/badran/bluetoothcontroller/w.m Lcom/badran/bluetoothcontroller/w;]
-      [323] aastore
-      [324] dup
-      [325] bipush 13
-      [327] getstatic #52
+      [339] aastore
+      [340] dup
+      [341] bipush 13
+      [343] getstatic #54
         - Fieldref [com/badran/bluetoothcontroller/w.n Lcom/badran/bluetoothcontroller/w;]
-      [330] aastore
-      [331] dup
-      [332] bipush 14
-      [334] getstatic #53
+      [346] aastore
+      [347] dup
+      [348] bipush 14
+      [350] getstatic #55
         - Fieldref [com/badran/bluetoothcontroller/w.o Lcom/badran/bluetoothcontroller/w;]
-      [337] aastore
-      [338] putstatic #39
+      [353] aastore
+      [354] dup
+      [355] bipush 15
+      [357] getstatic #56
+        - Fieldref [com/badran/bluetoothcontroller/w.p Lcom/badran/bluetoothcontroller/w;]
+      [360] aastore
+      [361] putstatic #41
         - Fieldref [com/badran/bluetoothcontroller/w.a [Lcom/badran/bluetoothcontroller/w;]
-      [341] return
+      [364] return
       Code attribute exceptions (count = 0):
       Code attribute attributes (attribute count = 0):
 
@@ -12912,7 +13011,7 @@ Methods (count = 6):
     Access flags: 0x11
       = public final byte[] c(int)
     Class member attributes (count = 1):
-    - Code attribute instructions (code length = 183, locals = 3, stack = 4):
+    - Code attribute instructions (code length = 174, locals = 3, stack = 4):
       [0] getstatic #22
         - Fieldref [com/badran/library/b.b [I]
       [3] aload_0 v0
@@ -12921,15 +13020,15 @@ Methods (count = 6):
       [7] iconst_1
       [8] isub
       [9] iaload
-      [10] tableswitch (3 offsets, default=168) (target=178)
+      [10] tableswitch (3 offsets, default=159) (target=169)
         1: offset = 26, target = 36
         2: offset = 68, target = 78
         3: offset = 139, target = 149
-        default: offset = 168, target = 178
+        default: offset = 159, target = 169
       [36] aload_0 v0
       [37] getfield #19
         - Fieldref [com/badran/library/a.k I]
-      [40] ifle +138 (target=178)
+      [40] ifle +129 (target=169)
       [43] aload_0 v0
       [44] aload_0 v0
       [45] getfield #12
@@ -12961,7 +13060,7 @@ Methods (count = 6):
         - Fieldref [com/badran/library/a.a Ljava/util/LinkedList;]
       [82] invokevirtual #32
         - Methodref [java/util/LinkedList.isEmpty ()Z]
-      [85] ifne +93 (target=178)
+      [85] ifne +84 (target=169)
       [88] aload_0 v0
       [89] getfield #13
         - Fieldref [com/badran/library/a.a Ljava/util/LinkedList;]
@@ -13019,18 +13118,11 @@ Methods (count = 6):
       [164] iload_2 v2
       [165] invokevirtual #26
         - Methodref [com/badran/library/a.b (I)[B]
-      [168] astore_2 v2
-      [169] getstatic #11
-        - Fieldref [com/badran/bluetoothcontroller/w.g Lcom/badran/bluetoothcontroller/w;]
-      [172] iload_1 v1
-      [173] invokevirtual #24
-        - Methodref [com/badran/bluetoothcontroller/w.send (I)V]
-      [176] aload_2 v2
-      [177] areturn
-      [178] aload_0 v0
-      [179] getfield #14
+      [168] areturn
+      [169] aload_0 v0
+      [170] getfield #14
         - Fieldref [com/badran/library/a.a [B]
-      [182] areturn
+      [173] areturn
       Code attribute exceptions (count = 0):
       Code attribute attributes (attribute count = 1):
       - Stack map table attribute (count = 9):
@@ -13040,9 +13132,9 @@ Methods (count = 6):
         - [124] Var: [a:com/badran/library/a][i], Stack: [a:com/badran/library/a][i]
         - [125] Var: [a:com/badran/library/a][i], Stack: [a:com/badran/library/a][i][i]
         - [147] Var: [T][T][a:[B], Stack: 
-        - [149] Var: [a:com/badran/library/a][i], Stack: 
-        - [163] Var: ...[i], Stack: (empty)
-        - [178] Var: -2, Stack: (empty)
+        - [149] Var: [a:com/badran/library/a], Stack: 
+        - [163] Var: ...[T][i], Stack: (empty)
+        - [169] Var: -2, Stack: (empty)
   - Method:       a([BII)V
     Access flags: 0x9
       = public static void a(byte[],int,int)

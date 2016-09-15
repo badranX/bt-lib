@@ -47,8 +47,8 @@ public class PluginToUnity {
         BLUETOOTH_OFF("TrBluetoothOFF"),
         BLUETOOTH_ON("TrBluetoothON"),
         SERVER_DISCOVERED_DEVICE("TrServerDiscoveredDevice"),
-        DISCOVERED_DEVICE("TrDiscoveredDevice");
-
+        DISCOVERED_DEVICE("TrDiscoveredDevice"),
+        ACTION_DISCOVERY_FINISHED("TrACTION_DISCOVERY_FINISHED");
         private static final String UNITY_GAME_OBJECT_NAME = "BtConnector";
 
         private final String value;

@@ -124,7 +124,9 @@ public class CircularArrayList {
         }
 
 
-        if(head == 0) {//The case that the head is still at 0 index. so the tail is at last index
+        if(head == 0) {
+            //Some 'ugly' math to words:
+            //The case that the head is still at 0 index. so the tail is at last index
             //as the last index is where the tail points out and it's empty.
             //copy all elements to the new buffer and that's it.
             System.arraycopy(buf, 0, tmp, 0, n -1  );//n-1 is the last index, and since the last index isn't included (n-1)
@@ -199,7 +201,6 @@ public class CircularArrayList {
                     return isFirstTimeData;//shouldn't add endByte
 
                 }
-
 
                 break;
             case NO_PACKETIZATION: if(s == 0) isFirstTimeData = true;
@@ -375,7 +376,7 @@ public class CircularArrayList {
                 int s = size();
                 if(s == 0) return empty;
                 byte[] temp = pollArray(s);
-                PluginToUnity.ControlMessages.EMPTIED_DATA.send(id);
+                //NO_Packetization, we are polling everything. no need for EMPTIED_DATA.send(id).
                 return temp;
         }
         return empty;

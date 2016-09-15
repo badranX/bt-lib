@@ -95,6 +95,7 @@ com.badran.bluetoothcontroller.Bridge -> com.badran.bluetoothcontroller.Bridge:
     boolean isBluetoothEnabled() -> isBluetoothEnabled
     void showDevices() -> showDevices
     boolean startDiscovery() -> startDiscovery
+    boolean cancelDiscovery() -> cancelDiscovery
     void makeDiscoverable(int) -> makeDiscoverable
     void initServer(java.lang.String,int,boolean) -> initServer
     com.badran.bluetoothcontroller.BluetoothConnection getPickedDevice(int) -> getPickedDevice
@@ -146,6 +147,7 @@ com.badran.bluetoothcontroller.BtInterface -> com.badran.bluetoothcontroller.e:
     void addConnectionTrial$603b49ab(com.badran.bluetoothcontroller.Bridge$1) -> a
     boolean findBluetoothDevice(com.badran.bluetoothcontroller.BluetoothConnection) -> a
     boolean startDiscovery() -> startDiscovery
+    boolean cancelDiscovery() -> cancelDiscovery
     void makeDiscoverable(int) -> makeDiscoverable
     void access$100(com.badran.bluetoothcontroller.BtInterface) -> a
     com.badran.bluetoothcontroller.BtInterface$ServerReceiver access$200(com.badran.bluetoothcontroller.BtInterface) -> a
@@ -154,9 +156,8 @@ com.badran.bluetoothcontroller.BtInterface -> com.badran.bluetoothcontroller.e:
     com.badran.bluetoothcontroller.Bridge$1 access$302$2bb87f8d$5608a0db(com.badran.bluetoothcontroller.BtInterface) -> b
     boolean access$502$e4ca90f(com.badran.bluetoothcontroller.BtInterface) -> a
     com.badran.bluetoothcontroller.BtInterface$DeviceDiscoveryReceiver access$600(com.badran.bluetoothcontroller.BtInterface) -> a
-    com.badran.bluetoothcontroller.BtInterface$RSSI_DiscoveryReceiver access$700(com.badran.bluetoothcontroller.BtInterface) -> a
-    boolean access$800$1918c433(com.badran.bluetoothcontroller.BtInterface,com.badran.bluetoothcontroller.Bridge$1) -> a
-    com.badran.bluetoothcontroller.BtInterface$AcceptThread access$1002$6ed23eb3(com.badran.bluetoothcontroller.BtInterface) -> a
+    boolean access$700$1918c433(com.badran.bluetoothcontroller.BtInterface,com.badran.bluetoothcontroller.Bridge$1) -> a
+    com.badran.bluetoothcontroller.BtInterface$AcceptThread access$902$6ed23eb3(com.badran.bluetoothcontroller.BtInterface) -> a
     void <clinit>() -> <clinit>
 com.badran.bluetoothcontroller.BtInterface$1 -> com.badran.bluetoothcontroller.f:
     com.badran.bluetoothcontroller.BtInterface this$0 -> b
@@ -300,6 +301,7 @@ com.badran.bluetoothcontroller.PluginToUnity$ControlMessages -> com.badran.bluet
     com.badran.bluetoothcontroller.PluginToUnity$ControlMessages BLUETOOTH_ON -> m
     com.badran.bluetoothcontroller.PluginToUnity$ControlMessages SERVER_DISCOVERED_DEVICE -> n
     com.badran.bluetoothcontroller.PluginToUnity$ControlMessages DISCOVERED_DEVICE -> o
+    com.badran.bluetoothcontroller.PluginToUnity$ControlMessages ACTION_DISCOVERY_FINISHED -> p
     java.lang.String value -> value
     com.badran.bluetoothcontroller.PluginToUnity$ControlMessages[] $VALUES -> a
     com.badran.bluetoothcontroller.PluginToUnity$ControlMessages[] values() -> values

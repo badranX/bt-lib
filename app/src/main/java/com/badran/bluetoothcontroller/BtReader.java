@@ -97,7 +97,9 @@ class BtReader {
                 buffer.resize();
         }
         public boolean AddByte(byte item){
-            return buffer.add(item);
+            synchronized (ReadWriteBufferKey) {//TODO check Synchronization
+                return buffer.add(item);
+            }
         }
 
 

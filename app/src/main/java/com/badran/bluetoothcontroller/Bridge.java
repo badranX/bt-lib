@@ -166,6 +166,7 @@ public class Bridge {
     public boolean startDiscovery(){
         return BtInterface.getInstance().startDiscovery();
     }
+    public boolean cancelDiscovery() { return BtInterface.getInstance().cancelDiscovery();}
 
     public void makeDiscoverable(int time) {
         BtInterface.getInstance().makeDiscoverable(time);

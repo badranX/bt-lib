@@ -2,19 +2,19 @@ apply plugin: 'com.android.library'
 android {
 
     buildToolsVersion "23.0.3"
-    compileSdkVersion 21;
-    //buildToolsVersion "24.0.0 rc3"
-    //buildToolsVersion "19.1.0";
+    compileSdkVersion 23;
+
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 19
+        targetSdkVersion 23
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_6
         targetCompatibility JavaVersion.VERSION_1_6
     }
+
 
     buildTypes {
         release {
@@ -25,35 +25,28 @@ android {
 }
 
 dependencies {
-
-        provided files('libs/classes.jar')
+    provided files('libs/classes.jar')
 }
 
 
-//def UnityProjectPath = '/Users/a/DEV'
-//def UnityProjectPath = '/Users/a/Delete/Assets/Plugins/Android'
-//def UnityProjectPath = '/Users/a/Desktop/Main Terminal/Assets/Plugins/Android'
-def UnityProjectPath = '/Users/hunter/DEV/Unity/New Unity Project 15/Assets/Plugins/Android'
-//def UnityProjectPath = 'C:\\Users\\hp\\Documents\\New Unity Project 5\\Assets\\Plugins\\Android'
-//def comndStr = 'C:\\Python27\\python.exe'
+
+def UnityProjectPath = '/Users/hunter/DEV/Unity/BtMajorForU534/Assets/Plugins/Android'
+
 def  comndStr = 'python'
-//def pythonFile = 'C:\\Users\\hp\\Desktop\\ASunity.py'
 def pythonFile = getProjectDir().toString() + "/ASunity.py";
 
 def aarPathReleased = project.buildDir.toString() +"/outputs/aar/app-release.aar"
 def aarPathDebug = project.buildDir.toString() +"/outputs/aar/app-debug.aar"
+
+
 task runPythonRelease(type: Exec,dependsOn: 'assembleRelease') {
     println(pythonFile)
-
-//    workingDir '/Users/a/DEV'
 
     commandLine comndStr ,pythonFile, UnityProjectPath,aarPathReleased
 }
 
 task runPythonDebug(type: Exec,dependsOn: 'assembleDebug') {
 
-
-//    workingDir '/Users/a/DEV'
 
     commandLine comndStr , pythonFile, UnityProjectPath,aarPathDebug
 }

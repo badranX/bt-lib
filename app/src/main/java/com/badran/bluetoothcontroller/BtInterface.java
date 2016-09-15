@@ -116,6 +116,12 @@ public class BtInterface {
         }catch(IllegalArgumentException e){
             //Ignore
         }
+        try {
+            if(rssi_DiscoveryReceiver != null)
+                UnityPlayer.currentActivity.unregisterReceiver(rssi_DiscoveryReceiver);
+        }catch(IllegalArgumentException e){
+            //Ignore
+        }
         if(serverReceiver != null) {
             try {
                 UnityPlayer.currentActivity.unregisterReceiver(serverReceiver);
@@ -429,14 +435,8 @@ public class BtInterface {
                 PluginToUnity.ControlMessages.DISCOVERED_DEVICE.send(device.getName(),device.getAddress(),Short.toString(rssi));
 
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-
-                if(deviceDiscoveryReceiver != null) {
-                    try {
-                        UnityPlayer.currentActivity.unregisterReceiver(rssi_DiscoveryReceiver);
-                    } catch (IllegalArgumentException e) {
-                        //ignore
-                    }
-                }
+                Log.v(TAG,"Discover Finished");
+                PluginToUnity.ControlMessages.ACTION_DISCOVERY_FINISHED.send();
             }
         }
     }
@@ -546,6 +546,12 @@ public class BtInterface {
         }
     }
     private boolean startDiscoveryForConnection(ConnectionTrial btConnectionTrial){
+
+        //TODO startDiscovery multiple times during discovering won't affect discovery at all. It has to start from time 0
+        if (mBluetoothAdapter.isDiscovering()) {
+            mBluetoothAdapter.cancelDiscovery();
+        }
+
         this.btConnectionForDiscovery = btConnectionTrial;
 
         if(deviceDiscoveryReceiver == null) deviceDiscoveryReceiver = new DeviceDiscoveryReceiver();
@@ -556,29 +562,44 @@ public class BtInterface {
         UnityPlayer.currentActivity.registerReceiver(deviceDiscoveryReceiver,action_found);
         UnityPlayer.currentActivity.registerReceiver(deviceDiscoveryReceiver,action_finished);
 
-        //TODO check if canceling the discovery is important
-        if (mBluetoothAdapter.isDiscovering()) {
-            mBluetoothAdapter.cancelDiscovery();
-        }
+
         return mBluetoothAdapter.startDiscovery();
     }
 
     boolean startDiscovery(){
 
-        if(rssi_DiscoveryReceiver == null) rssi_DiscoveryReceiver = new RSSI_DiscoveryReceiver();
 
-        IntentFilter action_found = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        IntentFilter action_finished = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-
-        UnityPlayer.currentActivity.registerReceiver(rssi_DiscoveryReceiver,action_found);
-        UnityPlayer.currentActivity.registerReceiver(rssi_DiscoveryReceiver,action_finished);
-
-        //TODO check if canceling the discovery is important
         if (mBluetoothAdapter.isDiscovering()) {
             mBluetoothAdapter.cancelDiscovery();
         }
 
+        if(rssi_DiscoveryReceiver == null) {
+            rssi_DiscoveryReceiver = new RSSI_DiscoveryReceiver();
+
+            IntentFilter action_found = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+            IntentFilter action_finished = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+
+
+            UnityPlayer.currentActivity.registerReceiver(rssi_DiscoveryReceiver, action_found);
+            UnityPlayer.currentActivity.registerReceiver(rssi_DiscoveryReceiver, action_finished);
+        }
+
         return mBluetoothAdapter.startDiscovery();
+    }
+
+    //startDiscovery and cancelDiscovery should be used on the same thread
+    boolean cancelDiscovery() {
+        try {
+
+            if(rssi_DiscoveryReceiver != null) {
+                UnityPlayer.currentActivity.unregisterReceiver(rssi_DiscoveryReceiver);
+                rssi_DiscoveryReceiver = null;
+            }
+        }catch(IllegalArgumentException e){
+            //Ignore
+        }
+        return mBluetoothAdapter.cancelDiscovery();
+
     }
 
     private class NormalConnectThread extends Thread {
@@ -603,9 +624,7 @@ public class BtInterface {
                 } catch (Exception e) {
                     Log.v(TAG, e.getMessage());
                     Log.v(TAG,"problem create socket,createChinese");
-
                 }
-
             }
             else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1 && !isSecure) {
                 tmp = device.createInsecureRfcommSocketToServiceRecord(MY_UUID);

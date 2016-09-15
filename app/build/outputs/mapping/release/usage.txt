@@ -2,17 +2,17 @@ com.badran.bluetoothcontroller.BluetoothConnection:
     484:484:void RaiseDISCOVERY_STARTED()
 com.badran.bluetoothcontroller.BluetoothDevicePicker
 com.badran.bluetoothcontroller.BtInterface:
-    867:870:private void stopServer()
+    886:889:private void stopServer()
 com.badran.bluetoothcontroller.BtInterface$AcceptThread:
-    898:898:public boolean isRunning()
-    902:903:public void stopServer()
+    917:917:public boolean isRunning()
+    921:922:public void stopServer()
 com.badran.bluetoothcontroller.BtInterface$NormalConnectThread:
-    656:658:public void cancel()
+    675:677:public void cancel()
 com.badran.bluetoothcontroller.BtReader$BtElement:
     64:66:public byte[] PollAll(int)
     70:73:public void flush(int)
 com.badran.bluetoothcontroller.BtReader$ReadingThreads:
-    190:190:private BtReader$ReadingThreads()
+    192:192:private BtReader$ReadingThreads()
 com.badran.bluetoothcontroller.BtSender:
     74:93:void addCloseJob(java.io.BufferedOutputStream)
 com.badran.bluetoothcontroller.BtSender$Job:
@@ -30,4 +30,4 @@ com.badran.library.CircularArrayList:
     221:227:public java.lang.Byte poll()
     297:304:public void flush(int)
     306:310:public byte[] pollAll(int)
-    385:393:public static void main(java.lang.String[])
+    384:392:public static void main(java.lang.String[])
