@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package com.badran.bluetoothcontroller;
+package com.techtweaking.bluetoothcontroller;
 
 public final class R {
     public static final class attr {

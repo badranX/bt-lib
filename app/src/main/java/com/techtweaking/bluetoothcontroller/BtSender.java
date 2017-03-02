@@ -1,4 +1,4 @@
-package com.badran.bluetoothcontroller;
+package com.techtweaking.bluetoothcontroller;
 
 import android.util.Log;
 
@@ -7,7 +7,6 @@ import java.io.IOException;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 class BtSender {
@@ -15,7 +14,7 @@ class BtSender {
     private static BtSender instance = null;
 
 
-    protected BtSender() {
+    private BtSender() {
 
         // Exists only to defeat instantiation.
 
@@ -29,11 +28,11 @@ class BtSender {
     }
 
 
-    volatile boolean isSending = false;
+    private volatile boolean isSending = false;
 
 
-    Queue<Job> outMessages = new LinkedList<Job>();
-    private Object lock1 = new Object();
+    private final Queue<Job> outMessages = new LinkedList<Job>();
+    private final Object lock1 = new Object();
 
 
     class Job {
@@ -107,7 +106,7 @@ class BtSender {
                         BtSender.this.isSending = false;
                         break;
                     }
-                    job = (BtSender.Job)BtSender.this.outMessages.poll();
+                    job = BtSender.this.outMessages.poll();
                 }
                 try
                 {
@@ -138,7 +137,7 @@ class BtSender {
                 catch (IOException e)
                 {
                     Log.v("PLUGIN . UNITY", "failed while write/sending data");
-                    job.btConnection.RaiseSENDING_ERROR();
+                    if( job.btConnection != null) job.btConnection.RaiseSENDING_ERROR();
                 }
 
             }

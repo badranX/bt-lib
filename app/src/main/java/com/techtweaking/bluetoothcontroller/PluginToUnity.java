@@ -1,14 +1,9 @@
-package com.badran.bluetoothcontroller;
+package com.techtweaking.bluetoothcontroller;
 
-import android.bluetooth.BluetoothDevice;
+
 import android.bluetooth.BluetoothSocket;
-
 import com.unity3d.player.UnityPlayer;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
 
 
 
@@ -28,7 +23,10 @@ public class PluginToUnity {
 //    public  final int READING_ERROR = -6; //"error while reading"
     volatile static BluetoothSocket socket;
 
-
+    private static String UNITY_GAME_OBJECT_NAME = "BtConnector";//TODO
+    public static void change_UNITY_GAME_OBJECT_NAME(String name) {
+        UNITY_GAME_OBJECT_NAME = name;
+    }
 
     public enum ControlMessages {
         CONNECTED ("TrConnect"), //"Connected"
@@ -47,9 +45,11 @@ public class PluginToUnity {
         BLUETOOTH_OFF("TrBluetoothOFF"),
         BLUETOOTH_ON("TrBluetoothON"),
         SERVER_DISCOVERED_DEVICE("TrServerDiscoveredDevice"),
+        SERVER_FINISHED_LISTENING("TrServerFinishedListening"),
+
         DISCOVERED_DEVICE("TrDiscoveredDevice"),
-        ACTION_DISCOVERY_FINISHED("TrACTION_DISCOVERY_FINISHED");
-        private static final String UNITY_GAME_OBJECT_NAME = "BtConnector";
+        ACTION_DISCOVERY_FINISHED("TrDiscoveryFinished");
+
 
         private final String value;
 
@@ -58,7 +58,7 @@ public class PluginToUnity {
         }
 
 
-        public String getValue() { return value; }
+        //public String getValue() { return value; }
 
         public void send(int id){ //send Control Message in the Name of THE CONNECTION [id]
             UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, value, Integer.toString(id));
@@ -69,13 +69,20 @@ public class PluginToUnity {
             UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, value, "");
         }
 
-        public void send(int id,String val) { UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, value, Integer.toString(id)+":" + val); }
+
+        //TODO METHOD : public void send(int id,String val) { UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, value, Integer.toString(id)+":" + val); }
 
 
         //USED FOR ONLY TrDiscoveredDevice
         public void send(String Name,String macAddress, String RSSI) {
+            UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, value, Name +"#$" + macAddress + "#$" + RSSI);
 
-            UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, value, Name +"#$" + macAddress + "#$" + RSSI); }
+        }
+
+        //USED FOR ONLY ShowDevices
+        public void send(String Name,String macAddress) {
+            UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, value, Name +"#$" + macAddress);
+        }
 
     }
 

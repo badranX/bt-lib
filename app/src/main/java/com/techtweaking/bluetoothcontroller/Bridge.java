@@ -1,4 +1,4 @@
-package com.badran.bluetoothcontroller;
+package com.techtweaking.bluetoothcontroller;
 
 /* Android PlugIn for Unity Game Engine
  * By Tech Tweaking
@@ -16,7 +16,6 @@ import android.content.Context;
 import android.content.IntentFilter;
 
 
-import java.util.LinkedList;
 import java.util.Set;
 
 public class Bridge {
@@ -28,25 +27,31 @@ public class Bridge {
     private static Bridge instance = null;
 
 
-    protected Bridge() {
+    private Bridge() {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         // Exists only to defeat instantiation.
     }
 
-    public static Bridge getInstance() {
+    public static Bridge getInstance(String name) {
         if (instance == null) {
             instance = new Bridge();
         }
+        PluginToUnity.change_UNITY_GAME_OBJECT_NAME(name);
         return instance;
     }
 
+    public void renameUnityObject(String name) {
+        PluginToUnity.change_UNITY_GAME_OBJECT_NAME(name);
+    }
+
+    /*
     public  String test (){
         return "XXXXXXXXXXXXXYYYYYYYYYYYYYYYYXIIIIIII";
         //com.badran.library.NativeBuffer.add();
     }
+    */
     public BluetoothConnection createBlutoothConnectionObject( int id) {
-        BluetoothConnection btConnection = new BluetoothConnection(id);
-        return  btConnection;
+        return new BluetoothConnection(id);
     }
 
 
@@ -59,7 +64,7 @@ public class Bridge {
             UnityPlayer.currentActivity.startActivityForResult(enableBtIntent,8);
     }
 
-    BtStateReceiver btStateReceiver;
+    private BtStateReceiver btStateReceiver;
     public void registerStateReceiver (){
         if(btStateReceiver == null) btStateReceiver = new BtStateReceiver();
 
@@ -68,10 +73,18 @@ public class Bridge {
         UnityPlayer.currentActivity.registerReceiver(btStateReceiver, filter);
 
     }
+
+    //TODO NOT : CALLED FROM UNITY
     public void deRegisterStateReceiver (){
         try {
             if(btStateReceiver != null)
                 UnityPlayer.currentActivity.unregisterReceiver(btStateReceiver);
+        }catch(IllegalArgumentException e){
+            //Ignore
+        }
+        try {
+            if(mBluetoothPickerReceiver != null)
+                UnityPlayer.currentActivity.unregisterReceiver(mBluetoothPickerReceiver);
         }catch(IllegalArgumentException e){
             //Ignore
         }
@@ -98,34 +111,28 @@ public class Bridge {
                 }
             }
         }
-    };
+    }
 
     public  boolean enableBluetooth() {
-        if (mBluetoothAdapter != null) {
-            return mBluetoothAdapter.enable();
-        } else return false;
+        return mBluetoothAdapter != null && mBluetoothAdapter.enable();
 
 
     }
 
 
     public  boolean disableBluetooth() {
-        if (mBluetoothAdapter != null) {
-            return mBluetoothAdapter.disable();
-        } else return false;
+        return mBluetoothAdapter != null && mBluetoothAdapter.disable();
 
     }
 
     public  boolean isBluetoothEnabled() {
 
-        if (mBluetoothAdapter != null) {
-            return mBluetoothAdapter.isEnabled();
-        } else return false;
+        return mBluetoothAdapter != null && mBluetoothAdapter.isEnabled();
     }
 
 
     // show devices
-    BluetoothDevicePickerReceiver mBluetoothPickerReceiver;
+    private BluetoothDevicePickerReceiver mBluetoothPickerReceiver;
     public  void showDevices () {
         if(mBluetoothPickerReceiver == null) mBluetoothPickerReceiver = new BluetoothDevicePickerReceiver();
             IntentFilter deviceSelectedFilter = new IntentFilter();
@@ -154,7 +161,8 @@ public class Bridge {
                 // context.unregisterReceiver(this);
                 PickedBtDevice = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if(PickedBtDevice != null) {
-                    PluginToUnity.ControlMessages.DEVICE_PICKED.send();
+                    String name = PickedBtDevice.getName() == null ? "" : PickedBtDevice.getName();
+                    PluginToUnity.ControlMessages.DEVICE_PICKED.send(name,PickedBtDevice.getAddress());
                     UnityPlayer.currentActivity.unregisterReceiver(this);
                 }
             }
@@ -166,8 +174,12 @@ public class Bridge {
     public boolean startDiscovery(){
         return BtInterface.getInstance().startDiscovery();
     }
-    public boolean cancelDiscovery() { return BtInterface.getInstance().cancelDiscovery();}
+    public boolean refreshDiscovery(){
+        return BtInterface.getInstance().refreshDiscovery();
+    }
 
+    public boolean cancelDiscovery() { return BtInterface.getInstance().cancelDiscovery();}
+    public void releaseDiscoveryResources() {BtInterface.getInstance().releaseDiscoveryResources();}
     public void makeDiscoverable(int time) {
         BtInterface.getInstance().makeDiscoverable(time);
     }
@@ -186,7 +198,7 @@ public class Bridge {
         }
         return  null;
     }
-
+    
     //Serever Discoverd device
     public  BluetoothConnection getDiscoveredDeviceForServer (int id){
         if(PluginToUnity.socket != null) {
@@ -194,11 +206,12 @@ public class Bridge {
             BluetoothConnection btConnection = new BluetoothConnection(id);
             btConnection.socket = PluginToUnity.socket;
             btConnection.connectionMode = BluetoothConnection.ConnectionMode.UsingSocket;
-            btConnection.setSucket(PluginToUnity.socket);
+            btConnection.setSocket(PluginToUnity.socket);
             return btConnection;
         }return null;
     }
 
+    //old replicated
     public  BluetoothConnection[]  getPairedDevices (){
         Set<BluetoothDevice> setPairedDevices;
 
@@ -216,6 +229,32 @@ public class Bridge {
 
     }
 
+    //More optemized
+    public String[] getBondedDevices () {
+        Set<BluetoothDevice> setPairedDevices;
+
+        setPairedDevices = mBluetoothAdapter.getBondedDevices();
+        String[] returned = new String[2*setPairedDevices.size()];
+        int i =0;
+        for (BluetoothDevice pairedDevice : setPairedDevices) {
+
+            BluetoothConnection btConnection = new BluetoothConnection();
+            btConnection.setDevice(pairedDevice);
+            String name = pairedDevice.getName();
+            returned[i] = name == null ? "" : name;//Sometimes name isn't available
+            returned[i+1] = pairedDevice.getAddress();
+
+            i += 2;
+        }
+        return returned;
+
+    }
+
+
+
+
+
+    /*TESTING
     public byte[] TEST(byte[] x) {
 
         x[0] =100;
@@ -253,7 +292,9 @@ public class Bridge {
 
 
     }
-    void IntToBytes(byte[] out, int index,int val){
+
+    */
+    private void IntToBytes(byte[] out, int index, int val){
         out[index] = (byte)val;
         out[index + 1] = (byte)(val >>> 8);
         out[index + 2] = (byte)(val >>> 16);
@@ -297,5 +338,11 @@ public class Bridge {
         BtInterface.getInstance().OnDestroy();
             BluetoothConnection.closeAll();
     }
+
+    public String MyMacAdress() {
+
+        return BtInterface.getInstance().mBluetoothAdapter.getAddress();
+    }
+
 }
 

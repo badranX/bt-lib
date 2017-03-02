@@ -1,10 +1,9 @@
-package com.badran.library;
+package com.techtweaking.library;
 
 
-import android.os.Debug;
 import android.util.Log;
 
-import com.badran.bluetoothcontroller.PluginToUnity;
+import com.techtweaking.bluetoothcontroller.PluginToUnity;
 
 import java.util.*;
 
@@ -58,6 +57,7 @@ public class CircularArrayList {
         }
         return m;
     }
+    /*using unity sendmessages instead
     public boolean isDataAvailable(){
         switch (mode){
             case LENGTH_PACKET :
@@ -69,8 +69,9 @@ public class CircularArrayList {
             default: return false;
         }
     }
+    */
 
-
+    //TODO Add byte only call wrapIndex .... against all size() called....SYNCHRONIZE
     public int size() {
         //tail never equals capacity because wrapindex() doesn't allow that. so size never equals capacity
         return tail - head + (tail < head ? n : 0);
@@ -103,6 +104,8 @@ public class CircularArrayList {
 //
 //    }
 
+    /*
+    No use for it?? till now
     public   int getDataSize(){
         switch (mode){
             case NO_PACKETIZATION: size();
@@ -112,9 +115,10 @@ public class CircularArrayList {
         }
 
     }
+    */
 
     public void resize(){//Assumes that the buffer is full. size == capacity
-        int tmpN = (int)(n * 2);
+        int tmpN = (n * 2);
         byte[] tmp;
         try {
             tmp = new byte[tmpN];
@@ -217,6 +221,8 @@ public class CircularArrayList {
     }
 
 
+    /*
+    poll one byte is never used
     public   Byte poll() {
 
         if (size() <= 0) return null;
@@ -227,7 +233,7 @@ public class CircularArrayList {
 
         return e;
     }
-
+*/
     private byte[] pollArray (int size){//Doesn't tollerate errors in inputs (size),expect to check them before calling
 
         //same As pollArraySize() but used for packetization, so it doesn't send to unity
@@ -313,7 +319,7 @@ public class CircularArrayList {
 
 
 
-    public byte[] pollAllPackets(int id){//Works only for END_BYTE_PACKET
+    public byte[] pollAllPackets(){//Works only for END_BYTE_PACKET
 
                 if(marks.isEmpty()) return empty;
 
@@ -375,14 +381,15 @@ public class CircularArrayList {
             case NO_PACKETIZATION:
                 int s = size();
                 if(s == 0) return empty;
-                byte[] temp = pollArray(s);
+                return pollArray(s);
                 //NO_Packetization, we are polling everything. no need for EMPTIED_DATA.send(id).
-                return temp;
+
         }
         return empty;
     }
 
-    public static void main(String[] args) {
+
+   /* public static void main(String[] args) {
          LinkedList<Integer> marks = new LinkedList<Integer>() ;
             marks.add(2);
         int x = 8979396;
@@ -392,8 +399,9 @@ public class CircularArrayList {
         System.out.println((byte)(x >>> 16)); // Display the string.
         System.out.println((byte)(x >>> 24)); // Display the string.
     }
+    */
 
-    void IntToBytes(byte[] out, int index,int val){
+    private void IntToBytes(byte[] out, int index, int val){
         out[index] = (byte)val;
         out[index + 1] = (byte)(val >>> 8);
         out[index + 2] = (byte)(val >>> 16);

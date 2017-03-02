@@ -1,4 +1,4 @@
-package com.badran.bluetoothcontroller;
+package com.techtweaking.bluetoothcontroller;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +9,7 @@ import android.bluetooth.BluetoothSocket;
 import android.util.SparseArray;
 
 
-import com.badran.library.CircularArrayList;
+import com.techtweaking.library.CircularArrayList;
 
 class BtReader {
 
@@ -18,7 +18,7 @@ class BtReader {
 
     private final byte[] empty = new byte[0];
     private static BtReader instance = null;
-    protected BtReader() {
+    private BtReader() {
         // Exists only to defeat instantiation.
     }
 
@@ -31,19 +31,21 @@ class BtReader {
 
 
     private class BtElement {
-        boolean isDynamicSize;
-        BluetoothSocket socket;
+        final boolean isDynamicSize;
+        final BluetoothSocket socket;
         InputStream inputStream;
         final public Object ReadWriteBufferKey = new Object();
-        int id;
+        final int id;
         volatile boolean stopReading = false;
-        private CircularArrayList buffer;
-
+        private final CircularArrayList buffer;
+        /*
+        Unity SendMessages instead
         public boolean IsDataAvailable(){
             synchronized (ReadWriteBufferKey){
                 return buffer.isDataAvailable();
             }
         }
+        */
 
         public byte[] PollArray (int size,int id){
             synchronized (ReadWriteBufferKey) {
@@ -55,14 +57,9 @@ class BtReader {
                 return buffer.pollPacket(id);
             }
         }
-        public byte[] PollAllPackets(int id){
+        public byte[] PollAllPackets(){
             synchronized (ReadWriteBufferKey) {
-                return buffer.pollAllPackets(id);
-            }
-        }
-        public byte[] PollAll (int id){
-            synchronized (ReadWriteBufferKey) {
-                return buffer.pollAll(id);
+                return buffer.pollAllPackets();
             }
         }
 
@@ -90,16 +87,18 @@ class BtReader {
                 return buffer.size();
         }
         public int Capacity(){
-            //TODO check if capacity is synchronized with resize and size
                 return buffer.capacity();
         }
         public void Resize(){
+            synchronized (ReadWriteBufferKey) {
                 buffer.resize();
+            }
         }
         public boolean AddByte(byte item){
-            synchronized (ReadWriteBufferKey) {//TODO check Synchronization
+            //Resize and AddByte are used on the same thread no need for synchronization
+            //Also AddByte and Polls() methods dont affect each other! in a circular buffer.
                 return buffer.add(item);
-            }
+
         }
 
 
@@ -117,9 +116,8 @@ class BtReader {
         private boolean isReading = false;
         public final int  ThreadID;
         //public BtReceiver thread;
-        private SparseArray< BtElement> map = new SparseArray< BtElement>();
+        private final SparseArray< BtElement> map = new SparseArray< BtElement>();
         final public Object key = new Object();
-        final public Object StartDoneKey = new Object();
 
         public ReadingThreadData(int ThreadID){
             this.ThreadID = ThreadID;
@@ -190,8 +188,8 @@ class BtReader {
     }
 
     private static class ReadingThreads{
-        private static SparseArray<ReadingThreadData> dictionary = new SparseArray <ReadingThreadData>();
-        private static Object key = new Object();
+        private static final SparseArray<ReadingThreadData> dictionary = new SparseArray <ReadingThreadData>();
+        private static final Object key = new Object();
         public static void Add(int ThreadID, ReadingThreadData rtd){
             synchronized (key ) {
                 dictionary.put(ThreadID, rtd);
@@ -216,7 +214,7 @@ class BtReader {
         ReadingThreadData rtd = ReadingThreads.Get(btConnection.readingThreadID);
         if(rtd != null) {
             synchronized (rtd.key) {
-                return rtd.GetReader(btConnection.getID()) != null ? true : false;
+                return rtd.GetReader(btConnection.getID()) != null;
             }
         }
         return false;
@@ -263,6 +261,7 @@ class BtReader {
             element.setEndByte(btConnection.packetEndByte);
         }
     }
+    // CALLED BY UNITY
     public boolean Close(int id, int threadID) {//need adjusting
         ReadingThreadData rtd = ReadingThreads.Get(threadID);
         if (rtd != null) {
@@ -279,7 +278,8 @@ class BtReader {
         return false;
     }
 
-    public boolean IsDataAvailable(int id, int threadID) {//need adjusting
+/* We're using Unity SendMessages to check data availablity
+   public boolean IsDataAvailable(int id, int threadID) {//need adjusting
 
         ReadingThreadData rtd = ReadingThreads.Get(threadID);
         BtElement e;
@@ -292,6 +292,7 @@ class BtReader {
         }
         return false;
     }
+    */
     public void setPacketSize(int id, int threadId, int size){
         ReadingThreadData rtd = ReadingThreads.Get(threadId);
         BtElement e;
@@ -328,9 +329,8 @@ class BtReader {
 
 
         if (e != null) {
-            byte[] tempBytes = e.PollArray(size, id);
 
-            return tempBytes;
+            return e.PollArray(size, id);
         }
 
         return empty;
@@ -354,14 +354,14 @@ class BtReader {
         if (rtd != null) {
             e = rtd.GetReader(id);
             if (e != null) {
-                return e.PollAllPackets(id);
+                return e.PollAllPackets();
             }
         }
         return empty;
     }
 
     private class BtReceiver implements Runnable {
-        private BtReader.ReadingThreadData rtd;
+        private final BtReader.ReadingThreadData rtd;
 
         public BtReceiver(BtReader.ReadingThreadData rtd)
         {
@@ -462,7 +462,7 @@ class BtReader {
 
 
     private class SingleBtReceiver implements Runnable {
-        BtElement element;
+        final BtElement element;
 
         public SingleBtReceiver(BtElement element) {
             this.element = element;
