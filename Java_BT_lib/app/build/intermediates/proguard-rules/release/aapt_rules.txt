@@ -1,0 +1,3 @@
+# view AndroidManifest.xml #generated:19
+-keep class com.techtweaking.bluetoothcontroller.ForwardingActivity { <init>(...); }
+

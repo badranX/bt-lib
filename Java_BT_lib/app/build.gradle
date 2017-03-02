@@ -19,7 +19,7 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles  '/Users/hunter/DEV/AndroidStudioProjects/BtLibJava/bluetoothcontrollerjavaside/proguard.cfg'
+            proguardFiles getProjectDir().parentFile.toString() +  "/proguard.cfg"
         }
     }
 }
@@ -30,7 +30,7 @@ dependencies {
 
 
 
-def UnityProjectPath = '/Users/hunter/DEV/Unity/New Unity Project 28/Assets/Plugins/Android'
+def UnityProjectPath =  getProjectDir().parentFile.parentFile.toString() + "/Unity_BT_lib/Assets/Plugins/Android"
 
 def  comndStr = 'python'
 def pythonFile = getProjectDir().toString() + "/ASunity.py";

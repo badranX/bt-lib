@@ -1,6 +1,14 @@
 [
     {
+        "merged": "/Users/hunter/Desktop/BT_lib/BT_lib/Java_BT_lib/app/build/intermediates/res/merged/androidTest/debug/drawable-mdpi-v4/ic_launcher.png",
+        "source": "/Users/hunter/Desktop/BT_lib/BT_lib/Java_BT_lib/app/build/intermediates/bundles/debug/res/drawable-mdpi-v4/ic_launcher.png"
+    },
+    {
         "merged": "/Users/hunter/DEV/AndroidStudioProjects/BtLibJava/bluetoothcontrollerjavaside/app/build/intermediates/res/merged/androidTest/debug/drawable-mdpi-v4/ic_launcher.png",
         "source": "/Users/hunter/DEV/AndroidStudioProjects/BtLibJava/bluetoothcontrollerjavaside/app/build/intermediates/bundles/debug/res/drawable-mdpi-v4/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/hunter/Desktop/BT_lib/Java_BT_lib/Java_BT_lib/app/build/intermediates/res/merged/androidTest/debug/drawable-mdpi-v4/ic_launcher.png",
+        "source": "/Users/hunter/Desktop/BT_lib/Java_BT_lib/Java_BT_lib/app/build/intermediates/bundles/debug/res/drawable-mdpi-v4/ic_launcher.png"
     }
 ]

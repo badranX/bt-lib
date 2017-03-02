@@ -1,0 +1,348 @@
+com.techtweaking.bluetoothcontroller.BluetoothConnection -> com.techtweaking.bluetoothcontroller.BluetoothConnection:
+    int id -> id
+    boolean WillRead -> a
+    boolean WillSend -> b
+    boolean isConnected -> c
+    boolean isSizePacketized -> d
+    boolean isEndBytePacketized -> e
+    byte packetEndByte -> a
+    int packetSize -> a
+    android.bluetooth.BluetoothSocket socket -> a
+    java.io.OutputStream outStream -> a
+    java.io.BufferedOutputStream bufferedOutputStream -> a
+    java.io.InputStream inputStream -> a
+    int readingThreadID -> b
+    java.util.Map mapAddress -> a
+    java.lang.String name -> name
+    java.lang.String mac -> a
+    java.lang.String SPP_UUID -> b
+    android.bluetooth.BluetoothDevice device -> a
+    int connectionMode$4d9de554 -> c
+    boolean isBufferDynamic -> f
+    int bufferSize -> d
+    void <init>(int) -> <init>
+    void <init>() -> <init>
+    void enableReading(int) -> enableReading
+    void disableReading() -> disableReading
+    void enableSending() -> enableSending
+    void disableSending() -> disableSending
+    boolean isReading() -> isReading
+    byte[] read(int) -> read
+    byte[] readAllPackets() -> readAllPackets
+    void setPacketSize(int) -> setPacketSize
+    void setEndByte(byte) -> setEndByte
+    byte[] read() -> read
+    void normal_connect(boolean,boolean) -> normal_connect
+    void connect(int,int,boolean,boolean,boolean) -> connect
+    void reset() -> reset
+    void close() -> close
+    void closeAll() -> a
+    void setID(int) -> setID
+    int getID() -> getID
+    void setUUID(java.lang.String) -> setUUID
+    void setMac(java.lang.String) -> setMac
+    void setName(java.lang.String) -> setName
+    java.lang.String getName() -> getName
+    java.lang.String getAddress() -> getAddress
+    void setBufferSize(int) -> setBufferSize
+    void sendBytes(byte[]) -> sendBytes
+    void sendBytes_Blocking(byte[]) -> sendBytes_Blocking
+    void initializeStreams() -> b
+    boolean startDiscovery() -> startDiscovery
+    void instanceRemoved() -> instanceRemoved
+    java.util.Set getInstFromDevice(android.bluetooth.BluetoothDevice) -> a
+    void setDevice(android.bluetooth.BluetoothDevice) -> a
+    void setSocket(android.bluetooth.BluetoothSocket) -> a
+    void removeSocketServer() -> c
+    void RaiseCONNECTED() -> d
+    void RaiseDISCONNECTED() -> e
+    void RaiseNOT_FOUND() -> f
+    void RaiseMODULE_OFF() -> g
+    void <clinit>() -> <clinit>
+com.techtweaking.bluetoothcontroller.BluetoothConnection$ConnectionMode -> com.techtweaking.bluetoothcontroller.a:
+    int UsingMac$4d9de554 -> e
+    int UsingName$4d9de554 -> f
+    int UsingBluetoothDeviceReference$4d9de554 -> g
+    int UsingSocket$4d9de554 -> h
+    int NotSet$4d9de554 -> i
+    int[] $VALUES$4c398ca7 -> a
+    int[] values$4e4a631a() -> a
+    void <clinit>() -> <clinit>
+com.techtweaking.bluetoothcontroller.Bridge -> com.techtweaking.bluetoothcontroller.Bridge:
+    android.bluetooth.BluetoothAdapter mBluetoothAdapter -> a
+    com.techtweaking.bluetoothcontroller.Bridge instance -> a
+    com.techtweaking.bluetoothcontroller.Bridge$BtStateReceiver btStateReceiver -> a
+    com.techtweaking.bluetoothcontroller.Bridge$BluetoothDevicePickerReceiver mBluetoothPickerReceiver -> a
+    android.bluetooth.BluetoothDevice PickedBtDevice -> b
+    void <init>() -> <init>
+    com.techtweaking.bluetoothcontroller.Bridge getInstance(java.lang.String) -> getInstance
+    void renameUnityObject(java.lang.String) -> renameUnityObject
+    com.techtweaking.bluetoothcontroller.BluetoothConnection createBlutoothConnectionObject(int) -> createBlutoothConnectionObject
+    void askEnableBluetooth() -> askEnableBluetooth
+    void registerStateReceiver() -> registerStateReceiver
+    void deRegisterStateReceiver() -> deRegisterStateReceiver
+    boolean enableBluetooth() -> enableBluetooth
+    boolean disableBluetooth() -> disableBluetooth
+    boolean isBluetoothEnabled() -> isBluetoothEnabled
+    void showDevices() -> showDevices
+    boolean startDiscovery() -> startDiscovery
+    boolean refreshDiscovery() -> refreshDiscovery
+    boolean cancelDiscovery() -> cancelDiscovery
+    void releaseDiscoveryResources() -> releaseDiscoveryResources
+    void makeDiscoverable(int) -> makeDiscoverable
+    void initServer(java.lang.String,int,boolean) -> initServer
+    com.techtweaking.bluetoothcontroller.BluetoothConnection getPickedDevice(int) -> getPickedDevice
+    com.techtweaking.bluetoothcontroller.BluetoothConnection getDiscoveredDeviceForServer(int) -> getDiscoveredDeviceForServer
+    com.techtweaking.bluetoothcontroller.BluetoothConnection[] getPairedDevices() -> getPairedDevices
+    java.lang.String[] getBondedDevices() -> getBondedDevices
+    void OnDestroy() -> OnDestroy
+    java.lang.String MyMacAdress() -> MyMacAdress
+    android.bluetooth.BluetoothDevice access$202(com.techtweaking.bluetoothcontroller.Bridge,android.bluetooth.BluetoothDevice) -> a
+    android.bluetooth.BluetoothDevice access$200(com.techtweaking.bluetoothcontroller.Bridge) -> a
+    void <clinit>() -> <clinit>
+com.techtweaking.bluetoothcontroller.Bridge$1 -> com.techtweaking.bluetoothcontroller.b:
+    int trialsCount -> j
+    int time -> k
+    java.util.UUID uuid -> uuid
+    boolean willStop -> g
+    boolean isNeedDiscovery -> h
+    boolean isBrutalConnection -> i
+    boolean switchingBrutalNormal -> j
+    android.bluetooth.BluetoothDevice device -> a
+    com.techtweaking.bluetoothcontroller.BluetoothConnection btConnection -> a
+    void <init>(com.techtweaking.bluetoothcontroller.BluetoothConnection,int,int,boolean,boolean) -> <init>
+com.techtweaking.bluetoothcontroller.Bridge$BluetoothDevicePickerReceiver -> com.techtweaking.bluetoothcontroller.c:
+    com.techtweaking.bluetoothcontroller.Bridge this$0 -> b
+    void <init>(com.techtweaking.bluetoothcontroller.Bridge) -> <init>
+    void onReceive(android.content.Context,android.content.Intent) -> onReceive
+    void <init>(com.techtweaking.bluetoothcontroller.Bridge,byte) -> <init>
+com.techtweaking.bluetoothcontroller.Bridge$BtStateReceiver -> com.techtweaking.bluetoothcontroller.d:
+    void <init>() -> <init>
+    void onReceive(android.content.Context,android.content.Intent) -> onReceive
+    void <init>(com.techtweaking.bluetoothcontroller.Bridge) -> <init>
+com.techtweaking.bluetoothcontroller.BtInterface -> com.techtweaking.bluetoothcontroller.e:
+    android.bluetooth.BluetoothAdapter mBluetoothAdapter -> a
+    com.techtweaking.bluetoothcontroller.BtInterface$DeviceDiscoveryReceiver_WhileConnecting deviceDiscoveryReceiverWhileConnecting -> a
+    com.techtweaking.bluetoothcontroller.BtInterface$RSSI_DiscoveryReceiver rssi_DiscoveryReceiver -> a
+    boolean isConnecting -> k
+    com.techtweaking.bluetoothcontroller.Bridge$1 btConnectionForDiscovery$3021738e -> a
+    java.util.Queue btConnectionsQueue -> a
+    android.util.SparseArray sparseTrials -> a
+    java.lang.Object ConnectThreadLock -> a
+    com.techtweaking.bluetoothcontroller.BtInterface instance -> a
+    android.content.BroadcastReceiver mReceiver -> a
+    com.techtweaking.bluetoothcontroller.BtInterface$AcceptThread acceptThread -> a
+    java.lang.Object acceptThreadLock -> b
+    void <init>() -> <init>
+    com.techtweaking.bluetoothcontroller.BtInterface getInstance() -> a
+    void addConnectionTrial$62513983(com.techtweaking.bluetoothcontroller.Bridge$1) -> a
+    boolean findBluetoothDevice(com.techtweaking.bluetoothcontroller.BluetoothConnection) -> a
+    boolean startDiscovery() -> startDiscovery
+    void makeDiscoverable(int) -> makeDiscoverable
+    com.techtweaking.bluetoothcontroller.Bridge$1 access$100$a5d213(com.techtweaking.bluetoothcontroller.BtInterface) -> a
+    java.lang.Object access$200(com.techtweaking.bluetoothcontroller.BtInterface) -> a
+    com.techtweaking.bluetoothcontroller.Bridge$1 access$102$6d8ee21f$64158c25(com.techtweaking.bluetoothcontroller.BtInterface) -> b
+    com.techtweaking.bluetoothcontroller.BtInterface$DeviceDiscoveryReceiver_WhileConnecting access$300(com.techtweaking.bluetoothcontroller.BtInterface) -> a
+    java.util.Queue access$400(com.techtweaking.bluetoothcontroller.BtInterface) -> a
+    boolean access$502$1844105f(com.techtweaking.bluetoothcontroller.BtInterface) -> a
+    android.util.SparseArray access$600(com.techtweaking.bluetoothcontroller.BtInterface) -> a
+    boolean access$700$482c0c57(com.techtweaking.bluetoothcontroller.BtInterface,com.techtweaking.bluetoothcontroller.Bridge$1) -> a
+    java.lang.Object access$800(com.techtweaking.bluetoothcontroller.BtInterface) -> b
+    com.techtweaking.bluetoothcontroller.BtInterface$AcceptThread access$902$7a11c9d7(com.techtweaking.bluetoothcontroller.BtInterface) -> a
+    void <clinit>() -> <clinit>
+com.techtweaking.bluetoothcontroller.BtInterface$1 -> com.techtweaking.bluetoothcontroller.f:
+    com.techtweaking.bluetoothcontroller.BtInterface this$0 -> b
+    void <init>(com.techtweaking.bluetoothcontroller.BtInterface) -> <init>
+    void onReceive(android.content.Context,android.content.Intent) -> onReceive
+com.techtweaking.bluetoothcontroller.BtInterface$2 -> com.techtweaking.bluetoothcontroller.g:
+    int[] $SwitchMap$com$techtweaking$bluetoothcontroller$BluetoothConnection$ConnectionMode -> b
+    void <clinit>() -> <clinit>
+com.techtweaking.bluetoothcontroller.BtInterface$AcceptThread -> com.techtweaking.bluetoothcontroller.h:
+    boolean willStop -> g
+    android.bluetooth.BluetoothServerSocket mmServerSocket -> a
+    boolean isAccepting -> l
+    boolean willConnectOneDevice -> m
+    java.util.UUID serverUUID -> a
+    int discoverable_Time_Duration -> l
+    com.techtweaking.bluetoothcontroller.BtInterface this$0 -> b
+    void <init>(com.techtweaking.bluetoothcontroller.BtInterface,java.util.UUID,int,boolean) -> <init>
+    android.bluetooth.BluetoothServerSocket createServerSocket() -> a
+    void run() -> run
+com.techtweaking.bluetoothcontroller.BtInterface$ConnectThread -> com.techtweaking.bluetoothcontroller.i:
+    com.techtweaking.bluetoothcontroller.BtInterface this$0 -> b
+    void <init>(com.techtweaking.bluetoothcontroller.BtInterface) -> <init>
+    android.bluetooth.BluetoothSocket createSocket$14ae5da2(boolean,com.techtweaking.bluetoothcontroller.Bridge$1) -> a
+    void run() -> run
+    void <init>(com.techtweaking.bluetoothcontroller.BtInterface,byte) -> <init>
+com.techtweaking.bluetoothcontroller.BtInterface$DeviceDiscoveryReceiver_WhileConnecting -> com.techtweaking.bluetoothcontroller.j:
+    com.techtweaking.bluetoothcontroller.BtInterface this$0 -> b
+    void <init>(com.techtweaking.bluetoothcontroller.BtInterface) -> <init>
+    void onReceive(android.content.Context,android.content.Intent) -> onReceive
+com.techtweaking.bluetoothcontroller.BtInterface$NormalConnectThread -> com.techtweaking.bluetoothcontroller.k:
+    android.bluetooth.BluetoothSocket mmSocket -> b
+    com.techtweaking.bluetoothcontroller.BluetoothConnection btConnection -> a
+    com.techtweaking.bluetoothcontroller.BtInterface this$0 -> b
+    void <init>(com.techtweaking.bluetoothcontroller.BtInterface,com.techtweaking.bluetoothcontroller.BluetoothConnection,java.util.UUID,boolean,boolean) -> <init>
+    void run() -> run
+com.techtweaking.bluetoothcontroller.BtInterface$RSSI_DiscoveryReceiver -> com.techtweaking.bluetoothcontroller.l:
+    void <init>() -> <init>
+    void onReceive(android.content.Context,android.content.Intent) -> onReceive
+com.techtweaking.bluetoothcontroller.BtReader -> com.techtweaking.bluetoothcontroller.m:
+    byte[] empty -> a
+    com.techtweaking.bluetoothcontroller.BtReader instance -> a
+    void <init>() -> <init>
+    com.techtweaking.bluetoothcontroller.BtReader getInstance() -> a
+    boolean IsReading(com.techtweaking.bluetoothcontroller.BluetoothConnection) -> b
+    void EnableReading(com.techtweaking.bluetoothcontroller.BluetoothConnection) -> a
+    void packetize(com.techtweaking.bluetoothcontroller.BluetoothConnection,com.techtweaking.bluetoothcontroller.BtReader$BtElement) -> a
+    boolean Close(int,int) -> a
+    void setPacketSize(int,int,int) -> a
+    void setEndByte(int,int,byte) -> a
+    void <clinit>() -> <clinit>
+com.techtweaking.bluetoothcontroller.BtReader$BtElement -> com.techtweaking.bluetoothcontroller.n:
+    boolean isDynamicSize -> n
+    android.bluetooth.BluetoothSocket socket -> a
+    java.io.InputStream inputStream -> a
+    java.lang.Object ReadWriteBufferKey -> c
+    int id -> id
+    boolean stopReading -> o
+    com.techtweaking.library.CircularArrayList buffer -> a
+    byte[] PollArray(int,int) -> a
+    byte[] PollPacket(int) -> a
+    byte[] PollAllPackets() -> a
+    void setPacketSize(int) -> setPacketSize
+    void setEndByte(byte) -> setEndByte
+    int Capacity() -> a
+    void Resize() -> h
+    boolean AddByte(byte) -> a
+    void <init>(android.bluetooth.BluetoothSocket,java.io.InputStream,int,int,boolean) -> <init>
+com.techtweaking.bluetoothcontroller.BtReader$BtReceiver -> com.techtweaking.bluetoothcontroller.o:
+    com.techtweaking.bluetoothcontroller.BtReader$ReadingThreadData rtd -> a
+    void <init>(com.techtweaking.bluetoothcontroller.BtReader$ReadingThreadData) -> <init>
+    void run() -> run
+com.techtweaking.bluetoothcontroller.BtReader$ReadingThreadData -> com.techtweaking.bluetoothcontroller.p:
+    boolean isReading -> p
+    int ThreadID -> m
+    android.util.SparseArray map -> b
+    java.lang.Object key -> d
+    com.techtweaking.bluetoothcontroller.BtReader this$0 -> b
+    void <init>(com.techtweaking.bluetoothcontroller.BtReader,int) -> <init>
+    void AddReader(int,com.techtweaking.bluetoothcontroller.BtReader$BtElement) -> a
+    com.techtweaking.bluetoothcontroller.BtReader$BtElement GetReader(int) -> a
+    com.techtweaking.bluetoothcontroller.BtReader$BtElement GetReaderByIndex(int) -> b
+    int NumberOfReaders() -> b
+    void RemoveReader(int) -> a
+    void StartSingletonThread(com.techtweaking.bluetoothcontroller.BtReader$BtElement) -> a
+    void StartThread() -> i
+    void DoneReading() -> j
+    boolean IsReading() -> a
+com.techtweaking.bluetoothcontroller.BtReader$ReadingThreads -> com.techtweaking.bluetoothcontroller.q:
+    android.util.SparseArray dictionary -> c
+    java.lang.Object key -> d
+    void Add(int,com.techtweaking.bluetoothcontroller.BtReader$ReadingThreadData) -> a
+    com.techtweaking.bluetoothcontroller.BtReader$ReadingThreadData Get(int) -> a
+    void Remove(int) -> b
+    void <clinit>() -> <clinit>
+com.techtweaking.bluetoothcontroller.BtReader$SingleBtReceiver -> com.techtweaking.bluetoothcontroller.s:
+    com.techtweaking.bluetoothcontroller.BtReader$BtElement element -> a
+    void <init>(com.techtweaking.bluetoothcontroller.BtReader$BtElement) -> <init>
+    void run() -> run
+com.techtweaking.bluetoothcontroller.BtSender -> com.techtweaking.bluetoothcontroller.t:
+    com.techtweaking.bluetoothcontroller.BtSender instance -> a
+    boolean isSending -> q
+    java.util.Queue outMessages -> b
+    java.lang.Object lock1 -> e
+    void <init>() -> <init>
+    com.techtweaking.bluetoothcontroller.BtSender getInstance() -> a
+    java.lang.Object access$100(com.techtweaking.bluetoothcontroller.BtSender) -> a
+    java.util.Queue access$200(com.techtweaking.bluetoothcontroller.BtSender) -> a
+    boolean access$302$9c511ed(com.techtweaking.bluetoothcontroller.BtSender) -> a
+    void <clinit>() -> <clinit>
+com.techtweaking.bluetoothcontroller.BtSender$BtSenderThread -> com.techtweaking.bluetoothcontroller.u:
+    com.techtweaking.bluetoothcontroller.BtSender this$0 -> b
+    void <init>(com.techtweaking.bluetoothcontroller.BtSender) -> <init>
+    void run() -> run
+    void <init>(com.techtweaking.bluetoothcontroller.BtSender,byte) -> <init>
+com.techtweaking.bluetoothcontroller.BtSender$Job -> com.techtweaking.bluetoothcontroller.v:
+    byte[] msg -> b
+    java.io.BufferedOutputStream bufferedOutputStream -> a
+    com.techtweaking.bluetoothcontroller.BluetoothConnection btConnection -> a
+    void <init>(java.io.BufferedOutputStream,byte[],com.techtweaking.bluetoothcontroller.BluetoothConnection) -> <init>
+com.techtweaking.bluetoothcontroller.ForwardingActivity -> com.techtweaking.bluetoothcontroller.ForwardingActivity:
+    boolean serverIntent -> r
+    int serverTime -> n
+    void <init>() -> <init>
+    void onCreate(android.os.Bundle) -> onCreate
+    void onActivityResult(int,int,android.content.Intent) -> onActivityResult
+    void makeDiscoverable(int) -> makeDiscoverable
+    void <clinit>() -> <clinit>
+com.techtweaking.bluetoothcontroller.PluginToUnity -> com.techtweaking.bluetoothcontroller.w:
+    android.bluetooth.BluetoothSocket socket -> a
+    java.lang.String UNITY_GAME_OBJECT_NAME -> c
+    void change_UNITY_GAME_OBJECT_NAME(java.lang.String) -> a
+    java.lang.String access$000() -> a
+    void <clinit>() -> <clinit>
+com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages -> com.techtweaking.bluetoothcontroller.x:
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages CONNECTED -> a
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages DISCONNECTED -> b
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages NOT_FOUND -> c
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages MODULE_OFF -> d
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages SENDING_ERROR -> e
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages READING_ERROR -> f
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages EMPTIED_DATA -> g
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages DATA_AVAILABLE -> h
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages READING_STOPPED -> i
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages READING_STARTED -> j
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages DEVICE_PICKED -> k
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages BLUETOOTH_OFF -> l
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages BLUETOOTH_ON -> m
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages SERVER_DISCOVERED_DEVICE -> n
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages SERVER_FINISHED_LISTENING -> o
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages DISCOVERED_DEVICE -> p
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages ACTION_DISCOVERY_FINISHED -> q
+    java.lang.String value -> value
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages[] $VALUES -> a
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages[] values() -> values
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages valueOf(java.lang.String) -> valueOf
+    void <init>(java.lang.String,int,java.lang.String) -> <init>
+    void send(int) -> send
+    void send() -> send
+    void <clinit>() -> <clinit>
+com.techtweaking.bluetoothcontroller.R -> com.techtweaking.bluetoothcontroller.R:
+    void <init>() -> <init>
+com.techtweaking.bluetoothcontroller.R$attr -> com.techtweaking.bluetoothcontroller.R$attr:
+    void <init>() -> <init>
+com.techtweaking.bluetoothcontroller.R$drawable -> com.techtweaking.bluetoothcontroller.R$drawable:
+    void <init>() -> <init>
+com.techtweaking.bluetoothcontroller.R$string -> com.techtweaking.bluetoothcontroller.R$string:
+    void <init>() -> <init>
+com.techtweaking.bluetoothcontroller.R$style -> com.techtweaking.bluetoothcontroller.R$style:
+    void <init>() -> <init>
+com.techtweaking.library.CircularArrayList -> com.techtweaking.a.a:
+    int n -> o
+    byte[] empty -> a
+    int head -> p
+    int tail -> q
+    int lengthPacketsCounter -> r
+    int counter -> s
+    int packetSize -> a
+    byte[] buf -> buf
+    int mode$377bd954 -> t
+    java.util.LinkedList marks -> a
+    byte endByte -> b
+    void <init>(int) -> <init>
+    int wrapIndex(int) -> a
+    int size() -> size
+    byte[] pollArray(int) -> b
+    byte[] pollPacket(int) -> c
+    void IntToBytes(byte[],int,int) -> a
+com.techtweaking.library.CircularArrayList$1 -> com.techtweaking.a.b:
+    int[] $SwitchMap$com$techtweaking$library$CircularArrayList$MODES -> c
+    void <clinit>() -> <clinit>
+com.techtweaking.library.CircularArrayList$MODES -> com.techtweaking.a.c:
+    int LENGTH_PACKET$377bd954 -> u
+    int END_BYTE_PACKET$377bd954 -> v
+    int NO_PACKETIZATION$377bd954 -> w
+    int[] $VALUES$39ef6cef -> d
+    int[] values$5d341db2() -> b
+    void <clinit>() -> <clinit>
