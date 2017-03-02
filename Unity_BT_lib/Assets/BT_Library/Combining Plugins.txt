@@ -1,0 +1,24 @@
+The Documentation is available online, please visit http://yahyabadran.github.io
+--------------------------------
+For Any Suggestions, Bug reports, or just want to say hi, e-mail : techtweaking@gmail.com
+-------------------------------
+###################### Combining Multiple Plugins ######################
+
+If you have another plugin that is correctly installed, then you only need to do this single step :
+
+In the menue bar, Go to [ Tools->TechTweaking->Bluetooth Classic->Setup the BT library ]. this will add the required permission (if needed) to any AndroidManifest.xml exist in the 'Assets/Plugins/Android' folder.
+
+-------------------------------
+######Information#####
+
+This plugin only require three permissions : 
+
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.BLUETOOTH" />
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+The Wizard will add those permissions (<user-permission> nodes) just above the <application> tag. 
+
+
+****You can change the BT_Library_Bluetooth_Classic.jar name.
+

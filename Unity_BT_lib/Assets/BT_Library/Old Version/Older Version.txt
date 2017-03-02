@@ -1,0 +1,5 @@
+The BT library now is the main Library of this Asset, which is completly different from the old library. 
+
+Please if you want to go back to the old version, it's available as a Unity package inside the "Old Version" folder.
+
+Warning : If you want to import the Old Version back, make sure you deleted this newer version, because they can't co-exist.

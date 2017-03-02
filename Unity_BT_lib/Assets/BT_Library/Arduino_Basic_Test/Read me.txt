@@ -1,0 +1,2 @@
+Arduino Basic Test is a simple sketch for Arduino that resend any byte arrived back to your android. 
+You can use it with the the Terminal demo.
