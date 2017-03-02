@@ -25,17 +25,20 @@ def Swap (unityPath,jarPath):
 	with zipfile.ZipFile(jarPath, 'r') as myzip:
 		for name in myzip.namelist():
 			if name.endswith("classes.jar"):
+
 				myzip.extract(name, unityPath)
+				target = os.path.join(unityPath,name)
+				dest = os.path.join(unityPath,"BT_Library_Bluetooth_Classic.jar")
+				os.rename(target,dest)
 				break
-	
-	
-		
-		
+
+
+
+
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description="Patch Jar file to UnityProject")
 	parser.add_argument("unity", type=str, help="Unity Plugin Path")
 	parser.add_argument("ASprojectPath", type=str, help="Jar file Path",metavar=('j'))
 	args = parser.parse_args()
-	
+
 	Swap(args.unity,args.ASprojectPath)
-	

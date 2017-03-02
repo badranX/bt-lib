@@ -1,0 +1,68 @@
+[
+    {
+        "outputFile": "/Users/hunter/DEV/AndroidStudioProjects/BtLibJava/bluetoothcontrollerjavaside/app/build/intermediates/res/merged/androidTest/debug/values/values.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 57,
+                    "endOffset": 108
+                },
+                "from": {
+                    "file": "/Users/hunter/DEV/AndroidStudioProjects/BtLibJava/bluetoothcontrollerjavaside/app/build/intermediates/bundles/debug/res/values/values.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 55,
+                        "endColumn": 57,
+                        "endOffset": 108
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 3,
+                    "startColumn": 4,
+                    "startOffset": 113,
+                    "endLine": 9,
+                    "endColumn": 12,
+                    "endOffset": 399
+                },
+                "from": {
+                    "file": "/Users/hunter/DEV/AndroidStudioProjects/BtLibJava/bluetoothcontrollerjavaside/app/build/intermediates/bundles/debug/res/values/values.xml",
+                    "position": {
+                        "startLine": 3,
+                        "startColumn": 4,
+                        "startOffset": 113,
+                        "endLine": 9,
+                        "endColumn": 12,
+                        "endOffset": 399
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 10,
+                    "startColumn": 4,
+                    "startOffset": 404,
+                    "endLine": 12,
+                    "endColumn": 12,
+                    "endOffset": 559
+                },
+                "from": {
+                    "file": "/Users/hunter/DEV/AndroidStudioProjects/BtLibJava/bluetoothcontrollerjavaside/app/build/intermediates/bundles/debug/res/values/values.xml",
+                    "position": {
+                        "startLine": 10,
+                        "startColumn": 4,
+                        "startOffset": 404,
+                        "endLine": 12,
+                        "endColumn": 12,
+                        "endOffset": 559
+                    }
+                }
+            }
+        ]
+    }
+]

@@ -30,7 +30,7 @@ dependencies {
 
 
 
-def UnityProjectPath = '/Users/hunter/DEV/Unity/BtMajorForU534/Assets/Plugins/Android'
+def UnityProjectPath = '/Users/hunter/DEV/Unity/New Unity Project 28/Assets/Plugins/Android'
 
 def  comndStr = 'python'
 def pythonFile = getProjectDir().toString() + "/ASunity.py";
