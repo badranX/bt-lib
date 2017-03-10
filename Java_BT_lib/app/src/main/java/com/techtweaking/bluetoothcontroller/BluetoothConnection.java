@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 
+import com.techtweaking.library.IOUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -20,8 +21,9 @@ import java.util.Set;
 
 public class BluetoothConnection {
 
+    private static final String TAG = "PLUGIN . UNITY";
+
     private int id = 0;//0 means not assigned yet
-    private final String TAG = "PLUGIN . UNITY";
 
     //control data
     private boolean WillRead = true;//== Is the unity needs this instance to read or not, it doesn't mean that it actually able to read or failed to read
@@ -35,15 +37,15 @@ public class BluetoothConnection {
 
     byte packetEndByte;
     int packetSize;
-     BluetoothSocket socket;
+    BluetoothSocket socket;
 
-     private OutputStream outStream;
+    private OutputStream outStream;
 
-     private BufferedOutputStream bufferedOutputStream = null;
+    private BufferedOutputStream bufferedOutputStream = null;
 
-     InputStream inputStream = null;
+    InputStream inputStream = null;
 
-     int readingThreadID = 0;//default Value
+    int readingThreadID = 0;//default Value
 
     //SetupData
     //private final String UUID_SERIAL = "00001101-0000-1000-8000-00805F9B34FB";
@@ -51,12 +53,12 @@ public class BluetoothConnection {
     //TODO A BluetoothDevice might be of use to multiple BluetoothConnection instances
     //TODO more testing on Devices Data Structures
     private static final Map<String,Set<BluetoothConnection>> mapAddress = new HashMap<String, Set<BluetoothConnection>>();
-      String name;
-      String mac;
+    String name;
+    String mac;
     private String SPP_UUID = "00001101-0000-1000-8000-00805F9B34FB";
     private BluetoothDevice device;
 
-     enum ConnectionMode {
+    enum ConnectionMode {
         UsingMac , UsingName, UsingBluetoothDeviceReference,UsingSocket,NotSet;
 
          /*
@@ -120,7 +122,7 @@ public class BluetoothConnection {
 
 
     public byte[] read(int size){
-            return  BtReader.getInstance().ReadArray(this.id, this.readingThreadID, size);
+        return  BtReader.getInstance().ReadArray(this.id, this.readingThreadID, size);
     }
 
     public byte[] readAllPackets(){
@@ -175,75 +177,27 @@ public class BluetoothConnection {
         BtReader.getInstance().Close(this.id, this.readingThreadID);
         //BtSender.getInstance().addCloseJob(this.bufferedOutputStream);
         if (this.bufferedOutputStream != null) {
-            try {
-                this.bufferedOutputStream.flush();
-            } catch (IOException ignored) {
-            }
-
-            try {
-                this.bufferedOutputStream.close();
-            } catch (IOException e) {
-                Log.e(TAG, "bufferedOutputStream closing");
-                e.printStackTrace();
-            }
+            IOUtils.flushQuietly(this.bufferedOutputStream);
+            IOUtils.closeQuietly(this.bufferedOutputStream);
             this.bufferedOutputStream = null;
         }
 
         if (this.outStream != null) {
-            try {
-                this.outStream.flush();
-            } catch (IOException ignored) {
-            }
-
-
-            try {
-
-                if (this.outStream != null) {
-                    this.outStream.close();
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "outStream closing");
-
-                e.printStackTrace();
-            }
+            IOUtils.flushQuietly(this.outStream);
+            IOUtils.closeQuietly(this.outStream);
             this.outStream = null;
         }
 
         if (this.inputStream != null) {
-            try {
-
-                this.inputStream.close();
-
-            }catch(IOException e)
-            {
-                Log.e("unity", "inputStream closing");
-
-                e.printStackTrace();
-            }
+            IOUtils.closeQuietly(this.inputStream);
             this.inputStream = null;
         }
 
 
-            int count =0;
-            while(count <3) {
-                try {
-                    if (this.socket != null) {
-                        this.socket.close();
-
-                    }
-                } catch (IOException e) {
-                    Log.e("unity","socket closing");
-
-                    e.printStackTrace();
-
-                    count++;
-                    continue;
-                }
-
-                break;
-            }
-        this.socket = null;
-
+        if (this.socket != null) {
+            IOUtils.closeQuietly(this.socket);
+            this.socket = null;
+        }
     }
 
     public void close()
@@ -334,7 +288,7 @@ public class BluetoothConnection {
 // --Commented out by Inspection STOP (22/09/16, 11:25 PM)
 
 
-// --Commented out by Inspection START (22/09/16, 11:25 PM):
+    // --Commented out by Inspection START (22/09/16, 11:25 PM):
 //    public String sendChar(byte msg) {
 //
 //        if(this.socket != null && this.bufferedOutputStream != null) {
@@ -356,23 +310,34 @@ public class BluetoothConnection {
 
 
     public void sendBytes(byte[] msg) {
+        // WTF : it's possible that user chose not to allow sending (bufferedOutputStream == null)
+        // WTF : it's possible that BluetoothDevice is still disconnected (socket == null)
+        // WTF : I can use this.WillRead & this.WillSend
         if(this.socket != null && this.bufferedOutputStream != null)
-            BtSender.getInstance().addJob(this.bufferedOutputStream, msg,this);
+            BtSender.getInstance().addJob(this.bufferedOutputStream, msg, this);
 
     }
     public void sendBytes_Blocking(byte[] msg){
-        try
+
+        if (this.bufferedOutputStream != null) // WTF : User can choose to prevent sending (bufferedOutputStream == null)
         {
-            if (this.bufferedOutputStream != null)
-            {
+            try {
                 this.bufferedOutputStream.write(msg);
+            }catch (IOException e)
+            {
+                this.RaiseSENDING_ERROR();
+                Log.w("PLUGIN . UNITY", "failed sending data while write/sending data", e);
+
+            }
+            try {
                 this.bufferedOutputStream.flush();
+            }catch (IOException e)
+            {
+                Log.w("PLUGIN . UNITY", "failed flushing the buffer while write/sending data", e);
             }
         }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+
+
 
     }
 
@@ -383,20 +348,17 @@ public class BluetoothConnection {
                 this.inputStream = this.socket.getInputStream();
 
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e("PLUGIN . UNITY", "failed creating InputStream after connecting the device : " + this.getName() + " with address : " + this.getAddress(),e );
             }
 
-
             BtReader.getInstance().EnableReading(this);
-            //btConnection.READER.startListeningThread();
-
         }
 
         if (this.WillSend) {//add check for Sending
             try {
                 this.outStream = this.socket.getOutputStream();
             } catch (IOException e) {
-                Log.v(TAG, "can't get input stream");
+                Log.e("PLUGIN . UNITY", "failed creating OutputStream for the device : " + this.getName() + " with address : " + this.getAddress(), e );
             }
 
             if (this.outStream != null) {
@@ -431,7 +393,7 @@ public class BluetoothConnection {
     static Set<BluetoothConnection> getInstFromDevice(BluetoothDevice device){
 
 
-         return mapAddress.get(device.getAddress());
+        return mapAddress.get(device.getAddress());
 
     }
 
@@ -453,7 +415,7 @@ public class BluetoothConnection {
             mapAddress.put(device.getAddress(), tmp);
         }else {
 
-            Log.v(TAG,"Trying to set the same physical device for diferent Unity BluetoothDevice instances ");
+            Log.w(TAG,"Trying to set the same physical device for different Unity BluetoothDevice instances ");
             tmp.add(this);
         }
     }
@@ -486,8 +448,6 @@ public class BluetoothConnection {
     }
 
     private synchronized void RaiseDISCONNECTED(){
-
-
         //TODO don't disconnect non connected yet device
         if(this.isConnected) {
 
@@ -496,11 +456,16 @@ public class BluetoothConnection {
         }
         this.isConnected = false;
     }
+
     void RaiseNOT_FOUND(){
         PluginToUnity.ControlMessages.NOT_FOUND.send(this.getID());
     }
     void RaiseMODULE_OFF (){
         PluginToUnity.ControlMessages.MODULE_OFF.send(this.getID());
+    }
+
+    void RaiseConnectionError (String msg) {
+        PluginToUnity.ControlMessages.CONNECTION_ERROR.send(this.getID(), msg);
     }
     void RaiseSENDING_ERROR (){
         PluginToUnity.ControlMessages.SENDING_ERROR.send(this.getID());
@@ -508,7 +473,5 @@ public class BluetoothConnection {
 
     //TODO add BtReader Raising Functionality
 }
-
-
 
 

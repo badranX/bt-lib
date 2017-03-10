@@ -36,6 +36,11 @@ namespace TechTweaking.Bluetooth
 		public  event Action<BluetoothDevice> OnDeviceOFF;
 
 		/// <summary>
+		/// Occurs when this BluetoothDevice instance failed to connect, passes error message. Can replace OnDeviceOFF and OnDeviceNotFound
+		/// </summary>
+		public  event Action<BluetoothDevice, String> OnConnectionError;
+
+		/// <summary>
 		/// Occurs when on sending error. Passes this BluetoothDevice reference that has the error.
 		/// </summary>
 		public  event Action<BluetoothDevice> OnSendingError;
@@ -74,6 +79,11 @@ namespace TechTweaking.Bluetooth
 		{
 			if (this.OnDeviceOFF != null)
 				this.OnDeviceOFF (this);
+		}
+
+		internal void RaiseOnConnectionError (String e) {
+			if (this.OnConnectionError != null)
+				this.OnConnectionError (this, e);
 		}
 
 		internal void RaiseOnSendingError ()
@@ -689,7 +699,6 @@ namespace TechTweaking.Bluetooth
 		public  void close ()
 		{
 			if (isDeviceReady ()) {
-				Debug.Log("IS READY");
 				javaBtConnection.Call (CLOSE);
 
 			}

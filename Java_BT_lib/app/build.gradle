@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.3'
+    }
+}
+
 apply plugin: 'com.android.library'
 android {
 
@@ -19,7 +28,7 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getProjectDir().parentFile.toString() +  "/proguard.cfg"
+            proguardFiles "${project.projectDir}/../proguard.cfg"
         }
     }
 }
@@ -29,25 +38,23 @@ dependencies {
 }
 
 
+def UnityDir = "${project.projectDir}/../../Unity_BT_lib/"
 
-def UnityProjectPath =  getProjectDir().parentFile.parentFile.toString() + "/Unity_BT_lib/Assets/Plugins/Android"
+def androidPluginsFolder = "${UnityDir}/Assets/Plugins/Android/"
+def finalJarName = 'BT_Library_Bluetooth_Classic.jar'
 
-def  comndStr = 'python'
-def pythonFile = getProjectDir().toString() + "/ASunity.py";
+def builtBundlesRoot = "${project.buildDir}/intermediates/bundles/"
 
-def aarPathReleased = project.buildDir.toString() +"/outputs/aar/app-release.aar"
-def aarPathDebug = project.buildDir.toString() +"/outputs/aar/app-debug.aar"
-
-
-task runPythonRelease(type: Exec,dependsOn: 'assembleRelease') {
-    println(pythonFile)
-
-    commandLine comndStr ,pythonFile, UnityProjectPath,aarPathReleased
+task doRelease(type: Copy, dependsOn: 'assembleRelease') {
+    from "${builtBundlesRoot}/release"
+    into androidPluginsFolder
+    include('classes.jar')
+    rename("classes.jar", "${finalJarName}")
 }
 
-task runPythonDebug(type: Exec,dependsOn: 'assembleDebug') {
-
-
-    commandLine comndStr , pythonFile, UnityProjectPath,aarPathDebug
+task doDebug(type: Copy, dependsOn: 'assembleDebug') {
+    from "${builtBundlesRoot}/debug"
+    into androidPluginsFolder
+    include('classes.jar')
+    rename("classes.jar", "${finalJarName}")
 }
-

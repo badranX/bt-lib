@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.unity3d.player.UnityPlayer;
 
@@ -15,14 +14,14 @@ public class ForwardingActivity extends Activity {
     private static boolean serverIntent = false;
     private static int serverTime = 0;
 
-    //TODO is it worth it to check with server timing when resultCode
+    //TODO is it worth it to check with server timing when resultCode?
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
 
         super.onCreate(savedInstanceState);
-        if (serverIntent) {
 
+        if (serverIntent) {
             serverIntent = false;
             initServer();
         }
@@ -36,8 +35,8 @@ public class ForwardingActivity extends Activity {
 
         if (requestCode == REQUEST_DISCOVERABLE_CODE) {
 
-            if(resultCode == Activity.RESULT_CANCELED) {
-                PluginToUnity.ControlMessages.SERVER_FINISHED_LISTENING.send();
+            if (resultCode == Activity.RESULT_CANCELED) {
+                PluginToUnity.ControlMessages.SERVER_FINISHED_LISTENING.send("0");//"0" means server finished by User
             } else {
 
                 BtInterface.getInstance().startServer();//it will start if was asked
@@ -48,7 +47,7 @@ public class ForwardingActivity extends Activity {
 
 
     private static void startActivity() {
-        Activity _this =  UnityPlayer.currentActivity;
+        Activity _this = UnityPlayer.currentActivity;
         Intent i = new Intent(_this, ForwardingActivity.class);
         _this.startActivity(i);
     }
@@ -58,17 +57,17 @@ public class ForwardingActivity extends Activity {
 
         Intent discoverableIntent = new
                 Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,serverTime);
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, serverTime);
 
-        this.startActivityForResult(discoverableIntent,REQUEST_DISCOVERABLE_CODE);
+        this.startActivityForResult(discoverableIntent, REQUEST_DISCOVERABLE_CODE);
     }
 
 
-    static void makeDiscoverable(int time){
+    static void makeDiscoverable(int time) {
 
         serverTime = time;
         serverIntent = true;
-        startActivity ();
+        startActivity();
     }
 
 

@@ -44,7 +44,12 @@ namespace TechTweaking.Bluetooth
 		/// Occurs when a BluetoothDevice instance has been found but failed to connect to it, and pass its reference.
 		/// </summary>
 		public static event Action<BluetoothDevice> OnDeviceOFF;
-	
+
+		/// <summary>
+		/// Occurs when a BluetoothDevice instance has been found but failed to connect to it, and pass its reference with error message.
+		/// </summary>
+		public static event Action<BluetoothDevice,String> OnConnectionError;
+
 		/// <summary>
 		/// Occurs when on sending error. Passes the BluetoothDevice reference that has the error.
 		/// </summary>
@@ -70,8 +75,11 @@ namespace TechTweaking.Bluetooth
 		/// <summary>
 		/// Occurs when the BluetoothAdapter listening to other devices is finished.
 		/// </summary>
-		/// <description>After calling one of the startServer(string) methods, it will start a listening process and when finish it will send this event.</description>
-		public static event Action OnServerFinishedListening;
+		/// <description>After calling one of the startServer(string) methods, it will start a listening process and when finish it will send this event.
+		/// Passes a boolean equals to 'TRUE' if user refuses to start server/discovery by clicking 'NO', 
+		/// which means the user is the reason for Finishing the listening process. 'FALSE' otherwise.
+		/// </description>
+		public static event Action<Boolean> OnServerFinishedListening;
 
 		/// <summary>
 		/// Occurs when on reading starts for a BluetoothDevice insance and Passes its reference.
@@ -389,6 +397,37 @@ namespace TechTweaking.Bluetooth
 			}
 		}
 
+		//Replacement for TrModuleOFF and TrModuleNotFound
+		private void TrConnectionError (string m2) {
+
+			string m; //regular first message
+			string e; //error message
+			string[] split = m2.Split (new string[] { "#$" }, StringSplitOptions.None);
+
+			if (split.Length != 2)
+			{
+				Debug.LogError ("Argument 'm2' should only contains one '#$' seperator");
+				return;
+			}
+
+			m = split[0];
+			e = split [1];
+
+			int deviceID;
+			if (!int.TryParse (m, out deviceID)) {
+				return;
+			}
+
+			BluetoothDevice device = BluetoothDevice.GET_DEVICE_OF_ID (deviceID);
+			if (device != null) {
+				if (OnConnectionError != null) {
+					OnConnectionError (device, e);
+				}
+				device.RaiseOnConnectionError (e);
+			}
+		}
+
+
 		private  void  TrModuleOFF (string m)
 		{
 			int deviceID;
@@ -548,7 +587,8 @@ namespace TechTweaking.Bluetooth
 		private  void  TrServerFinishedListening (string u)
 		{
 			if (OnServerFinishedListening != null) {
-				OnServerFinishedListening ();
+				bool user_refuses_to_run_discovery = u == "0" ? true : false;
+				OnServerFinishedListening (user_refuses_to_run_discovery);
 			}
 		}
 

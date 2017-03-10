@@ -131,6 +131,8 @@ namespace TechTweaking.BtLibrary.Editor
 				XmlElement ActivityNode = doc.CreateElement ("activity");
 				ActivityNode.InnerText = "";
 				ActivityNode.SetAttribute ("name", "http://schemas.android.com/apk/res/android", Activity_Name);
+				ActivityNode.SetAttribute ("background", "http://schemas.android.com/apk/res/android", "#00000000");
+
 				applicationNode.AppendChild(ActivityNode);
 
 				XmlComment newComment = doc.CreateComment("Activity added by the BT library");

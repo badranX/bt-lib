@@ -1,21 +1,25 @@
+com.techtweaking.bluetoothcontroller.BluetoothConnection:
+    private static final java.lang.String TAG
 com.techtweaking.bluetoothcontroller.BluetoothDevicePicker
 com.techtweaking.bluetoothcontroller.Bridge:
-    298:302:private void IntToBytes(byte[],int,int)
+    306:310:private void IntToBytes(byte[],int,int)
 com.techtweaking.bluetoothcontroller.BtInterface:
-    889:895:private void abortServer()
+    private static final java.lang.String TAG
+    923:929:private void abortServer()
 com.techtweaking.bluetoothcontroller.BtInterface$AcceptThread:
-    914:914:public boolean isRunning()
-    918:919:public void stopServer()
+    950:951:public void stopServer()
 com.techtweaking.bluetoothcontroller.BtInterface$NormalConnectThread:
-    668:670:public void cancel()
+    674:675:public void cancel()
+com.techtweaking.bluetoothcontroller.BtReader:
+    private static final java.lang.String TAG
 com.techtweaking.bluetoothcontroller.BtReader$BtElement:
-    67:70:public void flush(int)
+    69:72:public void flush(int)
 com.techtweaking.bluetoothcontroller.BtReader$ReadingThreads:
-    190:190:private BtReader$ReadingThreads()
+    192:192:private BtReader$ReadingThreads()
 com.techtweaking.bluetoothcontroller.BtSender:
-    73:92:void addCloseJob(java.io.BufferedOutputStream)
+    private static final java.lang.String TAG
 com.techtweaking.bluetoothcontroller.BtSender$Job:
-    39:54:public BtSender$Job(com.techtweaking.bluetoothcontroller.BtSender,java.io.BufferedOutputStream)
+    43:58:public BtSender$Job(com.techtweaking.bluetoothcontroller.BtSender,java.io.BufferedOutputStream)
 com.techtweaking.bluetoothcontroller.BuildConfig
 com.techtweaking.bluetoothcontroller.ForwardingActivity:
     private static final int REQUEST_DISCOVERABLE_CODE
@@ -24,3 +28,6 @@ com.techtweaking.bluetoothcontroller.PluginToUnity:
 com.techtweaking.library.CircularArrayList:
     304:311:public void flush(int)
     313:317:public byte[] pollAll(int)
+com.techtweaking.library.IOUtils:
+    private static final java.lang.String TAG
+    9:9:public IOUtils()

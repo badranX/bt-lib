@@ -13,7 +13,7 @@ public class PluginToUnity {
         // restrict instantiation
     }
 
-//    public  final int CONNECTED = 1; //"Connected"
+    //    public  final int CONNECTED = 1; //"Connected"
 //    public  final int DISCONNECTED = 2; //"Disconnected"
 //    public  final int UNABLE_TO_CONNECT = -1; //"found your Bluetooth Module but unable to connect to it"
 //    public  final int NOT_FOUND = -2; //"Bluetooth module with the name or the MAC you provided can't be found"
@@ -35,6 +35,7 @@ public class PluginToUnity {
         MODULE_OFF ("TrModuleOFF"),//"Connection Failed, usually because your Bluetooth module is off "
         SENDING_ERROR ("TrSendingError"), //"error while writing"
         READING_ERROR ("TrReadingError"),//error while reading
+        CONNECTION_ERROR("TrConnectionError"),
         EMPTIED_DATA ("TrEmptiedData"),
         //added after version 3.6
         DATA_AVAILABLE ("TrDataAvailable"),
@@ -45,7 +46,7 @@ public class PluginToUnity {
         BLUETOOTH_OFF("TrBluetoothOFF"),
         BLUETOOTH_ON("TrBluetoothON"),
         SERVER_DISCOVERED_DEVICE("TrServerDiscoveredDevice"),
-        SERVER_FINISHED_LISTENING("TrServerFinishedListening"),
+        SERVER_FINISHED_LISTENING("TrServerFinishedListening"),//"0" means finished by user, "-1" otherwise
 
         DISCOVERED_DEVICE("TrDiscoveredDevice"),
         ACTION_DISCOVERY_FINISHED("TrDiscoveryFinished");
@@ -69,13 +70,18 @@ public class PluginToUnity {
             UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, value, "");
         }
 
+        public void send(String msg){ //send Control Message in the Name of THE CONNECTION [id]
+            UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, value, msg);
+        }
 
-        //TODO METHOD : public void send(int id,String val) { UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, value, Integer.toString(id)+":" + val); }
+        public void send(int id,String val) {
+            UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, value, Integer.toString(id)+ "#$" + val);
+        }
 
 
         //USED FOR ONLY TrDiscoveredDevice
         public void send(String Name,String macAddress, String RSSI) {
-            UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, value, Name +"#$" + macAddress + "#$" + RSSI);
+            UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME, value, Name + "#$" + macAddress + "#$" + RSSI);
 
         }
 

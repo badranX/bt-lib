@@ -3,16 +3,17 @@
  * that can be found in the LICENSE file at https://unity3d.com/legal/as_terms
  */
 using UnityEngine;
+
 //TODO RELEASE DISCOVERY RESOURCES
 namespace TechTweaking.BtCore.BtBridge
 {
-	public   class  BtBridge 
+	public   class  BtBridge
 	{
 
 		private static BtBridge instance;
-		private readonly AndroidJavaObject ajc ;
+		private readonly AndroidJavaObject ajc;
 
-		private readonly bool PluginReady ;
+		private readonly bool PluginReady;
 		private const string BridgePackage = "com.techtweaking.bluetoothcontroller.Bridge";
 
 		//###########constants############
@@ -20,7 +21,8 @@ namespace TechTweaking.BtCore.BtBridge
 		private const string GET_PAIRED_DEVICES = "getPairedDevices";
 		private const string GET_BONDED_DEVICES = "getBondedDevices";
 
-		private const string GET_NEXT_DISCOVERED_DEVICES = "getNextDiscoveredDevice";//Not for server but regular discovery
+		private const string GET_NEXT_DISCOVERED_DEVICES = "getNextDiscoveredDevice";
+		//Not for server but regular discovery
 		private const string ASK_ENABLE_BT = "askEnableBluetooth";
 		private const string ENABLE_BT = "enableBluetooth";
 		private const string DISABLE_BT = "disableBluetooth";
@@ -56,24 +58,24 @@ namespace TechTweaking.BtCore.BtBridge
 			#if !UNITY_EDITOR && UNITY_ANDROID
 
 			if (Application.platform == RuntimePlatform.Android) {
+
 			try {
 
-			using (AndroidJavaClass ajcClazz = new AndroidJavaClass (BridgePackage)) {
+				using (AndroidJavaClass ajcClazz = new AndroidJavaClass (BridgePackage)) {
 
-			if(!IsAndroidJavaClassNull (ajcClazz)){
-			ajc = ajcClazz.CallStatic<AndroidJavaObject> ("getInstance",unity_game_object_name);		
-			PluginReady = !IsAndroidJavaObjectNull (ajc);
-			if(needCommitObjectName & PluginReady)  {
-			ajc.Call (RENAME_UNITY_OBJECT, unity_game_object_name);
+				if(!IsAndroidJavaClassNull (ajcClazz)){
+					ajc = ajcClazz.CallStatic<AndroidJavaObject> ("getInstance",unity_game_object_name);		
+					PluginReady = !IsAndroidJavaObjectNull (ajc);
+					if(needCommitObjectName && PluginReady)  {
+						ajc.Call (RENAME_UNITY_OBJECT, unity_game_object_name);
 
-			}
-
-			}
+					}
+				}
 			}
 
 			} catch {
-			Debug.LogError ("Bluetooth initialization failure. Probably classes.jar not present in directory (Assets->Plugins->classes.jar) ");
-			throw;
+				Debug.LogError ("Bluetooth initialization failure. Probably classes.jar not present in directory (Assets->Plugins->classes.jar) ");
+				throw;
 			}
 			}
 
@@ -91,26 +93,28 @@ namespace TechTweaking.BtCore.BtBridge
 			}
 		}
 
-		static internal void set_unity_game_object_name(string name) {
-			if(name.Equals(unity_game_object_name)) return;
+		static internal void set_unity_game_object_name (string name)
+		{
+			if (name.Equals (unity_game_object_name))
+				return;
 			#if !UNITY_EDITOR && UNITY_ANDROID
-			if(!PluginReady) {
+			if(instance == null) {//Plugin is not ready yet. Instance.Plugin Ready will create instance. It's internal method and the user might not need an instance yet.
 				needCommitObjectName = true;
 				unity_game_object_name = name;
 			}else {
-				ajc.Call (RENAME_UNITY_OBJECT, unity_game_object_name);
+				Instance.ajc.Call (RENAME_UNITY_OBJECT, unity_game_object_name);
 			}
 			#endif
-
-
 		}
 
 
-		public void test () {
+		public void test ()
+		{
 
 			if (!PluginReady)
 				return;
 			ajc.Call ("startActivity");
+
 			/*
 			using (AndroidJavaClass ass = new AndroidJavaClass ("com.techtweaking.bluetoothcontroller.ForwarderActivity1")) {
 
@@ -130,13 +134,13 @@ namespace TechTweaking.BtCore.BtBridge
 
 		private bool IsAndroidJavaClassNull (AndroidJavaClass androidJavaClass)
 		{
-			return androidJavaClass == null || 
+			return androidJavaClass == null ||
 				androidJavaClass.GetRawClass ().ToInt32 () == 0;
 		}
 
 		private bool IsAndroidJavaObjectNull (AndroidJavaObject androidJavaObject)
 		{
-			return androidJavaObject == null || 
+			return androidJavaObject == null ||
 				androidJavaObject.GetRawClass ().ToInt32 () == 0;
 		}
 
@@ -156,11 +160,13 @@ namespace TechTweaking.BtCore.BtBridge
 		}
 
 		//returns array of strings {NAME1,MAC1,NAME2,MAC2,....,NAMEn,MACn}
-		public string[] getBondedDevices() {
+		public string[] getBondedDevices ()
+		{
 			if (!PluginReady)
 				return null;
 			return ajc.Call<string[]> (GET_BONDED_DEVICES);
 		}
+
 		public void startServer (string UUID, int time, bool connectOneDevice)
 		{
 			if (!PluginReady)
@@ -205,10 +211,11 @@ namespace TechTweaking.BtCore.BtBridge
 		}
 
 
-		public string MyMacAdress () {
+		public string MyMacAdress ()
+		{
 			if (!PluginReady)
 				return null;
-			
+
 			return ajc.Call<string> (MY_MAC_ADRESS);
 		}
 
@@ -257,6 +264,7 @@ namespace TechTweaking.BtCore.BtBridge
 
 			return ajc.Call<bool> (START_DISCOVERY);
 		}
+
 		public bool refreshDiscovery ()
 		{
 			if (!PluginReady)
@@ -314,13 +322,13 @@ namespace TechTweaking.BtCore.BtBridge
 		{
 
 
-			if (PluginReady){
+			if (PluginReady) {
 				ajc.Call (ON_DESTROY);
 			}
 
 			try {
-				if(ajc != null) {
-					ajc.Dispose();
+				if (ajc != null) {
+					ajc.Dispose ();
 				}
 			} catch (UnityException) {
 
@@ -331,12 +339,13 @@ namespace TechTweaking.BtCore.BtBridge
 
 		}
 
-		~BtBridge() {
+		~BtBridge ()
+		{
 			try {
-				if(ajc != null) {
-					ajc.Dispose();
+				if (ajc != null) {
+					ajc.Dispose ();
 				}
-			}catch(UnityException) {
+			} catch (UnityException) {
 
 			}
 			instance = null;

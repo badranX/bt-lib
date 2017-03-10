@@ -113,7 +113,9 @@ public class ServerClient : MonoBehaviour
 		//start a server for 100 second, and close after the first connection attempt by a device that has the same UUID. [One call to this.HandleOnClientRequest]
 		//see Bt.startServer(UUID,int,bool) to change the default behaviour.
 		//####If you want to connect to this server you need to have a similar UUID. otherwise it won't connect###
+
 		BluetoothAdapter.startServer (UUID);
+
 	}
 	
 	

@@ -2,6 +2,8 @@ package com.techtweaking.bluetoothcontroller;
 
 import android.util.Log;
 
+import com.techtweaking.library.IOUtils;
+
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 
@@ -10,6 +12,8 @@ import java.util.Queue;
 
 
 class BtSender {
+
+    private static final String TAG = "PLUGIN . UNITY";
 
     private static BtSender instance = null;
 
@@ -67,7 +71,7 @@ class BtSender {
         }
 
     }
-
+    /*
     void addCloseJob(BufferedOutputStream bufferedOutputStream)
     {
         synchronized (this.lock1)
@@ -90,7 +94,7 @@ class BtSender {
             }
         }
     }
-
+    */
 
     private class BtSenderThread implements Runnable {
         public void run() {
@@ -108,40 +112,34 @@ class BtSender {
                     }
                     job = BtSender.this.outMessages.poll();
                 }
-                try
-                {
-                    if (job.bufferedOutputStream != null) {
-                        if (!job.isClose)
-                        {
+
+                if (job.bufferedOutputStream != null) {
+                    if (!job.isClose)
+                    {
+                        try {
                             job.bufferedOutputStream.write(job.msg);
-                            job.bufferedOutputStream.flush();
-                        }
-                        else
+                        }catch (IOException e)
                         {
-                            try
-                            {
-                                if (job.bufferedOutputStream != null)
-                                {
-                                    job.bufferedOutputStream.flush();
-                                    job.bufferedOutputStream.close();
-                                    job.bufferedOutputStream = null;
-                                }
-                            }
-                            catch (IOException e)
-                            {
-                                e.printStackTrace();
-                            }
+                            if( job.btConnection != null) job.btConnection.RaiseSENDING_ERROR();
+                            Log.e(TAG, "failed sending data while write/sending", e);
+                        }
+
+                        try {
+                            job.bufferedOutputStream.flush();
+                        }catch (IOException e)
+                        {
+                            Log.w(TAG, "failed flushing buffer while write/sending data", e);
                         }
                     }
-                }
-                catch (IOException e)
-                {
-                    Log.v("PLUGIN . UNITY", "failed while write/sending data");
-                    if( job.btConnection != null) job.btConnection.RaiseSENDING_ERROR();
+                    else
+                    {
+                        IOUtils.closeQuietly(job.bufferedOutputStream);
+                    }
                 }
 
+
             }
-            
+
         }
     }
 
