@@ -7,7 +7,7 @@ import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 
-import com.techtweaking.library.IOUtils;
+import com.techtweaking.libextra.IOUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;

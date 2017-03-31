@@ -9,8 +9,8 @@ import android.util.Log;
 import android.util.SparseArray;
 
 
-import com.techtweaking.library.CircularArrayList;
-import com.techtweaking.library.IOUtils;
+import com.techtweaking.libextra.CircularArrayList;
+import com.techtweaking.libextra.IOUtils;
 
 class BtReader {
 

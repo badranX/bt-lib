@@ -16,7 +16,7 @@ import android.os.Build;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.techtweaking.library.IOUtils;
+import com.techtweaking.libextra.IOUtils;
 import com.unity3d.player.UnityPlayer;
 
 import java.io.IOException;
@@ -785,7 +785,14 @@ public class BtInterface {
                                 socket.connect();
                             }
                             */
-                            socket.connect();
+                            //TODO THOMAS : remove this For
+                            try {
+                                socket.connect();
+                            }catch (NullPointerException e) {
+                                Log.e(TAG,"Mr. Thomas bug report", e);
+                                success = false;
+                                break;
+                            }
                         } catch (IOException e) {
 
                             Log.w(TAG, "connection attempt error.",e);
