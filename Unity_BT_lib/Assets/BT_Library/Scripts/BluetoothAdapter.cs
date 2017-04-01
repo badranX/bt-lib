@@ -27,6 +27,7 @@ namespace TechTweaking.Bluetooth
 		private const string BLUETOOTH_STATE_OFF = "OFF";
 		private const string BLUETOOTH_STATE_TURNING_OFF = "TURNING_OFF";
 
+		internal static BluetoothAdapter mono_BluetoothAdapter;
 		/// <summary>
 		/// Occurs when a BluetoothDevice instance get connected, and pass its reference.
 		/// </summary>
@@ -123,7 +124,7 @@ namespace TechTweaking.Bluetooth
 
 		void Awake ()
 		{
-			DontDestroyOnLoad(transform.gameObject);
+			mono_BluetoothAdapter = this;
 			BtBridge.set_unity_game_object_name (this.gameObject.name);//AWAKE: CHANGE THE NAME OF ITS OBJECT
 		}
 
@@ -332,6 +333,7 @@ namespace TechTweaking.Bluetooth
 			BtBridge.Instance.makeDiscoverable (time);
 		}
 
+
 		private  void  TrDisconnect (string m)
 		{
 			int deviceID;
@@ -518,7 +520,9 @@ namespace TechTweaking.Bluetooth
 				if (OnReadingStoped != null) {
 					OnReadingStoped (device);
 				}
+
 				device.RaiseOnReadingStoped ();
+
 			}
 		}
 
@@ -540,7 +544,8 @@ namespace TechTweaking.Bluetooth
 				
 				
 				if (device.ReadingCoroutine != null && device.WillRead) {
-					StartCoroutine (device.ReadingCoroutine (device));
+					device.last_started_couroutine = device.ReadingCoroutine (device);
+					StartCoroutine (device.last_started_couroutine);
 				}
 			}
 		}

@@ -447,6 +447,8 @@ public class BtInterface {
 //            }
 //
 //        else
+
+            //One connection after the other. Every failed one will raise this action on the remote device
             if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
                 Log.v(TAG, "ACTION_ACL_DISCONNECT_REQUESTED");
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -667,12 +669,7 @@ public class BtInterface {
         }
 
 
-        /**
-         * Will cancel an in-progress connection, and close the socket
-         */
-        public void cancel() {
-            IOUtils.closeQuietly(mmSocket);
-        }
+
     }
 
     private class ConnectThread extends Thread {
@@ -689,7 +686,13 @@ public class BtInterface {
                     Method m;
                     try {
                         m = device.getClass().getMethod(CREATE_INSECURE_RFcomm_Socket, new Class[]{int.class});
-                        tmpSocket = (BluetoothSocket) m.invoke(device, 1);
+
+                        for(int i=1; i<4;i++) {
+                            tmpSocket = (BluetoothSocket) m.invoke(device, 1);
+                            if(tmpSocket == null) Log.v(TAG,"Hacked connection failed with parameter : " + i);
+                            //if nothing works it will be counted as a failed attempt with null socket.
+                        }
+
                         //reflexCounter = reflexCounter > 2 ? 1 : reflexCounter + 1;
                     } catch (IllegalAccessException e) {
                         Log.w(TAG,"failed creating socket by reflections. Method is inaccessible",e);
@@ -785,16 +788,12 @@ public class BtInterface {
                                 socket.connect();
                             }
                             */
-                            //TODO THOMAS : remove this For
-                            try {
-                                socket.connect();
-                            }catch (NullPointerException e) {
-                                Log.e(TAG,"Mr. Thomas bug report", e);
-                                success = false;
-                                break;
-                            }
-                        } catch (IOException e) {
 
+
+                                socket.connect();
+
+                        } catch (IOException e) {
+                            //The reason for this exception : UUID COULD BE DIFFERENT .MODULE_UUID_WRONG
                             Log.w(TAG, "connection attempt error.",e);
 
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -804,7 +803,16 @@ public class BtInterface {
                                 success = false;
                             }
 
-                            //The reason for this exception : UUID COULD BE DIFFERENT .MODULE_UUID_WRONG
+
+                        } catch (NullPointerException e) {
+                            Log.e(TAG,"Mr. Thomas bug report", e);
+                            /*
+                            Caused by java.lang.NullPointerException: FileDescriptor must not be null
+                                at android.os.ParcelFileDescriptor.<init>(ParcelFileDescriptor.java:174)
+                                at android.os.ParcelFileDescriptor$1.createFromParcel(ParcelFileDescriptor.java:905)
+                             */
+                            success = false;
+                            break;
                         }
 
 
@@ -888,21 +896,19 @@ public class BtInterface {
 
     //Accepting Thread
 
-    private volatile AcceptThread acceptThread;
-    private final Object acceptThreadLock = new Object();
+    private AcceptThread acceptThread;
+    //private final Object acceptThreadLock = new Object();
 
+
+    //First method called to initialize the server. Called by Unity
     //if (oneDevice) it will abort after finding the first device
     public void initServer(String serverUUID, int time, boolean willConnectOneDevice) {
 
-        if (acceptThread == null) {
-            acceptThread = new AcceptThread(UUID.fromString(serverUUID), time, willConnectOneDevice);
-        } else {
-            synchronized (acceptThreadLock) {
-                acceptThread.abortServer();
-                acceptThread = new AcceptThread(UUID.fromString(serverUUID), time, willConnectOneDevice);
-            }
-        }
+       if (acceptThread != null)
+           acceptThread.abortServer();
 
+        //TODO: Research using one thread
+        acceptThread = new AcceptThread(UUID.fromString(serverUUID), time, willConnectOneDevice);
 
         //IntentFilter filter_scan_mode = new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
         // if(serverReceiver == null) serverReceiver = new ServerReceiver();
@@ -920,24 +926,25 @@ public class BtInterface {
         UnityPlayer.currentActivity.startActivity(discoverableIntent);
     }
 
-    void startServer() {//Shouldn't be called while server running, abort first
-        synchronized (acceptThreadLock) {
-            if (acceptThread != null) (new Thread(acceptThread)).start();
-        }
+    void startServer() {//Shouldn't be called while server running, abort first. [This is called by ForwardActivity]
+
+            if (acceptThread != null) {
+                (new Thread(acceptThread)).start();
+            }
+
     }
 
-    private void abortServer() {//called by unity, cause imediate closing
-        synchronized (acceptThreadLock) {
+     void abortServer() {//called by unity, cause imediate closing
             if (acceptThread != null) {
                 acceptThread.abortServer();
                 acceptThread = null;
             }
-        }
+
     }
 
     private class AcceptThread implements Runnable {
         private volatile boolean willStop = false;
-        private volatile BluetoothServerSocket mmServerSocket;
+        private BluetoothServerSocket mmServerSocket;
 
 
         private final boolean willConnectOneDevice;
@@ -953,7 +960,7 @@ public class BtInterface {
 
 
 
-        public void stopServer() {//won't stop immedeatly
+        public void stopServer_from_looping() {//won't stop immedeatly
             this.willStop = true;
         }
 
@@ -961,13 +968,7 @@ public class BtInterface {
 
 
             this.willStop = true;
-            if (mmServerSocket != null) {
-                try {
-                    mmServerSocket.close();
-                } catch (IOException e) {
-                    Log.w("UNITY . PLUGIN", "couldn't close ServerSocket",e);
-                }
-            }
+            cancel();
             /*
             if(serverReceiver != null) {
                 try {
@@ -987,12 +988,12 @@ public class BtInterface {
             try {
                 // MY_UUID is the app's UUID string, also used by the client code
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-                    tmp = mBluetoothAdapter.listenUsingInsecureRfcommWithServiceRecord("PluginServer", serverUUID);
+                    tmp = mBluetoothAdapter.listenUsingInsecureRfcommWithServiceRecord("TechTweakingServer", serverUUID);
                 } else {
-                    tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("PluginServer", serverUUID);
+                    tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("TechTweakingServer", serverUUID);
                 }
             } catch (IOException e) {
-                Log.e(TAG, "failed to create a BluetoothServerSocket", e);
+                Log.e(TAG, "Failed to create a BluetoothServerSocket", e);
             }
             return tmp;
 
@@ -1006,10 +1007,13 @@ public class BtInterface {
             while (true) {
                 try {
                     if (mmServerSocket != null)
+                    {
+                        //Warning mmServerSocket.close is called from outside this thread. Don't null it.
                         socket = mmServerSocket.accept(this.discoverable_Time_Duration * 1000);
+                    }
                 } catch (IOException e) {
 
-                    Log.w(TAG, "Server has been aborted or error occurred", e);
+
 
                     if(this.willStop) {//has been aborted by user
                         cancel();
@@ -1028,8 +1032,6 @@ public class BtInterface {
                     }
                     */
 
-
-
                 }
 
                 // If a connection was accepted
@@ -1042,24 +1044,23 @@ public class BtInterface {
                     }
                 }
 
+                Log.v(TAG,"SCAN_MODE_CONNECTABLE_DISCOVERABLE\n" +
+                        "                                || this.willStop ?");
 
-                if (
-                        mBluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE
+                if (mBluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE
                                 || this.willStop)
                 {
-
+                    Log.v(TAG,"yes");
                     cancel();
                     break;
 
                 }
-
-
                 socket = null;
             }
 
             PluginToUnity.ControlMessages.SERVER_FINISHED_LISTENING.send("1");
 
-
+/*
             synchronized (acceptThreadLock) {
                 /*
                 if(serverReceiver != null) {
@@ -1069,10 +1070,10 @@ public class BtInterface {
                         //ignore
                     }
                 }
-                */
+
                 acceptThread = null;
             }
-
+*/
 
         }
 
@@ -1084,7 +1085,7 @@ public class BtInterface {
                 try {
                     mmServerSocket.close();
                 } catch (IOException e) {
-                    Log.w("PLUGIN . UNITY", "failed closing ServerSocket",e);
+                    Log.w(TAG, "failed closing ServerSocket",e);
                 }
             }
         }

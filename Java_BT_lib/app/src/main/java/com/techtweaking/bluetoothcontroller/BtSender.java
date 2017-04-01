@@ -114,27 +114,33 @@ class BtSender {
                 }
 
                 if (job.bufferedOutputStream != null) {
-                    if (!job.isClose)
-                    {
-                        try {
-                            job.bufferedOutputStream.write(job.msg);
-                        }catch (IOException e)
-                        {
-                            if( job.btConnection != null) job.btConnection.RaiseSENDING_ERROR();
-                            Log.e(TAG, "failed sending data while write/sending", e);
+                    synchronized (job.btConnection.CloseSendLock) {
+                            try {
+
+                                    job.bufferedOutputStream.write(job.msg);
+
+                            }catch (IOException e)
+                            {
+                                if( job.btConnection != null) job.btConnection.RaiseSENDING_ERROR();
+                                Log.e(TAG, "failed sending data while write/sending", e);
+                            }
+
+                            try {
+                                job.bufferedOutputStream.flush();
+                            }catch (IOException e)
+                            {
+                                Log.w(TAG, "failed flushing buffer while write/sending data", e);
+                            }
                         }
 
-                        try {
-                            job.bufferedOutputStream.flush();
-                        }catch (IOException e)
-                        {
-                            Log.w(TAG, "failed flushing buffer while write/sending data", e);
-                        }
-                    }
+
+                    //Let BluetoothConnection.close() do all the job.
+                    /*
                     else
                     {
                         IOUtils.closeQuietly(job.bufferedOutputStream);
                     }
+                    */
                 }
 
 

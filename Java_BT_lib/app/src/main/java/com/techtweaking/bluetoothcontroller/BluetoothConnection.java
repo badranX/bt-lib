@@ -25,9 +25,15 @@ public class BluetoothConnection {
 
     private int id = 0;//0 means not assigned yet
 
+    final Object CloseSendLock = new Object();
+
     //control data
     private boolean WillRead = true;//== Is the unity needs this instance to read or not, it doesn't mean that it actually able to read or failed to read
     private boolean WillSend = true;//== Is the unity needs this instance to send or not, it doesn't mean that it actually able to send or failed to send
+
+    //Prevent multiple close() calles
+    private boolean askedConnect = false;
+    //private boolean askedClose = false;
 
     //== Is the unity needs this instance to be connected or not, it doesn't mean that it actually connected or failed to connect
     //it's volatile because the connection thread check this to see if this instance still needs to connect
@@ -174,39 +180,74 @@ public class BluetoothConnection {
         }
     }
     private void releaseResources() {
+
+        Object readLock = BtReader.getInstance().getReadLock(this.id, this.readingThreadID);
+
+        //The following Close method will release the 'element' of (this.id, this.readingThreadID) that has the 'readLock'
+        //it will release it in different thread so it's unpredictable
+        //It must be called after getting the lock. to keep the reference
         BtReader.getInstance().Close(this.id, this.readingThreadID);
-        //BtSender.getInstance().addCloseJob(this.bufferedOutputStream);
-        if (this.bufferedOutputStream != null) {
-            IOUtils.flushQuietly(this.bufferedOutputStream);
-            IOUtils.closeQuietly(this.bufferedOutputStream);
-            this.bufferedOutputStream = null;
+        //Sending Buffers
+        synchronized (CloseSendLock) {
+            if (this.bufferedOutputStream != null) {
+
+                    IOUtils.flushQuietly(this.bufferedOutputStream);
+                    IOUtils.closeQuietly(this.bufferedOutputStream);
+                    this.bufferedOutputStream = null;
+
+            }
+
+            /* //Will be closed after closing bufferedOutputStream
+            if (this.outStream != null) {
+
+                IOUtils.flushQuietly(this.outStream);
+                IOUtils.closeQuietly(this.outStream);
+                this.outStream = null;
+
+            }
+            */
         }
 
-        if (this.outStream != null) {
-            IOUtils.flushQuietly(this.outStream);
-            IOUtils.closeQuietly(this.outStream);
-            this.outStream = null;
-        }
 
-        if (this.inputStream != null) {
-            IOUtils.closeQuietly(this.inputStream);
-            this.inputStream = null;
+        //Reading Buffers
+        synchronized (readLock) {
+            if (this.inputStream != null) {
+                IOUtils.closeQuietly(this.inputStream);
+                this.inputStream = null;
+            }
         }
-
 
         if (this.socket != null) {
+
             IOUtils.closeQuietly(this.socket);
             this.socket = null;
         }
+
     }
 
+    //Close is the only method responsible for closing connection, Closing anywhere else is not allowed.
     public void close()
     {
-        removeSocketServer();
-        releaseResources();
-        BtInterface.getInstance().OnDeviceClosing(this);
 
-        this.RaiseDISCONNECTED();
+        //Preventing multiple close() calls
+        if(!this.isConnected) return;
+        this.isConnected = false;
+
+
+        try {
+            removeSocketServer();
+            releaseResources();
+            BtInterface.getInstance().OnDeviceClosing(this);
+
+            this.RaiseDISCONNECTED();
+        }catch(NullPointerException e) {
+            Log.e(TAG,"Thomas' bug",e);
+            /*
+            Caused by java.lang.NullPointerException: FileDescriptor must not be null
+                at android.os.ParcelFileDescriptor.<init>(ParcelFileDescriptor.java:174)
+                 at android.os.ParcelFileDescriptor$1.createFromParcel(ParcelFileDescriptor.java:905)
+             */
+        }
     }
 
     static void closeAll(){
@@ -244,7 +285,6 @@ public class BluetoothConnection {
         reset();
 
         if(this.isConnected)this.close();
-
 
     }
 
@@ -447,6 +487,8 @@ public class BluetoothConnection {
         this.isConnected = true;
     }
 
+
+    //WARNING: RaiseDisconenct changes isConnected to false, It shouldn't be called before calling BluetoothConnection.close().
     private synchronized void RaiseDISCONNECTED(){
         //TODO don't disconnect non connected yet device
         if(this.isConnected) {

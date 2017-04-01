@@ -280,6 +280,21 @@ class BtReader {
         return false;
     }
 
+    Object getReadLock(int id, int threadID) {
+        ReadingThreadData rtd = ReadingThreads.Get(threadID);
+        if (rtd != null) {
+            synchronized (rtd.key)
+            {
+                BtElement element;
+                if ((element = rtd.GetReader(id)) != null)
+                {
+                    return element.ReadWriteBufferKey;
+                }
+            }
+        }
+        return null;
+    }
+
     /* We're using Unity SendMessages to check data availablity
        public boolean IsDataAvailable(int id, int threadID) {//need adjusting
 
@@ -415,7 +430,7 @@ class BtReader {
                     {
                         Log.w(TAG, "failed while reading/receiving data", e);
                         if(!element.stopReading) {
-                            PluginToUnity.ControlMessages.READING_ERROR.send(element.id, e.getClass().getName() + ": " + e.getMessage());
+                            PluginToUnity.ControlMessages.READING_ERROR.send(element.id, e.getMessage());
                         }
                     }
                 }
@@ -431,6 +446,9 @@ class BtReader {
 
         private void performStreamsClosing(BtReader.ReadingThreadData rtd)
         {
+            //closing INPUTSTREAM will close socket, let the BluetoothConnection.close() method do the job
+
+            /*
             for (int i = 0; i < rtd.NumberOfReaders(); i++)
             {
                 BtReader.BtElement element = rtd.GetReaderByIndex(i);
@@ -440,6 +458,8 @@ class BtReader {
                     element.inputStream = null;
                 }
             }
+            */
+
             BtReader.ReadingThreads.Remove(rtd.ThreadID);
             rtd.Clear();
         }
@@ -484,10 +504,13 @@ class BtReader {
                 }
             }
 
+            //Let BluetoothConnection do all the closing required. InputStream closing causes the socket to close
+            /*
             if (element.inputStream != null) {
                 IOUtils.closeQuietly(element.inputStream);
                 element.inputStream = null;
             }
+            */
 
             ReadingThreadData rtd = ReadingThreads.Get(0);
             if(rtd != null) {

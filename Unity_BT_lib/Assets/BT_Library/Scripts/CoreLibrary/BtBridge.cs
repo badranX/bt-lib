@@ -44,6 +44,7 @@ namespace TechTweaking.BtCore.BtBridge
 
 		private static string unity_game_object_name = "BtConnector";
 		private static string MY_MAC_ADRESS = "MyMacAdress";
+		private static string ABORT_SERVER = "abortServer";
 		#if !UNITY_EDITOR && UNITY_ANDROID
 		private static bool needCommitObjectName = false; 
 		#endif
@@ -172,6 +173,11 @@ namespace TechTweaking.BtCore.BtBridge
 			if (!PluginReady)
 				return;
 			ajc.Call (INITE_SERVER, UUID, time, connectOneDevice);
+		}
+		public void abortServer() {
+			if (!PluginReady)
+				return;
+			ajc.Call (ABORT_SERVER);
 		}
 
 		public void askEnableBluetooth ()

@@ -54,7 +54,6 @@ public class ForwardingActivity extends Activity {
 
 
     private void initServer() {
-
         Intent discoverableIntent = new
                 Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, serverTime);

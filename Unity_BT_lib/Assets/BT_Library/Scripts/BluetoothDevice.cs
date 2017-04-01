@@ -271,6 +271,15 @@ namespace TechTweaking.Bluetooth
 			set{ readingCoroutine = value;}
 		}
 
+		//Store the couroutine before starting by (MonoBehaviour.StartCouroutine(..)), so it can be StopCouroutine(it) if needed
+		internal IEnumerator last_started_couroutine;
+
+		/// <summary>
+		/// Will stop the ongoing reading couroutine, referenced by <see cref="ReadingCoroutine">
+		/// </summary>
+		public void stopReadingCoroutine () {
+			if(BluetoothAdapter.mono_BluetoothAdapter != null) BluetoothAdapter.mono_BluetoothAdapter.StopCoroutine(last_started_couroutine);
+		}
 		private byte endByte;
 		private bool isUsingUUID = false;
 		private bool isNeedCommitData = false;

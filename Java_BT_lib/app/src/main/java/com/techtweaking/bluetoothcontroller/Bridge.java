@@ -42,12 +42,7 @@ public class Bridge {
         PluginToUnity.change_UNITY_GAME_OBJECT_NAME(name);
     }
 
-    /*
-    public  String test (){
-        return "XXXXXXXXXXXXXYYYYYYYYYYYYYYYYXIIIIIII";
-        //com.badran.library.NativeBuffer.add();
-    }
-    */
+
     public BluetoothConnection createBlutoothConnectionObject(int id) {
         return new BluetoothConnection(id);
     }
@@ -192,8 +187,13 @@ public class Bridge {
         BtInterface.getInstance().makeDiscoverable(time);
     }
 
+
     public void initServer(String unityUUID, int time, boolean oneDevice) {
         BtInterface.getInstance().initServer(unityUUID, time, oneDevice);
+    }
+
+    public void abortServer() {
+        BtInterface.getInstance().abortServer();
     }
 
     private BluetoothDevice PickedBtDevice;
