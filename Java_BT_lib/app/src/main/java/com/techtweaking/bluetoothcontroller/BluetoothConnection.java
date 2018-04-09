@@ -1,9 +1,12 @@
 package com.techtweaking.bluetoothcontroller;
 
 
+import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.os.Build;
+import android.os.ParcelUuid;
 import android.util.Log;
 
 
@@ -17,6 +20,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.lang.reflect.Method;
+
+
 
 
 public class BluetoothConnection {
@@ -58,7 +64,7 @@ public class BluetoothConnection {
 
     //TODO A BluetoothDevice might be of use to multiple BluetoothConnection instances
     //TODO more testing on Devices Data Structures
-    private static final Map<String,Set<BluetoothConnection>> mapAddress = new HashMap<String, Set<BluetoothConnection>>();
+    public static final Map<String,Set<BluetoothConnection>> mapAddress = new HashMap<String, Set<BluetoothConnection>>();
     String name;
     String mac;
     private String SPP_UUID = "00001101-0000-1000-8000-00805F9B34FB";
@@ -219,38 +225,35 @@ public class BluetoothConnection {
 
         if (this.socket != null) {
 
-            IOUtils.closeQuietly(this.socket);
+            IOUtils.close_socket(this.socket);
             this.socket = null;
         }
+
 
     }
 
     //Close is the only method responsible for closing connection, Closing anywhere else is not allowed.
     public void close()
     {
-
+        //TODO research if for example failed connection require closing()
         //Preventing multiple close() calls
         if(!this.isConnected) return;
         this.isConnected = false;
 
 
-        try {
-            removeSocketServer();
-            releaseResources();
-            BtInterface.getInstance().OnDeviceClosing(this);
+        removeSocketServer();
+        releaseResources();
+        BtInterface.getInstance().OnDeviceClosing(this);
 
-            this.RaiseDISCONNECTED();
-        }catch(NullPointerException e) {
-            Log.e(TAG,"Thomas' bug",e);
-            /*
-            Caused by java.lang.NullPointerException: FileDescriptor must not be null
-                at android.os.ParcelFileDescriptor.<init>(ParcelFileDescriptor.java:174)
-                 at android.os.ParcelFileDescriptor$1.createFromParcel(ParcelFileDescriptor.java:905)
-             */
-        }
+        this.RaiseDISCONNECTED();
+
+
+
+
     }
 
     static void closeAll(){
+        BtInterface.getInstance().cancelDiscovery(); // should always cancelDiscovery even if it is not on finishing all devices
         for (Map.Entry<String, Set<BluetoothConnection>> entry : mapAddress.entrySet())
         {
             for(BluetoothConnection c : entry.getValue()){
@@ -258,6 +261,11 @@ public class BluetoothConnection {
             }
         }
     }
+
+    static void releaseDeviceReferences() {
+        mapAddress.clear();
+    }
+
 
     public void setID(int id){
         this.id = id;
@@ -275,7 +283,7 @@ public class BluetoothConnection {
 
     public void setMac (String mac){
         if(BluetoothAdapter.checkBluetoothAddress(mac)){
-            BluetoothDevice dev = BtInterface.getInstance().mBluetoothAdapter.getRemoteDevice(mac);
+            BluetoothDevice dev = BtInterface.getInstance().BtAdapter().getRemoteDevice(mac);
             this.setDevice(dev);
         }else {
             this.mac = mac;
@@ -350,6 +358,7 @@ public class BluetoothConnection {
 
 
     public void sendBytes(byte[] msg) {
+        //TODO JUST CHECK isConnected
         // WTF : it's possible that user chose not to allow sending (bufferedOutputStream == null)
         // WTF : it's possible that BluetoothDevice is still disconnected (socket == null)
         // WTF : I can use this.WillRead & this.WillSend
@@ -357,28 +366,27 @@ public class BluetoothConnection {
             BtSender.getInstance().addJob(this.bufferedOutputStream, msg, this);
 
     }
-    public void sendBytes_Blocking(byte[] msg){
-
-        if (this.bufferedOutputStream != null) // WTF : User can choose to prevent sending (bufferedOutputStream == null)
+    public boolean sendBytes_Blocking(byte[] msg){
+        boolean returned = false;
+        if (this.socket != null && this.bufferedOutputStream != null) // WTF : User can choose to prevent sending (bufferedOutputStream == null)
         {
+            returned = true;
             try {
                 this.bufferedOutputStream.write(msg);
             }catch (IOException e)
             {
-                this.RaiseSENDING_ERROR();
-                Log.w("PLUGIN . UNITY", "failed sending data while write/sending data", e);
-
+                Log.w(TAG, "failed sending data while write/sending data", e);
+                returned = false;
             }
             try {
                 this.bufferedOutputStream.flush();
             }catch (IOException e)
             {
-                Log.w("PLUGIN . UNITY", "failed flushing the buffer while write/sending data", e);
+                Log.w(TAG, "failed flushing the buffer while write/sending data", e);
             }
         }
 
-
-
+        return returned;
     }
 
 
@@ -459,6 +467,35 @@ public class BluetoothConnection {
             tmp.add(this);
         }
     }
+
+    String[] getUUIDs() {
+        if(this.device == null) return new String[] {};
+
+        ParcelUuid[] UUIDs = null;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+            UUIDs = this.device.getUuids();
+        }else{
+            try {
+                Class cl = Class.forName("android.bluetooth.BluetoothDevice");
+                Class[] params = {};
+                Method method = cl.getMethod("getUuids", params);
+                Object[] args = {};
+                UUIDs = (ParcelUuid[])method.invoke(device, args);
+            }
+            catch (Exception e) {
+                Log.e(TAG, "getUUID failed on Android API version less than 15: " + e);
+            }
+        }
+
+        String[] UUIDs_String = new String[UUIDs != null ? UUIDs.length : 0];
+        for(int i=0; i < UUIDs_String.length;i++)
+        {
+            UUIDs_String[i] = UUIDs.toString();
+        }
+        return UUIDs_String;
+    }
+
     void setSocket(BluetoothSocket socket){
         this.socket = socket;
         this.setDevice(socket.getRemoteDevice());
@@ -474,8 +511,6 @@ public class BluetoothConnection {
         //a device reference already there since the server found the remote device
         //No need to change connection mode in unity since it's only needed here, and the old connection mode won't be commited, because it's not going to change there
         if(this.connectionMode == ConnectionMode.UsingSocket) this.connectionMode = ConnectionMode.UsingBluetoothDeviceReference;
-
-
     }
 
 
@@ -490,12 +525,7 @@ public class BluetoothConnection {
 
     //WARNING: RaiseDisconenct changes isConnected to false, It shouldn't be called before calling BluetoothConnection.close().
     private synchronized void RaiseDISCONNECTED(){
-        //TODO don't disconnect non connected yet device
-        if(this.isConnected) {
-
-            this.removeSocketServer();//TODO RESEARCH //To allow it to try a newer socket when it try to connect again
-            PluginToUnity.ControlMessages.DISCONNECTED.send(this.getID());
-        }
+        PluginToUnity.ControlMessages.DISCONNECTED.send(this.getID());
         this.isConnected = false;
     }
 

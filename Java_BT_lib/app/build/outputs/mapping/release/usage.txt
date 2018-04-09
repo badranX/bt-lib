@@ -1,15 +1,13 @@
 com.techtweaking.bluetoothcontroller.BluetoothConnection:
     private static final java.lang.String TAG
+    472:496:java.lang.String[] getUUIDs()
 com.techtweaking.bluetoothcontroller.BluetoothDevicePicker
 com.techtweaking.bluetoothcontroller.Bridge:
-    306:310:private void IntToBytes(byte[],int,int)
+    312:316:private void IntToBytes(byte[],int,int)
 com.techtweaking.bluetoothcontroller.BtInterface:
     private static final java.lang.String TAG
-    923:929:private void abortServer()
 com.techtweaking.bluetoothcontroller.BtInterface$AcceptThread:
-    950:951:public void stopServer()
-com.techtweaking.bluetoothcontroller.BtInterface$NormalConnectThread:
-    674:675:public void cancel()
+    992:993:public void stopServer_from_looping()
 com.techtweaking.bluetoothcontroller.BtReader:
     private static final java.lang.String TAG
 com.techtweaking.bluetoothcontroller.BtReader$BtElement:
@@ -25,9 +23,9 @@ com.techtweaking.bluetoothcontroller.ForwardingActivity:
     private static final int REQUEST_DISCOVERABLE_CODE
 com.techtweaking.bluetoothcontroller.PluginToUnity:
     12:14:private PluginToUnity()
-com.techtweaking.library.CircularArrayList:
+com.techtweaking.libextra.CircularArrayList:
     304:311:public void flush(int)
     313:317:public byte[] pollAll(int)
-com.techtweaking.library.IOUtils:
+com.techtweaking.libextra.IOUtils:
     private static final java.lang.String TAG
-    9:9:public IOUtils()
+    13:13:public IOUtils()

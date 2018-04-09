@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class ServerClient : MonoBehaviour
 {
-	
 	private const string UUID = "0acc9c7c-48e1-41d2-acaa-610d1a7b085e";
 	public Text devicNameText;
 	public ScrollTerminalUI readDataText;//ScrollTerminalUI is a script used to control the ScrollView text
@@ -41,15 +40,11 @@ public class ServerClient : MonoBehaviour
 	{
 		this.device = device;
 		
-		/*
-		 * 10 equals the char '\n' which is a "new Line" in Ascci representation, 
-		 * so the read() method will retun a packet that was ended by the byte 10. simply read() will read lines.
-		 */
-		this.device.setEndByte (10);
+
 		//Assign the 'Coroutine' that will handle your reading Functionality, this will improve your code style
 		//Other way would be listening to the event Bt.OnReadingStarted, and starting the courotine from there
 		this.device.ReadingCoroutine = ManageConnection;
-		
+
 		//Any device passed by the event OnClientRequest to this handler will has the same UUID, so we will connect to it directly.
 		this.device.connect ();
 		
@@ -60,16 +55,12 @@ public class ServerClient : MonoBehaviour
 		
 		this.device = device;//save a global reference to the device
 		
+
+		//We didn't use this when connecting to Bluetooth modules
+		//if you didn't provide a UUID, the plugin has a default one that works with most classic Bluetooth modules
+		this.device.UUID = UUID;
 		
-		this.device.UUID = UUID;//In case you want Android to Android connection//Without this it will set the UUID by default to SERIAL_UUID
-		
-		/*
-		 * 10 equals the char '\n' which is a "new Line" in Ascci representation, 
-		 * so the read() method will retun a packet that was ended by the byte 10. simply read() will read lines.
-		 */
-		device.setEndByte (10);
-		
-		
+
 		//Assign the 'Coroutine' that will handle your reading Functionality, this will improve your code style
 		//Other way would be listening to the event Bt.OnReadingStarted, and starting the courotine from there
 		device.ReadingCoroutine = ManageConnection;
@@ -102,7 +93,7 @@ public class ServerClient : MonoBehaviour
 	public void send ()
 	{		
 		if (device != null && !string.IsNullOrEmpty (dataToSend.text)) {
-			device.send (System.Text.Encoding.ASCII.GetBytes (dataToSend.text + (char)10));
+			device.send_Blocking  (System.Text.Encoding.ASCII.GetBytes (dataToSend.text + (char)10));
 		}
 	}
 	
@@ -113,14 +104,10 @@ public class ServerClient : MonoBehaviour
 		//start a server for 100 second, and close after the first connection attempt by a device that has the same UUID. [One call to this.HandleOnClientRequest]
 		//see Bt.startServer(UUID,int,bool) to change the default behaviour.
 		//####If you want to connect to this server you need to have a similar UUID. otherwise it won't connect###
-
 		BluetoothAdapter.startServer (UUID);
 
 	}
-	
-	
-	
-	
+
 	//############### Reading Data  #####################
 	IEnumerator  ManageConnection (BluetoothDevice device)
 	{//Manage Reading Coroutine
@@ -128,23 +115,24 @@ public class ServerClient : MonoBehaviour
 		//Switch to Terminal View
 		InfoCanvas.SetActive (false);
 		DataCanvas.SetActive (true);
-		
-		
+
 		while (device.IsReading) {
+
+			byte [] msg = device.read ();
 			
-			
-			if (device.IsDataAvailable) {
-				byte [] msg = device.read ();//because we called setEndByte(10)..read will always return a packet excluding the last byte 10.
-				
-				if (msg != null && msg.Length > 0) {
-					string content = System.Text.ASCIIEncoding.ASCII.GetString (msg);
-					readDataText.add (device.Name, content);
-				}
+			if (msg != null) {
+
+				/* Send and read in this library use bytes. So you have to choose your own encoding.
+				 * The reason is that different Systems (Android, Arduino for example) use different encoding.
+				 */
+				string content = System.Text.ASCIIEncoding.ASCII.GetString (msg);
+
+				//here we split the string into lines. '\n','\r' are charachter used to represent new line.
+				readDataText.add (device.Name, content.Split(new char[]{'\n','\r'}));
 			}
-			
+
 			yield return null;
 		}
-		
 		//Switch to Menue View after reading stoped
 		DataCanvas.SetActive (false);
 		InfoCanvas.SetActive (true);	

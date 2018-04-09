@@ -1,0 +1,26 @@
+﻿using UnityEngine;
+using System.Collections;
+using TechTweaking.Bluetooth;
+public class emnum : MonoBehaviour {
+	public BluetoothDevice o;
+	// Use this for initialization
+	void Start () {
+		o = new BluetoothDevice();
+		StartCoroutine(ManageConnection(o));
+	}
+
+	// Update is called once per frame
+	void Update () {
+				
+	}
+
+
+	IEnumerator  ManageConnection (BluetoothDevice device)
+	{
+		
+		 yield return null;
+		o = null;
+
+	}
+
+}

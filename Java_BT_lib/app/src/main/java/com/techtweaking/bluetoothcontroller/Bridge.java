@@ -19,14 +19,12 @@ import java.util.Set;
 public class Bridge {
 
 
-    private static BluetoothAdapter mBluetoothAdapter;
 
 
     private static Bridge instance = null;
 
 
     private Bridge() {
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         // Exists only to defeat instantiation.
     }
 
@@ -107,21 +105,25 @@ public class Bridge {
         }
     }
 
+    //TODO add it to UNITY
+    public boolean isBluetoothSupported() {
+        return BtInterface.getInstance().BtAdapter() != null;
+    }
+
+
     public boolean enableBluetooth() {
-        return mBluetoothAdapter != null && mBluetoothAdapter.enable();
+        return BtInterface.getInstance().BtAdapter() != null && BtInterface.getInstance().BtAdapter().enable();
 
 
     }
 
 
     public boolean disableBluetooth() {
-        return mBluetoothAdapter != null && mBluetoothAdapter.disable();
-
+        return BtInterface.getInstance().BtAdapter() != null && BtInterface.getInstance().BtAdapter().disable();
     }
 
     public boolean isBluetoothEnabled() {
-
-        return mBluetoothAdapter != null && mBluetoothAdapter.isEnabled();
+        return BtInterface.getInstance().BtAdapter() != null && BtInterface.getInstance().BtAdapter().isEnabled();
     }
 
 
@@ -226,7 +228,7 @@ public class Bridge {
     public BluetoothConnection[] getPairedDevices() {
         Set<BluetoothDevice> setPairedDevices;
 
-        setPairedDevices = mBluetoothAdapter.getBondedDevices();
+        setPairedDevices = BtInterface.getInstance().BtAdapter().getBondedDevices();
         BluetoothConnection[] returned = new BluetoothConnection[setPairedDevices.size()];
         int i = 0;
         for (BluetoothDevice pairedDevice : setPairedDevices) {
@@ -244,7 +246,7 @@ public class Bridge {
     public String[] getBondedDevices() {
         Set<BluetoothDevice> setPairedDevices;
 
-        setPairedDevices = mBluetoothAdapter.getBondedDevices();
+        setPairedDevices = BtInterface.getInstance().BtAdapter().getBondedDevices();
         String[] returned = new String[2 * setPairedDevices.size()];
         int i = 0;
         for (BluetoothDevice pairedDevice : setPairedDevices) {
@@ -345,11 +347,13 @@ public class Bridge {
         deRegisterStateReceiver();
         BtInterface.getInstance().OnDestroy();
         BluetoothConnection.closeAll();
+        BluetoothConnection.releaseDeviceReferences();
+
     }
 
     public String MyMacAdress() {
 
-        return BtInterface.getInstance().mBluetoothAdapter.getAddress();
+        return BtInterface.getInstance().BtAdapter().getAddress();
     }
 
 }

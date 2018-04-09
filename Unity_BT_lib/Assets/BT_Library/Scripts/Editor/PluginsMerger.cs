@@ -229,8 +229,9 @@ namespace TechTweaking.BtLibrary.Editor
 
 			} catch (Exception) {
  				throw new Exception("Couldn't get the original Unity AndroidManifest!.  " +
-					"  You can provide an AndroidManifest.xml in the 'Assets/Plugins/Android' folder so the wizard can use it" +
-					"You can find the original AndroidManifest.xml for you Unity version in the installation folder." +
+				                    "You probably don't have the android suite for unity installed. Your Unity installation should be ready to build for Android devices " + 
+					" If not, you can provide an AndroidManifest.xml in the 'Assets/Plugins/Android' folder so the wizard can use it. " +
+					"You can find the original AndroidManifest.xml for your Unity version in the installation folder. " +
 					"It is in the 'PlaybackEngines' folder. Something like 'PlaybackEngines/AndroidPlayer/../AndroidManifest.xml'");
 			}
 		}

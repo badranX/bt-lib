@@ -264,7 +264,7 @@ class BtReader {
         }
     }
     // CALLED BY UNITY
-    public boolean Close(int id, int threadID) {//need adjusting
+    public boolean Close(int id, int threadID) {//need adjustment
         ReadingThreadData rtd = ReadingThreads.Get(threadID);
         if (rtd != null) {
             synchronized (rtd.key)
@@ -430,7 +430,8 @@ class BtReader {
                     {
                         Log.w(TAG, "failed while reading/receiving data", e);
                         if(!element.stopReading) {
-                            PluginToUnity.ControlMessages.READING_ERROR.send(element.id, e.getMessage());
+                            //TODO Add explination. Add the message sent
+                            PluginToUnity.ControlMessages.READING_ERROR.send(element.id);
                         }
                     }
                 }

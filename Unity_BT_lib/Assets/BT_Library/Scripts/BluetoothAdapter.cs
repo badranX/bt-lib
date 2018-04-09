@@ -8,8 +8,7 @@ using UnityEngine;
 
 using System.Collections;
 using System.Collections.Generic;
-using TechTweaking.BtCore.BtBridge;
-
+using TechTweaking.BtCore;
 namespace TechTweaking.Bluetooth
 {
 
@@ -28,10 +27,11 @@ namespace TechTweaking.Bluetooth
 		private const string BLUETOOTH_STATE_TURNING_OFF = "TURNING_OFF";
 
 		internal static BluetoothAdapter mono_BluetoothAdapter;
+
 		/// <summary>
 		/// Occurs when a BluetoothDevice instance get connected, and pass its reference.
 		/// </summary>
-		public static event Action<BluetoothDevice> OnConnected; 
+		public static event System.Action<BluetoothDevice> OnConnected; 
 		/// <summary>
 		/// Occurs when a BluetoothDevice instance get disconnected, and pass its reference.
 		/// </summary>
@@ -122,14 +122,53 @@ namespace TechTweaking.Bluetooth
 		/// <description>It passes a BluetoothDevice reference and its RSSI value</description>
 		public static event Action OnDiscoveryFinished;
 
+
 		void Awake ()
 		{
+
+			if(is_multiple_singleton_in_scene())
+			{
+				Debug.LogWarning("Multiple BluetoothAdapter/BtConnector gameobjects in the scene. " +
+					"Note: you don't need to add a BtConnector/BluetoothAdapter to your scene in this version");
+
+				Destroy(this);
+				return;
+			} 
 			mono_BluetoothAdapter = this;
+			
+			DontDestroyOnLoad(this);
+
 			BtBridge.set_unity_game_object_name (this.gameObject.name);//AWAKE: CHANGE THE NAME OF ITS OBJECT
 		}
 
+		//Called by BtBridge constructor which is a singlton started after attempting to use the library
+		//Which is only possible in the main thread. BtBridge runs on the main thread
+		internal static void instentiate_singleton() 
+		{			
+			if(is_singleton_in_scene()) {
+				return;
+			}
+
+			GameObject BAgameObject = new GameObject(BtBridge.unity_game_object_name);
+			BAgameObject.AddComponent<BluetoothAdapter>();
+			BAgameObject.hideFlags =  HideFlags.NotEditable;
+		}
+
+		//Test if there exist one singleton in the scene
+		private static bool is_singleton_in_scene() 
+		{
+			return FindObjectOfType(typeof(BluetoothAdapter)) != null;
+		}
+
+		//Test if there exist multiple singleton in the scene (used in Awake())
+		private static bool is_multiple_singleton_in_scene() 
+		{
+			return (FindObjectsOfType(typeof(BluetoothAdapter))).Length > 1;
+
+		}
+
 		/// <summary>
-		/// Display the default Android %Bluetooth devices list.
+		/// Display the default Android %Bluetooth devices list. 
 		/// </summary>
 		/// 
 		/// <description>Subscribe to <see cref="OnDevicePicked"/> Event in order to get a reference of the picked device.</description>
@@ -333,6 +372,15 @@ namespace TechTweaking.Bluetooth
 			BtBridge.Instance.makeDiscoverable (time);
 		}
 
+		/// <summary>
+		/// Release all resouces related to this library. Of course, results in disconnecting all devices.
+		/// </summary>
+		public static void releaseAllResources()
+		{
+			//no need for releaseDiscoveryResources(); it will be done by the following
+			BtBridge.Instance.OnDestroy ();
+			BluetoothDevice.DisposeAllDevices ();
+		}
 
 		private  void  TrDisconnect (string m)
 		{
@@ -674,13 +722,14 @@ namespace TechTweaking.Bluetooth
 				bt.JavaBtConnection = BtBridge.Instance.getClientDeviceForServer (bt.Id);
 				bt.btConnectionMode = BluetoothDevice.BtConnectionMode.UsingBluetoothDeviceReference;
 
-				if (bt.JavaBtConnection != null) {//TODO check
+				if (bt.JavaBtConnection != null && bt.JavaBtConnection.GetRawClass ().ToInt32 () != 0) {
 					
 					OnClientRequest (bt);
 				}
 			}
 		}
-	
+
+
 		void OnDestroy ()
 		{
 			BtBridge.Instance.OnDestroy ();

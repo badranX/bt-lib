@@ -23,7 +23,7 @@ com.techtweaking.bluetoothcontroller.BluetoothConnection: java.lang.String getNa
 com.techtweaking.bluetoothcontroller.BluetoothConnection: java.lang.String getAddress()
 com.techtweaking.bluetoothcontroller.BluetoothConnection: void setBufferSize(int)
 com.techtweaking.bluetoothcontroller.BluetoothConnection: void sendBytes(byte[])
-com.techtweaking.bluetoothcontroller.BluetoothConnection: void sendBytes_Blocking(byte[])
+com.techtweaking.bluetoothcontroller.BluetoothConnection: boolean sendBytes_Blocking(byte[])
 com.techtweaking.bluetoothcontroller.BluetoothConnection: boolean startDiscovery()
 com.techtweaking.bluetoothcontroller.BluetoothConnection: void instanceRemoved()
 com.techtweaking.bluetoothcontroller.BluetoothConnection$ConnectionMode: com.techtweaking.bluetoothcontroller.BluetoothConnection$ConnectionMode[] values()
@@ -35,6 +35,7 @@ com.techtweaking.bluetoothcontroller.Bridge: com.techtweaking.bluetoothcontrolle
 com.techtweaking.bluetoothcontroller.Bridge: void askEnableBluetooth()
 com.techtweaking.bluetoothcontroller.Bridge: void registerStateReceiver()
 com.techtweaking.bluetoothcontroller.Bridge: void deRegisterStateReceiver()
+com.techtweaking.bluetoothcontroller.Bridge: boolean isBluetoothSupported()
 com.techtweaking.bluetoothcontroller.Bridge: boolean enableBluetooth()
 com.techtweaking.bluetoothcontroller.Bridge: boolean disableBluetooth()
 com.techtweaking.bluetoothcontroller.Bridge: boolean isBluetoothEnabled()
@@ -45,6 +46,7 @@ com.techtweaking.bluetoothcontroller.Bridge: boolean cancelDiscovery()
 com.techtweaking.bluetoothcontroller.Bridge: void releaseDiscoveryResources()
 com.techtweaking.bluetoothcontroller.Bridge: void makeDiscoverable(int)
 com.techtweaking.bluetoothcontroller.Bridge: void initServer(java.lang.String,int,boolean)
+com.techtweaking.bluetoothcontroller.Bridge: void abortServer()
 com.techtweaking.bluetoothcontroller.Bridge: com.techtweaking.bluetoothcontroller.BluetoothConnection getPickedDevice(int)
 com.techtweaking.bluetoothcontroller.Bridge: com.techtweaking.bluetoothcontroller.BluetoothConnection getDiscoveredDeviceForServer(int)
 com.techtweaking.bluetoothcontroller.Bridge: com.techtweaking.bluetoothcontroller.BluetoothConnection[] getPairedDevices()
@@ -60,5 +62,5 @@ com.techtweaking.bluetoothcontroller.R$attr
 com.techtweaking.bluetoothcontroller.R$drawable
 com.techtweaking.bluetoothcontroller.R$string
 com.techtweaking.bluetoothcontroller.R$style
-com.techtweaking.library.CircularArrayList$MODES: com.techtweaking.library.CircularArrayList$MODES[] values()
-com.techtweaking.library.CircularArrayList$MODES: com.techtweaking.library.CircularArrayList$MODES valueOf(java.lang.String)
+com.techtweaking.libextra.CircularArrayList$MODES: com.techtweaking.libextra.CircularArrayList$MODES[] values()
+com.techtweaking.libextra.CircularArrayList$MODES: com.techtweaking.libextra.CircularArrayList$MODES valueOf(java.lang.String)

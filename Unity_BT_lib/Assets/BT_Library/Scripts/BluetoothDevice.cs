@@ -6,7 +6,7 @@ using UnityEngine;
 using System.Collections;
 using System;
 
-using TechTweaking.BtCore.BtBridge;
+using TechTweaking.BtCore;
 using System.Collections.Generic;
 
 namespace TechTweaking.Bluetooth
@@ -141,6 +141,8 @@ namespace TechTweaking.Bluetooth
 		private const string INSTANCE_REMOVED = "instanceRemoved";
 		private const string GET_CONNECTION_MODE = "getConnectionMode";
 		private const string SET_UUID = "setUUID";
+		private const string GET_UUIDs = "getUUIDs";
+		private const string IS_BLUETOOTH_SUPPORTED = "isBluetoothSupported";
 		/// <summary>
 		/// Initializes a new instance of this class.
 		/// </summary>
@@ -225,10 +227,12 @@ namespace TechTweaking.Bluetooth
 
 		private bool isDataAvailable = false;
 		/// <summary>
-		/// Gets a value indicating whether this device has data available to read.
+		/// Gets a value indicating whether this device has data available to read.(It has one frame delay).
 		/// </summary>
 		/// <value><c>true</c> if it has data available; otherwise, <c>false</c>.</value>
-		/// <description>Data mean bytes unless a method to packetize data has been called on this instance, then data would mean packets.</description>
+		/// <description>Data mean bytes unless a method to packetize data has been called on this instance, then data would mean packets.
+		/// It still has one frame delay, so if you expect "continious" data just just keep checking if BluetoothDevice.read() has data.
+		/// </description>
 		/// <remarks>Available packetization methods : setEndByte(), setPacketSize()</remarks>
 		public bool IsDataAvailable {
 			get { 
@@ -278,7 +282,7 @@ namespace TechTweaking.Bluetooth
 		/// Will stop the ongoing reading couroutine, referenced by <see cref="ReadingCoroutine">
 		/// </summary>
 		public void stopReadingCoroutine () {
-			if(BluetoothAdapter.mono_BluetoothAdapter != null) BluetoothAdapter.mono_BluetoothAdapter.StopCoroutine(last_started_couroutine);
+			if(BluetoothAdapter.mono_BluetoothAdapter != null && this.last_started_couroutine != null) BluetoothAdapter.mono_BluetoothAdapter.StopCoroutine(last_started_couroutine);
 		}
 		private byte endByte;
 		private bool isUsingUUID = false;
@@ -298,7 +302,8 @@ namespace TechTweaking.Bluetooth
 				if (reading_mode == READING_MODES.NO_PACKETIZATION) {
 					this.IsDataAvailable = false;//Incase of No_packetization we will read the whole buffer so IsDataAvaialable will be false will be empty.
 				}
-				return javaBtConnection.Call<byte[]> (READ);
+				byte [] msg = javaBtConnection.Call<byte[]> (READ);
+				return (msg != null  && msg.Length > 0) ? msg : null;
 			}
 			return null;
 		}
@@ -343,6 +348,29 @@ namespace TechTweaking.Bluetooth
 			return null;
 		}
 
+		/// <summary>
+		/// Get the UUIDs used by this device instance except a BluetoothDevice initialized by Name before connecting.
+		/// </summary>
+		/// <description> This method returns an array of String UUIDs. This will help you find what UUID is used by the remote device. 
+		/// You can do multiple connection attempts with different UUIDs.
+		/// This won't work with a new created BluetoothDevice instance with a name provided using the BluetoothDevice.Name property, because the actuall phisical device still isn't known.
+		/// </description>
+		public String[] getUUIDs () 
+		{
+			if(isDeviceReady()) {
+				return javaBtConnection.Call<String[]>(GET_UUIDs);
+			}
+			return null;
+		}
+
+		public Boolean isBluetoothSupported ()
+		{
+			if(isDeviceReady()) {
+				return javaBtConnection.Call<Boolean>(IS_BLUETOOTH_SUPPORTED);
+			}
+			return false;
+
+		}
 
 
 		
@@ -600,7 +628,7 @@ namespace TechTweaking.Bluetooth
 		public void connect ()
 		{
 
-			connect (10, 1000, true);
+			connect (3, 1000, true);
 		}
 
 		/// <summary>
@@ -751,17 +779,17 @@ namespace TechTweaking.Bluetooth
 		/// Similar to send(byte[]) , but it's a synchronouse/blocking method. send(byte[]) will raise exception if it was called from a C# thread, so if you're 
 		/// using threads in Unity, it's better to use this method.
 		/// </summary>
-		public void send_Blocking (byte[] msg)
+		public bool send_Blocking (byte[] msg)
 		{
 			if (!isDeviceReady ()) {
-				return;
+				return false;
 				
 			}
 			
 			if (msg.Length == 0)
-				return;
+				return false;
 			
-			javaBtConnection.Call (SEND_BYTES_BLOCKING, msg);
+			return javaBtConnection.Call<bool> (SEND_BYTES_BLOCKING, msg);
 		}
 
 		/*
@@ -839,6 +867,7 @@ namespace TechTweaking.Bluetooth
 		{
 			List<int> keys = new List<int> (BluetoothDevice.DevicesMap.Keys);
 			foreach (int i in keys) {
+				BluetoothDevice.DevicesMap [i].stopReadingCoroutine();
 				BluetoothDevice.DevicesMap [i].Dispose ();
 			}
 			

@@ -15,11 +15,13 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.util.Log;
 import android.util.SparseArray;
+import android.os.ParcelFileDescriptor;
 
 import com.techtweaking.libextra.IOUtils;
 import com.unity3d.player.UnityPlayer;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -32,8 +34,7 @@ public class BtInterface {
 
     private final String CREATE_RFcomm_Socket = "createRfcommSocket";
     private final String CREATE_INSECURE_RFcomm_Socket = "createInsecureRfcommSocket";
-    final BluetoothAdapter mBluetoothAdapter;
-
+    private BluetoothAdapter mBluetoothAdapter;
     //    private ServerReceiver serverReceiver;
     private DeviceDiscoveryReceiver_WhileConnecting deviceDiscoveryReceiverWhileConnecting;
     private RSSI_DiscoveryReceiver rssi_DiscoveryReceiver;
@@ -41,6 +42,35 @@ public class BtInterface {
 
     private ConnectionTrial btConnectionForDiscovery;
 
+    private BtInterface() {
+        initBluetoothAdapter();//will be nulled only when close everything
+
+        //IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+        IntentFilter disconnect_Intent = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        disconnect_Intent.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+
+        //IntentFilter filter5 = new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+
+
+        //UnityPlayer.currentActivity.registerReceiver(mReceiver, filter1);
+        UnityPlayer.currentActivity.registerReceiver(mReceiver, disconnect_Intent);
+        //UnityPlayer.currentActivity.registerReceiver(mReceiver, filter5);
+
+
+        // Exists only to defeat instantiation.
+
+    }
+
+    public static BtInterface getInstance() {
+        if (instance == null) {
+            instance = new BtInterface();
+        }
+        return instance;
+    }
+
+    BluetoothAdapter BtAdapter() {
+        return mBluetoothAdapter;
+    }
     private class ConnectionTrial {
         final int trialsCount;
         final int time;
@@ -52,6 +82,7 @@ public class BtInterface {
         final BluetoothDevice device;
 
         final BluetoothConnection btConnection;
+
 
         void stopConnecting() {
             this.willStop = true;
@@ -80,24 +111,41 @@ public class BtInterface {
     private static BtInterface instance = null;
 
 
-    private BtInterface() {
+
+
+
+    //Advice by someone that it the method should be private (make no sense)
+    //Advice reinabling Bluetooth Fixes some issues.
+    //initialize the mBluetoothAdapter only
+    private  void initBluetoothAdapter() {
+        if (mBluetoothAdapter != null) {
+            return; // already initialized
+        }
+
+
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        //IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
-        IntentFilter disconnect_Intent = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        disconnect_Intent.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
-
-        //IntentFilter filter5 = new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
-
-
-        //UnityPlayer.currentActivity.registerReceiver(mReceiver, filter1);
-        UnityPlayer.currentActivity.registerReceiver(mReceiver, disconnect_Intent);
-        //UnityPlayer.currentActivity.registerReceiver(mReceiver, filter5);
-
-
-        // Exists only to defeat instantiation.
-
+        if (mBluetoothAdapter == null) {
+            Log.e(TAG, "This Android does not support Bluetooth");
+        }
     }
+
+
+    boolean cancelDiscovery() {
+        if (mBluetoothAdapter != null) {
+            try {
+                if (mBluetoothAdapter.isDiscovering()) {
+                    mBluetoothAdapter.cancelDiscovery();
+                }
+            } catch (Exception e) {
+                //do nothing
+            }
+        }
+        return true;//TODO no need for this [Should be change from Unity first as cancelDiscovery in Unity return bolean]
+    }
+
+
+
+
 
     public void OnDestroy() {
         try {
@@ -129,14 +177,11 @@ public class BtInterface {
             }
         }
         */
+
     }
 
-    public static BtInterface getInstance() {
-        if (instance == null) {
-            instance = new BtInterface();
-        }
-        return instance;
-    }
+
+
 
 
     public void normal_connect(BluetoothConnection btConnection, boolean isChinese, boolean isSecure) {
@@ -237,6 +282,7 @@ public class BtInterface {
             }
         }
     }
+
 
 
     private boolean findBluetoothDevice(BluetoothConnection setupData) {
@@ -583,12 +629,7 @@ public class BtInterface {
 
     }
 
-    //startDiscovery and cancelDiscovery should be used on the same thread
-    boolean cancelDiscovery() {
 
-        return mBluetoothAdapter.cancelDiscovery();
-
-    }
 
     void releaseDiscoveryResources() {
         try {
@@ -653,12 +694,8 @@ public class BtInterface {
                 mmSocket.connect();
             } catch (IOException e) {
                 Log.e(TAG, "problem while connecting (by normal_connect).",e);
-                // Unable to connect; close the socket and get out
-                try {
-                    mmSocket.close();
-                } catch (IOException closeException) {
-                    Log.w(TAG, "problem closing socket (by normal_connect)",e);
-                }
+                // Unable to connect; close the socket and
+                IOUtils.close_socket(mmSocket);
                 return;
             }
 
@@ -805,9 +842,9 @@ public class BtInterface {
 
 
                         } catch (NullPointerException e) {
-                            Log.e(TAG,"Mr. Thomas bug report", e);
+                            Log.e(TAG,"Unknown behaviour", e);
                             /*
-                            Caused by java.lang.NullPointerException: FileDescriptor must not be null
+                                Reported by Mr. Thomas : Caused by java.lang.NullPointerException: FileDescriptor must not be null
                                 at android.os.ParcelFileDescriptor.<init>(ParcelFileDescriptor.java:174)
                                 at android.os.ParcelFileDescriptor$1.createFromParcel(ParcelFileDescriptor.java:905)
                              */
@@ -818,12 +855,7 @@ public class BtInterface {
 
                         synchronized (ConnectThreadLock) {
                             if (conAttempt.isWillStop()) {
-                                try {
-                                    socket.close();
-                                } catch (IOException e) {
-                                    Log.w(TAG,"closing socket error",e);
-                                }
-
+                                    IOUtils.close_socket(socket);
                                 //break. the user has closed it.
                                 //Then the Queue will be emptied from Attempts to connect
                                 break;
@@ -842,11 +874,7 @@ public class BtInterface {
 
                     //success will be always false in the following line
                     if (socket != null && !success) {
-                        try {
-                            socket.close();
-                        } catch (IOException ioE) {
-                            //ignore
-                        }
+                            IOUtils.close_socket(socket);
                     }
 
                     counter++;
@@ -1082,11 +1110,7 @@ public class BtInterface {
          */
         public void cancel() {
             if (mmServerSocket != null) {
-                try {
-                    mmServerSocket.close();
-                } catch (IOException e) {
-                    Log.w(TAG, "failed closing ServerSocket",e);
-                }
+                IOUtils.close_serverSocket(mmServerSocket);
             }
         }
 

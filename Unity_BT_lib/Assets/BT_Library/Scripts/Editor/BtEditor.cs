@@ -5,8 +5,7 @@ using System;
 
 namespace TechTweaking.BtLibrary.Editor
 {
-	//TODO CHECK IF CLASSES.JAR COPIED IF THE SAME NAM OR NOT
-	//TODO LAMP::: CHANGE CLASSES.JAR TO CLASSES.TXT SO YOU CAN GENERATE AS MUCH CLASSES AS U WANT
+
 	public class BtEditor  : EditorWindow
 	{
 

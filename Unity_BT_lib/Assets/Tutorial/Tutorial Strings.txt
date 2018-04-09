@@ -1,0 +1,84 @@
+﻿using UnityEngine;
+using System.Collections;
+using TechTweaking.Bluetooth;
+using System.Text;
+//STRING TUTORIAL
+public class TutorialStrings : MonoBehaviour {
+
+	//In the previous tutorials, we sent recieved array of bytes. Today we will send/read string.
+	//In this tutorial I'll try to convince you that sending/recieving an Array of bytes is enouph to achieve anything.
+	//How is that? well, Computers can only understand numbers. 
+	//Everything you deal with is simply a sequence of bits (0s and 1s), or in our case a sequence of Bytes.
+
+	//So, any string of charachters can be viewed as a sequence of numbers. And there're many differnet numerical representations of a string. 
+	//One example is the ASSCII code. 
+
+	//For example the ASCII code of the charachter 'A' is the number 65, and the the charachter 'B' is 66, and 'C' is 67.
+	//So if you want to send ABC in ASCII, you simply send the sequence {65, 66, 67} which is what we did last time.
+
+	//So lets try send the string "Hello World!".
+
+
+
+	BluetoothDevice deviceA;
+
+
+
+
+	void Awake() {
+
+		deviceA.MacAddress = "00:A0:C9:23:C4:41";
+
+
+		deviceA.connect();
+
+
+	}
+
+
+	void Update () {
+
+		if(deviceA.IsConnected)
+		{
+
+			//So how do we do that.
+
+
+			//We want to convert our string to an array of byte.
+			byte[] byte_sequence = System.Text.Encoding.Default.GetBytes("Hello World!");
+
+			deviceA.send(byte_sequence);//that's it.
+
+
+
+
+
+		}
+
+
+	}
+
+	//NOW LETS read data from our remote device, that we called deviceA.
+	// Reading is simply done in the Update method again. 
+	// We are going to read whatever data available from our remote device each frame.
+	//And lets assume that we are just reciving a sequence of bytes, for simplicity.
+
+	//SO, Again, we sent sequence of bytes and we are reading a sequence of bytes, we will deal with strings later.
+	void Update2 () {
+		//lets test if deviceA is connected
+		if(deviceA.IsConnected) {
+			//And now lets see if there's data at this frame
+			if(deviceA.IsDataAvailable)
+			{
+				//now we are ready to call the read() method, which will return an array of bytes that represent a recieved sequence of bytes
+				byte[] recived_byte_sequence = deviceA.read();
+
+				//Now you can do whatever you want with the variable 'recived_byte_sequence' which will contain your sequence of bytes.
+				//print it or use it to move some objects in your scene.
+
+				//I think by this you covered almost everything.
+			}
+		}
+	}
+
+}

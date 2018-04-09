@@ -37,6 +37,11 @@ public class ScrollTerminalUI : MonoBehaviour {
 	public void set(string txt) {
 		mainText.text = txt;
 	}
+	public void add(string deviceName, string[] msg_arr) {
+		for(int i = 0; i < msg_arr.Length;i++)
+			this.add (deviceName, msg_arr[i]);
+	}
+
 	public void add(string deviceName , string text){
 
 		if (string.IsNullOrEmpty(text)) return;

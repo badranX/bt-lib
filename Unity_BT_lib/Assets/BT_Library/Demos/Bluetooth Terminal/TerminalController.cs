@@ -29,10 +29,10 @@ public class TerminalController : MonoBehaviour
 	void HandleOnDeviceOff (BluetoothDevice dev)
 	{
 		if (!string.IsNullOrEmpty (dev.Name))
-			status.text = "Couldn't connect to " + dev.Name + ", device is OFF";
-		else if (!string.IsNullOrEmpty (dev.Name)) {
-			status.text = "Couldn't connect to " + dev.MacAddress + ", device is OFF";
-		}
+			status.text = "Couldn't connect to " + dev.Name + ", device might be OFF";
+		else if (!string.IsNullOrEmpty (dev.MacAddress)) {
+			status.text = "Couldn't connect to " + dev.MacAddress + ", device might be OFF";
+		} 
 	}
 
 	void HandleOnDevicePicked (BluetoothDevice device)//Called when device is Picked by user
@@ -40,19 +40,14 @@ public class TerminalController : MonoBehaviour
 		this.device = device;//save a global reference to the device
 
 
-		//this.device.UUID = UUID; //This is only required for Android to Android connection
-		
-		/*
-		 * 10 equals the char '\n' which is a "new Line" in Ascci representation, 
-		 * so the read() method will retun a packet that was ended by the byte 10. simply read() will read lines.
-		 */
-		device.setEndByte (10);
-		
-		
-		//Assign the 'Coroutine' that will handle your reading Functionality, this will improve your code style
-		//Other way would be listening to the event Bt.OnReadingStarted, and starting the courotine from there
+		//this.device.UUID = UUID; //This is not required for HC-05/06 devices and many other electronic bluetooth modules.
+
+
+		//Here we assign the 'Coroutine' that will handle your reading Functionality, this will improve your code style
+		//Another way to achieve this would be listening to the event Bt.OnReadingStarted, and starting the courotine from there by yourself.
 		device.ReadingCoroutine = ManageConnection;
-		
+
+
 		devicNameText.text = "Remote Device : " + device.Name;
 		
 	}
@@ -68,7 +63,7 @@ public class TerminalController : MonoBehaviour
 	{
 		if (device != null) {
 			device.connect ();
-			status.text = "Trying to connect";
+			status.text = "Trying to connect...";
 		}
 	}
 	
@@ -92,7 +87,7 @@ public class TerminalController : MonoBehaviour
 
 	
 	//############### Reading Data  #####################
-	//Please note that you don't have to use Couroutienes, you can just put your code in the Update() method
+	//Please note that you don't have to use Couroutienes, you can just put your code in the Update() method. Like what we did in the BasicDemo
 	IEnumerator  ManageConnection (BluetoothDevice device)
 	{//Manage Reading Coroutine
 		
@@ -102,21 +97,27 @@ public class TerminalController : MonoBehaviour
 		
 		
 		while (device.IsReading) {
-			
-			
-			if (device.IsDataAvailable) {
-				//because we called setEndByte(10)..read will always return a packet excluding the last byte 10. 10 equals '\n' so it will return lines. 
+
 				byte [] msg = device.read ();
-				
-				if (msg != null && msg.Length > 0) {
+
+				if (msg != null) {
+					
+					//converting byte array to string.
 					string content = System.Text.ASCIIEncoding.ASCII.GetString (msg);
-					readDataText.add (device.Name, content);
+
+					//here we split the string into lines. '\n','\r' are charachter used to represent new line.
+					string [] lines = content.Split(new char[]{'\n','\r'});
+
+					//Add those lines to the scrollText
+					readDataText.add (device.Name, lines);
+
+					/* Note: You should notice the possiblity that at the time of calling read() a whole line has not yet completly recieved.
+					 * This will split a line into two or more lines between consecutive read() calls. This is not hard to fix, but the goal here is to keep the code simple.
+					 * To see a solution using methods of this library check out the "High Bit Rate demo". 
+					 */
 				}
-			}
-			
 			yield return null;
 		}
-		
 		//Switch to Menue View after reading stoped
 		DataCanvas.SetActive (false);
 		InfoCanvas.SetActive (true);	

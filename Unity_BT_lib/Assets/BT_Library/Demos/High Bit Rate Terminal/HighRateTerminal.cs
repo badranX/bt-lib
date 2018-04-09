@@ -67,9 +67,14 @@ public class HighRateTerminal : MonoBehaviour
 		
 		//this.device.UUID = UUID; //This is only required for Android to Android connection
 		
-		/*
+		/* 
+		 * setEndByte(10) will change how the read() method works.
 		 * 10 equals the char '\n' which is a "new Line" in Ascci representation, 
-		 * so the read() method will retun a packet that was ended by the byte 10. simply read() will read lines.
+		 * so the read() method will retun a packet that was ended by the byte 10, without including 10.
+		 * Which means read() will read lines while excluding the '\n' new line charachter.
+		 * If you don't use the setEndByte() method, device.read() will return any available data (line or not), then you can order/packatize them as you want.
+		 * 
+		 * Note: setEndByte will make reading lines or packest easier.
 		 */
 		device.setEndByte (10);
 		

@@ -31,6 +31,8 @@ android {
             proguardFiles "${project.projectDir}/../proguard.cfg"
         }
     }
+
+
 }
 
 dependencies {

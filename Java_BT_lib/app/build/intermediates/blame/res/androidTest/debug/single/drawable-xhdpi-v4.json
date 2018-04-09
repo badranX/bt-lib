@@ -1,5 +1,9 @@
 [
     {
+        "merged": "/Users/hunter/Desktop/old journey/BT_lib/BT_lib/Java_BT_lib/app/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/ic_launcher.png",
+        "source": "/Users/hunter/Desktop/old journey/BT_lib/BT_lib/Java_BT_lib/app/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/ic_launcher.png"
+    },
+    {
         "merged": "/Users/hunter/Desktop/BT_lib/BT_lib/Java_BT_lib/app/build/intermediates/res/merged/androidTest/debug/drawable-xhdpi-v4/ic_launcher.png",
         "source": "/Users/hunter/Desktop/BT_lib/BT_lib/Java_BT_lib/app/build/intermediates/bundles/debug/res/drawable-xhdpi-v4/ic_launcher.png"
     }

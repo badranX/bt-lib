@@ -5,7 +5,7 @@
 using UnityEngine;
 
 //TODO RELEASE DISCOVERY RESOURCES
-namespace TechTweaking.BtCore.BtBridge
+namespace TechTweaking.BtCore
 {
 	public   class  BtBridge
 	{
@@ -42,43 +42,41 @@ namespace TechTweaking.BtCore.BtBridge
 		private const string INITE_SERVER = "initServer";
 		private const string RENAME_UNITY_OBJECT = "renameUnityObject";
 
-		private static string unity_game_object_name = "BtConnector";
+		internal static string unity_game_object_name = "com_techtweaking_btlibrary";
 		private static string MY_MAC_ADRESS = "MyMacAdress";
 		private static string ABORT_SERVER = "abortServer";
-		#if !UNITY_EDITOR && UNITY_ANDROID
-		private static bool needCommitObjectName = false; 
-		#endif
-
+	
+		//Should run on the Main Thread, because BluetoothAdapter.instentiate_singleton()
 		private  BtBridge ()
 		{
 
 			ajc = null;
 			PluginReady = false;
 
-
 			#if !UNITY_EDITOR && UNITY_ANDROID
 
 			if (Application.platform == RuntimePlatform.Android) {
 
-			try {
+				try {
 
-				using (AndroidJavaClass ajcClazz = new AndroidJavaClass (BridgePackage)) {
+					using (AndroidJavaClass ajcClazz = new AndroidJavaClass (BridgePackage)) {
 
-				if(!IsAndroidJavaClassNull (ajcClazz)){
-					ajc = ajcClazz.CallStatic<AndroidJavaObject> ("getInstance",unity_game_object_name);		
-					PluginReady = !IsAndroidJavaObjectNull (ajc);
-					if(needCommitObjectName && PluginReady)  {
-						ajc.Call (RENAME_UNITY_OBJECT, unity_game_object_name);
+						if(!IsAndroidJavaClassNull (ajcClazz)){
+							ajc = ajcClazz.CallStatic<AndroidJavaObject> ("getInstance",unity_game_object_name);		
+							PluginReady = !IsAndroidJavaObjectNull (ajc);
 
-					}
+						}
+				    }
+
+				} catch
+				{
+					instance = null;//with that App will try again, when calling the Instance property
+					Debug.LogError ("Bluetooth initialization failure. Probably the file *.jar not present in directory (Assets->Plugins->*.jar) ");
+					throw;
 				}
+
 			}
 
-			} catch {
-				Debug.LogError ("Bluetooth initialization failure. Probably classes.jar not present in directory (Assets->Plugins->classes.jar) ");
-				throw;
-			}
-			}
 
 			#endif	
 
@@ -87,8 +85,13 @@ namespace TechTweaking.BtCore.BtBridge
 
 		public static BtBridge Instance {
 			get {
+
 				if (instance == null) {
 					instance = new BtBridge ();
+					//First time, everything is ready. We can instantiate the singleton.
+					if(instance.isPluginReady()) {
+						TechTweaking.Bluetooth.BluetoothAdapter.instentiate_singleton();
+					}
 				}
 				return instance;
 			}
@@ -96,14 +99,16 @@ namespace TechTweaking.BtCore.BtBridge
 
 		static internal void set_unity_game_object_name (string name)
 		{
+
 			if (name.Equals (unity_game_object_name))
 				return;
+
+			unity_game_object_name = name;
 			#if !UNITY_EDITOR && UNITY_ANDROID
-			if(instance == null) {//Plugin is not ready yet. Instance.Plugin Ready will create instance. It's internal method and the user might not need an instance yet.
-				needCommitObjectName = true;
-				unity_game_object_name = name;
-			}else {
-				Instance.ajc.Call (RENAME_UNITY_OBJECT, unity_game_object_name);
+
+			if(instance != null && instance.isPluginReady()) {//If  Plugin is not ready yet. When it is started it will auto change its name
+				instance.ajc.Call (RENAME_UNITY_OBJECT, unity_game_object_name);
+
 			}
 			#endif
 		}
@@ -115,16 +120,6 @@ namespace TechTweaking.BtCore.BtBridge
 			if (!PluginReady)
 				return;
 			ajc.Call ("startActivity");
-
-			/*
-			using (AndroidJavaClass ass = new AndroidJavaClass ("com.techtweaking.bluetoothcontroller.ForwarderActivity1")) {
-
-			
-
-
-				ass.CallStatic ("startActivity");
-			}
-			*/
 		}
 
 
@@ -354,7 +349,6 @@ namespace TechTweaking.BtCore.BtBridge
 			} catch (UnityException) {
 
 			}
-			instance = null;
 		}
 
 	}

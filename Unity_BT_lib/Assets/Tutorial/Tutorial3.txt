@@ -1,0 +1,106 @@
+﻿using UnityEngine;
+using System.Collections;
+using TechTweaking.Bluetooth;
+
+//STRING TUTORIAL
+using System;
+
+
+public class Tutorial3 : MonoBehaviour {
+
+	//So what about connecting to two device similtaniously. There's nothing fancy in connecting to multiple devices, 
+	//you just have to do the same steps for any other device.
+
+	//So I'll create another device, and I'll call it deviceB
+	//And I'll just copy paste whatever I did for deviceA, that we created earlier.
+	BluetoothDevice deviceA;
+
+
+
+	//Now lets tell the library what is the MAC addres of the device we want to connect to.
+
+	//I'm going to do that in a method called Awake(). I'll just explain why later. 
+
+	//THE LATER EXPLANATION: Well, because Awake() <COMPLICATED>is called only once during the lifetime of the script instance</COMPLICATED>. 
+	//is called by the Unity engine before any other method we are going to use. So it's a good place to define our REMOTE DEVICE.
+	void Awake() {
+
+	 
+		//Now lets give the variable deviceA its MAC address. 
+
+		deviceA.MacAddress = "00:A0:C9:23:C4:41";
+
+		//That's it.
+
+		//Now lets connect to that device. which is easy.
+
+		deviceA.connect();
+
+		//that's it.
+
+		//but now how do we send and read data.
+		//lets start sending data. As it's easier.
+
+		//I'll do that for simplicity in the Update method. 
+	}
+
+	// For those who are completly new to UNITY, the Update method is called once per frame. 
+	//  It's the main loop of your game. 
+
+	//Now, for simplicity, we want to send the sequence of bytes {65, 66, 67} every frame to our remote device, that we called deviceA. 
+	//!!!!
+	//Why 65, well 65 is the charachter 'A' in the ASCII encoding. 
+	//Remember, Computers can only understand numbers, so an ASCII code is the numerical representation of a character such as 'A'.
+	//!!!!
+	void Update () {
+		//OK,The Update keeps looping because it's called every frame.
+		//So before sending we need to check if we are connected to deviceA. 
+		//by this if statement
+		if(deviceA.IsConnected)
+		{
+			//Now we can send a message.
+			//But first lets define our sequence of bytes as an array of bytes, like this :
+
+			byte[] byte_sequence = { 65, 66, 67};
+
+			//And now lets send our sequence
+			deviceA.send(byte_sequence);//that's it.
+
+			//Now why did we use the awake method?
+			//!!!!!
+			// why is that? you can simply think of your string as an array of bytes. 
+			// but, different devices & differnt programs might assume differnt representations for "strings".
+			//Do you remeber the ASCII code 
+			//!!!!!
+
+
+
+		}
+
+
+	}
+
+	//NOW LETS read data from our remote device, that we called deviceA.
+	// Reading is simply done in the Update method again. 
+	// We are going to read whatever data available from our remote device each frame.
+	//And lets assume that we are just reciving a sequence of bytes, for simplicity.
+
+	//SO, Again, we sent sequence of bytes and we are reading a sequence of bytes, we will deal with strings later.
+	void Update2 () {
+		//lets test if deviceA is connected
+		if(deviceA.IsConnected) {
+			//And now lets see if there's data at this frame
+			if(deviceA.IsDataAvailable)
+			{
+				//now we are ready to call the read() method, which will return an array of bytes that represent a recieved sequence of bytes
+				byte[] recived_byte_sequence = deviceA.read();
+
+				//Now you can do whatever you want with the variable 'recived_byte_sequence' which will contain your sequence of bytes.
+				//print it or use it to move some objects in your scene.
+
+				//I think by this you covered almost everything.
+			}
+		}
+	}
+
+}
