@@ -49,7 +49,13 @@ public class PluginToUnity {
         SERVER_FINISHED_LISTENING("TrServerFinishedListening"),//"0" means finished by user, "-1" otherwise
 
         DISCOVERED_DEVICE("TrDiscoveredDevice"),
-        ACTION_DISCOVERY_FINISHED("TrDiscoveryFinished");
+        ACTION_DISCOVERY_FINISHED("TrDiscoveryFinished"),
+
+
+
+        USER_REJECT_LOCATION_PERMISSION("TrUserRejectLocationPermission"),//USER PROMPT ACTIONS
+
+        DISCOVERY_STARTED("TrDiscoveryStarted");//USER PROMPT ACTIONS
 
 
         private final String value;

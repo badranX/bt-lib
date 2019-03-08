@@ -82,10 +82,25 @@ namespace TechTweaking.Bluetooth
 		/// </description>
 		public static event Action<Boolean> OnServerFinishedListening;
 
-		/// <summary>
-		/// Occurs when on reading starts for a BluetoothDevice insance and Passes its reference.
-		/// </summary>	
-		public static event Action<BluetoothDevice> OnReadingStarted;
+
+        /// <summary>
+		/// Occurs on Android API 6+ when starting discovery and user rejects to give location permissoins
+		/// </summary>
+		/// <description>After starting discovery (via startDiscovery()) on some new devices a location permission is needed from the user
+        /// If the user rejects granting the permission this action will be fired.
+		/// </description>
+        public static event Action OnUserLocationPermissionRejected;
+
+        /// <summary>
+		/// Occurs when discovery is started (via startDiscovery()).
+		/// </summary>
+        public static event Action OnDiscoveryStarted;
+
+
+        /// <summary>
+        /// Occurs when on reading starts for a BluetoothDevice insance and Passes its reference.
+        /// </summary>	
+        public static event Action<BluetoothDevice> OnReadingStarted;
 		/// <summary>
 		/// Occurs when on reading stops for a BluetoothDevice insance and Passes its reference.
 		/// </summary>	
@@ -407,8 +422,24 @@ namespace TechTweaking.Bluetooth
 				
 			}
 		}
+        
+        private void TrUserRejectLocationPermission(string u)
+        {
+            if (OnUserLocationPermissionRejected != null)
+            {
+                OnUserLocationPermissionRejected();
+            }
+        }
 
-		private  void  TrConnect (string m)
+        private void TrDiscoveryStarted(string u)
+        {
+            if (OnDiscoveryStarted != null)
+            {
+                OnDiscoveryStarted();
+            }
+        }
+
+        private  void  TrConnect (string m)
 		{
 
 			int deviceID;

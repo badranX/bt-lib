@@ -4,6 +4,7 @@ package com.techtweaking.bluetoothcontroller;
  *
  */
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
@@ -12,7 +13,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.SparseArray;
 import android.os.ParcelFileDescriptor;
@@ -27,6 +30,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
+import android.support.v4.app.ActivityCompat;
 
 public class BtInterface {
 
@@ -604,9 +608,29 @@ public class BtInterface {
         return mBluetoothAdapter.startDiscovery();
     }
 
+    void askLocation() {
+
+
+    }
+
+
     boolean startDiscovery() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+
+             initDiscovery();
+        } else {
+            int hasPermission = ContextCompat.checkSelfPermission(UnityPlayer.currentActivity, Manifest.permission.ACCESS_COARSE_LOCATION);
+            if (hasPermission == PackageManager.PERMISSION_GRANTED) {
+                initDiscovery();
+
+            }else  ForwardingActivity.askLocationPermission();
+
+        }
+        return true;
+    }
 
 
+    void initDiscovery(){
         if (rssi_DiscoveryReceiver == null) {
             rssi_DiscoveryReceiver = new RSSI_DiscoveryReceiver();
 
@@ -615,8 +639,8 @@ public class BtInterface {
 
             UnityPlayer.currentActivity.registerReceiver(rssi_DiscoveryReceiver, tmp_filter);
         }
-
-        return mBluetoothAdapter.startDiscovery();
+        boolean isStarted =  mBluetoothAdapter.startDiscovery();
+        if(isStarted) PluginToUnity.ControlMessages.DISCOVERY_STARTED.send();
     }
 
     boolean refreshDiscovery() {

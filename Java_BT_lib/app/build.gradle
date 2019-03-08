@@ -1,28 +1,21 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
-    }
-}
+
 
 apply plugin: 'com.android.library'
 android {
 
-    buildToolsVersion "23.0.3"
-    compileSdkVersion 23;
+    buildToolsVersion "28.0.3"
+    compileSdkVersion 28;
 
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 23
+        targetSdkVersion 28
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_6
-        targetCompatibility JavaVersion.VERSION_1_6
-    }
+    //compileOptions {
+     //   sourceCompatibility JavaVersion.VERSION_1_6
+     //   targetCompatibility JavaVersion.VERSION_1_6
+    //}
 
 
     buildTypes {
@@ -31,21 +24,20 @@ android {
             proguardFiles "${project.projectDir}/../proguard.cfg"
         }
     }
-
-
 }
 
 dependencies {
-    provided files('libs/classes.jar')
+    compileOnly files('libs/classes.jar')
+    implementation 'com.android.support:support-v4:28.0.0'
 }
 
 
-def UnityDir = "${project.projectDir}/../../Unity_BT_lib/"
-
+//def UnityDir = "${project.projectDir}/../../Unity_BT_lib/"
+def UnityDir= "C:/dev/unity18/bt_lib/Unity_BT_lib/"
 def androidPluginsFolder = "${UnityDir}/Assets/Plugins/Android/"
 def finalJarName = 'BT_Library_Bluetooth_Classic.jar'
 
-def builtBundlesRoot = "${project.buildDir}/intermediates/bundles/"
+def builtBundlesRoot = "${project.buildDir}/intermediates/packaged-classes/"
 
 task doRelease(type: Copy, dependsOn: 'assembleRelease') {
     from "${builtBundlesRoot}/release"

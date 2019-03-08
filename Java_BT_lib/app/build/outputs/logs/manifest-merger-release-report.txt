@@ -1,0 +1,59 @@
+-- Merging decision tree log ---
+manifest
+ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:2:1-18:12
+INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:2:1-18:12
+INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:2:1-18:12
+INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:2:1-18:12
+INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:2:1-18:12
+INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:2:1-18:12
+INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:2:1-18:12
+	package
+		ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:3:5-51
+		INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml
+		INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml
+	android:versionName
+		ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:5:5-30
+		INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml
+		INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:2:11-69
+	android:versionCode
+		ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:4:5-28
+		INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml
+		INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml
+uses-permission#android.permission.BLUETOOTH
+ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:7:5-68
+	android:name
+		ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:7:22-65
+uses-permission#android.permission.BLUETOOTH_ADMIN
+ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:8:5-74
+	android:name
+		ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:8:22-71
+application
+ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:10:5-16:19
+	android:label
+		ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:13:9-41
+	android:icon
+		ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:12:9-45
+	android:allowBackup
+		ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:11:9-35
+	android:theme
+		ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:14:9-40
+activity#com.techtweaking.bluetoothcontroller.ForwardingActivity
+ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:15:9-65
+	android:name
+		ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml:15:19-53
+uses-sdk
+INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml
+INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml
+INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml
+INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml
+		ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml
+		INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml
+		ADDED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml
+		INJECTED from C:\dev\assetstore\bt_lib\Java_BT_lib\app\src\main\AndroidManifest.xml

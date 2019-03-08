@@ -1,11 +1,342 @@
+android.arch.core.R -> android.arch.core.R:
+    void <init>() -> <init>
+android.arch.lifecycle.R -> android.arch.lifecycle.R:
+    void <init>() -> <init>
+android.arch.lifecycle.livedata.R -> android.arch.lifecycle.livedata.R:
+    void <init>() -> <init>
+android.arch.lifecycle.livedata.core.R -> android.arch.lifecycle.livedata.core.R:
+    void <init>() -> <init>
+android.arch.lifecycle.viewmodel.R -> android.arch.lifecycle.viewmodel.R:
+    void <init>() -> <init>
+android.support.asynclayoutinflater.R -> android.support.asynclayoutinflater.R:
+    void <init>() -> <init>
+android.support.asynclayoutinflater.R$attr -> android.support.asynclayoutinflater.R$attr:
+    void <init>() -> <init>
+android.support.asynclayoutinflater.R$color -> android.support.asynclayoutinflater.R$color:
+    void <init>() -> <init>
+android.support.asynclayoutinflater.R$dimen -> android.support.asynclayoutinflater.R$dimen:
+    void <init>() -> <init>
+android.support.asynclayoutinflater.R$drawable -> android.support.asynclayoutinflater.R$drawable:
+    void <init>() -> <init>
+android.support.asynclayoutinflater.R$id -> android.support.asynclayoutinflater.R$id:
+    void <init>() -> <init>
+android.support.asynclayoutinflater.R$integer -> android.support.asynclayoutinflater.R$integer:
+    void <init>() -> <init>
+android.support.asynclayoutinflater.R$layout -> android.support.asynclayoutinflater.R$layout:
+    void <init>() -> <init>
+android.support.asynclayoutinflater.R$string -> android.support.asynclayoutinflater.R$string:
+    void <init>() -> <init>
+android.support.asynclayoutinflater.R$style -> android.support.asynclayoutinflater.R$style:
+    void <init>() -> <init>
+android.support.asynclayoutinflater.R$styleable -> android.support.asynclayoutinflater.R$styleable:
+    void <init>() -> <init>
+android.support.compat.R -> android.support.compat.R:
+    void <init>() -> <init>
+android.support.compat.R$attr -> android.support.compat.R$attr:
+    void <init>() -> <init>
+android.support.compat.R$color -> android.support.compat.R$color:
+    void <init>() -> <init>
+android.support.compat.R$dimen -> android.support.compat.R$dimen:
+    void <init>() -> <init>
+android.support.compat.R$drawable -> android.support.compat.R$drawable:
+    void <init>() -> <init>
+android.support.compat.R$id -> android.support.compat.R$id:
+    void <init>() -> <init>
+android.support.compat.R$integer -> android.support.compat.R$integer:
+    void <init>() -> <init>
+android.support.compat.R$layout -> android.support.compat.R$layout:
+    void <init>() -> <init>
+android.support.compat.R$string -> android.support.compat.R$string:
+    void <init>() -> <init>
+android.support.compat.R$style -> android.support.compat.R$style:
+    void <init>() -> <init>
+android.support.compat.R$styleable -> android.support.compat.R$styleable:
+    void <init>() -> <init>
+android.support.coordinatorlayout.R -> android.support.coordinatorlayout.R:
+    void <init>() -> <init>
+android.support.coordinatorlayout.R$attr -> android.support.coordinatorlayout.R$attr:
+    void <init>() -> <init>
+android.support.coordinatorlayout.R$color -> android.support.coordinatorlayout.R$color:
+    void <init>() -> <init>
+android.support.coordinatorlayout.R$dimen -> android.support.coordinatorlayout.R$dimen:
+    void <init>() -> <init>
+android.support.coordinatorlayout.R$drawable -> android.support.coordinatorlayout.R$drawable:
+    void <init>() -> <init>
+android.support.coordinatorlayout.R$id -> android.support.coordinatorlayout.R$id:
+    void <init>() -> <init>
+android.support.coordinatorlayout.R$integer -> android.support.coordinatorlayout.R$integer:
+    void <init>() -> <init>
+android.support.coordinatorlayout.R$layout -> android.support.coordinatorlayout.R$layout:
+    void <init>() -> <init>
+android.support.coordinatorlayout.R$string -> android.support.coordinatorlayout.R$string:
+    void <init>() -> <init>
+android.support.coordinatorlayout.R$style -> android.support.coordinatorlayout.R$style:
+    void <init>() -> <init>
+android.support.coordinatorlayout.R$styleable -> android.support.coordinatorlayout.R$styleable:
+    void <init>() -> <init>
+android.support.coreui.R -> android.support.coreui.R:
+    void <init>() -> <init>
+android.support.coreui.R$attr -> android.support.coreui.R$attr:
+    void <init>() -> <init>
+android.support.coreui.R$color -> android.support.coreui.R$color:
+    void <init>() -> <init>
+android.support.coreui.R$dimen -> android.support.coreui.R$dimen:
+    void <init>() -> <init>
+android.support.coreui.R$drawable -> android.support.coreui.R$drawable:
+    void <init>() -> <init>
+android.support.coreui.R$id -> android.support.coreui.R$id:
+    void <init>() -> <init>
+android.support.coreui.R$integer -> android.support.coreui.R$integer:
+    void <init>() -> <init>
+android.support.coreui.R$layout -> android.support.coreui.R$layout:
+    void <init>() -> <init>
+android.support.coreui.R$string -> android.support.coreui.R$string:
+    void <init>() -> <init>
+android.support.coreui.R$style -> android.support.coreui.R$style:
+    void <init>() -> <init>
+android.support.coreui.R$styleable -> android.support.coreui.R$styleable:
+    void <init>() -> <init>
+android.support.coreutils.R -> android.support.coreutils.R:
+    void <init>() -> <init>
+android.support.coreutils.R$attr -> android.support.coreutils.R$attr:
+    void <init>() -> <init>
+android.support.coreutils.R$color -> android.support.coreutils.R$color:
+    void <init>() -> <init>
+android.support.coreutils.R$dimen -> android.support.coreutils.R$dimen:
+    void <init>() -> <init>
+android.support.coreutils.R$drawable -> android.support.coreutils.R$drawable:
+    void <init>() -> <init>
+android.support.coreutils.R$id -> android.support.coreutils.R$id:
+    void <init>() -> <init>
+android.support.coreutils.R$integer -> android.support.coreutils.R$integer:
+    void <init>() -> <init>
+android.support.coreutils.R$layout -> android.support.coreutils.R$layout:
+    void <init>() -> <init>
+android.support.coreutils.R$string -> android.support.coreutils.R$string:
+    void <init>() -> <init>
+android.support.coreutils.R$style -> android.support.coreutils.R$style:
+    void <init>() -> <init>
+android.support.coreutils.R$styleable -> android.support.coreutils.R$styleable:
+    void <init>() -> <init>
+android.support.cursoradapter.R -> android.support.cursoradapter.R:
+    void <init>() -> <init>
+android.support.customview.R -> android.support.customview.R:
+    void <init>() -> <init>
+android.support.customview.R$attr -> android.support.customview.R$attr:
+    void <init>() -> <init>
+android.support.customview.R$color -> android.support.customview.R$color:
+    void <init>() -> <init>
+android.support.customview.R$dimen -> android.support.customview.R$dimen:
+    void <init>() -> <init>
+android.support.customview.R$drawable -> android.support.customview.R$drawable:
+    void <init>() -> <init>
+android.support.customview.R$id -> android.support.customview.R$id:
+    void <init>() -> <init>
+android.support.customview.R$integer -> android.support.customview.R$integer:
+    void <init>() -> <init>
+android.support.customview.R$layout -> android.support.customview.R$layout:
+    void <init>() -> <init>
+android.support.customview.R$string -> android.support.customview.R$string:
+    void <init>() -> <init>
+android.support.customview.R$style -> android.support.customview.R$style:
+    void <init>() -> <init>
+android.support.customview.R$styleable -> android.support.customview.R$styleable:
+    void <init>() -> <init>
+android.support.documentfile.R -> android.support.documentfile.R:
+    void <init>() -> <init>
+android.support.drawerlayout.R -> android.support.drawerlayout.R:
+    void <init>() -> <init>
+android.support.drawerlayout.R$attr -> android.support.drawerlayout.R$attr:
+    void <init>() -> <init>
+android.support.drawerlayout.R$color -> android.support.drawerlayout.R$color:
+    void <init>() -> <init>
+android.support.drawerlayout.R$dimen -> android.support.drawerlayout.R$dimen:
+    void <init>() -> <init>
+android.support.drawerlayout.R$drawable -> android.support.drawerlayout.R$drawable:
+    void <init>() -> <init>
+android.support.drawerlayout.R$id -> android.support.drawerlayout.R$id:
+    void <init>() -> <init>
+android.support.drawerlayout.R$integer -> android.support.drawerlayout.R$integer:
+    void <init>() -> <init>
+android.support.drawerlayout.R$layout -> android.support.drawerlayout.R$layout:
+    void <init>() -> <init>
+android.support.drawerlayout.R$string -> android.support.drawerlayout.R$string:
+    void <init>() -> <init>
+android.support.drawerlayout.R$style -> android.support.drawerlayout.R$style:
+    void <init>() -> <init>
+android.support.drawerlayout.R$styleable -> android.support.drawerlayout.R$styleable:
+    void <init>() -> <init>
+android.support.fragment.R -> android.support.fragment.R:
+    void <init>() -> <init>
+android.support.fragment.R$attr -> android.support.fragment.R$attr:
+    void <init>() -> <init>
+android.support.fragment.R$color -> android.support.fragment.R$color:
+    void <init>() -> <init>
+android.support.fragment.R$dimen -> android.support.fragment.R$dimen:
+    void <init>() -> <init>
+android.support.fragment.R$drawable -> android.support.fragment.R$drawable:
+    void <init>() -> <init>
+android.support.fragment.R$id -> android.support.fragment.R$id:
+    void <init>() -> <init>
+android.support.fragment.R$integer -> android.support.fragment.R$integer:
+    void <init>() -> <init>
+android.support.fragment.R$layout -> android.support.fragment.R$layout:
+    void <init>() -> <init>
+android.support.fragment.R$string -> android.support.fragment.R$string:
+    void <init>() -> <init>
+android.support.fragment.R$style -> android.support.fragment.R$style:
+    void <init>() -> <init>
+android.support.fragment.R$styleable -> android.support.fragment.R$styleable:
+    void <init>() -> <init>
+android.support.interpolator.R -> android.support.interpolator.R:
+    void <init>() -> <init>
+android.support.loader.R -> android.support.loader.R:
+    void <init>() -> <init>
+android.support.loader.R$attr -> android.support.loader.R$attr:
+    void <init>() -> <init>
+android.support.loader.R$color -> android.support.loader.R$color:
+    void <init>() -> <init>
+android.support.loader.R$dimen -> android.support.loader.R$dimen:
+    void <init>() -> <init>
+android.support.loader.R$drawable -> android.support.loader.R$drawable:
+    void <init>() -> <init>
+android.support.loader.R$id -> android.support.loader.R$id:
+    void <init>() -> <init>
+android.support.loader.R$integer -> android.support.loader.R$integer:
+    void <init>() -> <init>
+android.support.loader.R$layout -> android.support.loader.R$layout:
+    void <init>() -> <init>
+android.support.loader.R$string -> android.support.loader.R$string:
+    void <init>() -> <init>
+android.support.loader.R$style -> android.support.loader.R$style:
+    void <init>() -> <init>
+android.support.loader.R$styleable -> android.support.loader.R$styleable:
+    void <init>() -> <init>
+android.support.localbroadcastmanager.R -> android.support.localbroadcastmanager.R:
+    void <init>() -> <init>
+android.support.mediacompat.R -> android.support.mediacompat.R:
+    void <init>() -> <init>
+android.support.mediacompat.R$attr -> android.support.mediacompat.R$attr:
+    void <init>() -> <init>
+android.support.mediacompat.R$color -> android.support.mediacompat.R$color:
+    void <init>() -> <init>
+android.support.mediacompat.R$dimen -> android.support.mediacompat.R$dimen:
+    void <init>() -> <init>
+android.support.mediacompat.R$drawable -> android.support.mediacompat.R$drawable:
+    void <init>() -> <init>
+android.support.mediacompat.R$id -> android.support.mediacompat.R$id:
+    void <init>() -> <init>
+android.support.mediacompat.R$integer -> android.support.mediacompat.R$integer:
+    void <init>() -> <init>
+android.support.mediacompat.R$layout -> android.support.mediacompat.R$layout:
+    void <init>() -> <init>
+android.support.mediacompat.R$string -> android.support.mediacompat.R$string:
+    void <init>() -> <init>
+android.support.mediacompat.R$style -> android.support.mediacompat.R$style:
+    void <init>() -> <init>
+android.support.mediacompat.R$styleable -> android.support.mediacompat.R$styleable:
+    void <init>() -> <init>
+android.support.print.R -> android.support.print.R:
+    void <init>() -> <init>
+android.support.slidingpanelayout.R -> android.support.slidingpanelayout.R:
+    void <init>() -> <init>
+android.support.slidingpanelayout.R$attr -> android.support.slidingpanelayout.R$attr:
+    void <init>() -> <init>
+android.support.slidingpanelayout.R$color -> android.support.slidingpanelayout.R$color:
+    void <init>() -> <init>
+android.support.slidingpanelayout.R$dimen -> android.support.slidingpanelayout.R$dimen:
+    void <init>() -> <init>
+android.support.slidingpanelayout.R$drawable -> android.support.slidingpanelayout.R$drawable:
+    void <init>() -> <init>
+android.support.slidingpanelayout.R$id -> android.support.slidingpanelayout.R$id:
+    void <init>() -> <init>
+android.support.slidingpanelayout.R$integer -> android.support.slidingpanelayout.R$integer:
+    void <init>() -> <init>
+android.support.slidingpanelayout.R$layout -> android.support.slidingpanelayout.R$layout:
+    void <init>() -> <init>
+android.support.slidingpanelayout.R$string -> android.support.slidingpanelayout.R$string:
+    void <init>() -> <init>
+android.support.slidingpanelayout.R$style -> android.support.slidingpanelayout.R$style:
+    void <init>() -> <init>
+android.support.slidingpanelayout.R$styleable -> android.support.slidingpanelayout.R$styleable:
+    void <init>() -> <init>
+android.support.swiperefreshlayout.R -> android.support.swiperefreshlayout.R:
+    void <init>() -> <init>
+android.support.swiperefreshlayout.R$attr -> android.support.swiperefreshlayout.R$attr:
+    void <init>() -> <init>
+android.support.swiperefreshlayout.R$color -> android.support.swiperefreshlayout.R$color:
+    void <init>() -> <init>
+android.support.swiperefreshlayout.R$dimen -> android.support.swiperefreshlayout.R$dimen:
+    void <init>() -> <init>
+android.support.swiperefreshlayout.R$drawable -> android.support.swiperefreshlayout.R$drawable:
+    void <init>() -> <init>
+android.support.swiperefreshlayout.R$id -> android.support.swiperefreshlayout.R$id:
+    void <init>() -> <init>
+android.support.swiperefreshlayout.R$integer -> android.support.swiperefreshlayout.R$integer:
+    void <init>() -> <init>
+android.support.swiperefreshlayout.R$layout -> android.support.swiperefreshlayout.R$layout:
+    void <init>() -> <init>
+android.support.swiperefreshlayout.R$string -> android.support.swiperefreshlayout.R$string:
+    void <init>() -> <init>
+android.support.swiperefreshlayout.R$style -> android.support.swiperefreshlayout.R$style:
+    void <init>() -> <init>
+android.support.swiperefreshlayout.R$styleable -> android.support.swiperefreshlayout.R$styleable:
+    void <init>() -> <init>
+android.support.v4.R -> android.support.v4.R:
+    void <init>() -> <init>
+android.support.v4.R$attr -> android.support.v4.R$attr:
+    void <init>() -> <init>
+android.support.v4.R$color -> android.support.v4.R$color:
+    void <init>() -> <init>
+android.support.v4.R$dimen -> android.support.v4.R$dimen:
+    void <init>() -> <init>
+android.support.v4.R$drawable -> android.support.v4.R$drawable:
+    void <init>() -> <init>
+android.support.v4.R$id -> android.support.v4.R$id:
+    void <init>() -> <init>
+android.support.v4.R$integer -> android.support.v4.R$integer:
+    void <init>() -> <init>
+android.support.v4.R$layout -> android.support.v4.R$layout:
+    void <init>() -> <init>
+android.support.v4.R$string -> android.support.v4.R$string:
+    void <init>() -> <init>
+android.support.v4.R$style -> android.support.v4.R$style:
+    void <init>() -> <init>
+android.support.v4.R$styleable -> android.support.v4.R$styleable:
+    void <init>() -> <init>
+android.support.v7.viewpager.R -> android.support.v7.viewpager.R:
+    void <init>() -> <init>
+android.support.v7.viewpager.R$attr -> android.support.v7.viewpager.R$attr:
+    void <init>() -> <init>
+android.support.v7.viewpager.R$color -> android.support.v7.viewpager.R$color:
+    void <init>() -> <init>
+android.support.v7.viewpager.R$dimen -> android.support.v7.viewpager.R$dimen:
+    void <init>() -> <init>
+android.support.v7.viewpager.R$drawable -> android.support.v7.viewpager.R$drawable:
+    void <init>() -> <init>
+android.support.v7.viewpager.R$id -> android.support.v7.viewpager.R$id:
+    void <init>() -> <init>
+android.support.v7.viewpager.R$integer -> android.support.v7.viewpager.R$integer:
+    void <init>() -> <init>
+android.support.v7.viewpager.R$layout -> android.support.v7.viewpager.R$layout:
+    void <init>() -> <init>
+android.support.v7.viewpager.R$string -> android.support.v7.viewpager.R$string:
+    void <init>() -> <init>
+android.support.v7.viewpager.R$style -> android.support.v7.viewpager.R$style:
+    void <init>() -> <init>
+android.support.v7.viewpager.R$styleable -> android.support.v7.viewpager.R$styleable:
+    void <init>() -> <init>
+androidx.versionedparcelable.R -> androidx.versionedparcelable.R:
+    void <init>() -> <init>
 com.techtweaking.bluetoothcontroller.BluetoothConnection -> com.techtweaking.bluetoothcontroller.BluetoothConnection:
     int id -> id
     java.lang.Object CloseSendLock -> a
     boolean WillRead -> a
     boolean WillSend -> b
-    boolean isConnected -> c
-    boolean isSizePacketized -> d
-    boolean isEndBytePacketized -> e
+    boolean askedConnect -> c
+    boolean isConnected -> d
+    boolean isSizePacketized -> e
+    boolean isEndBytePacketized -> f
     byte packetEndByte -> a
     int packetSize -> a
     android.bluetooth.BluetoothSocket socket -> a
@@ -19,7 +350,7 @@ com.techtweaking.bluetoothcontroller.BluetoothConnection -> com.techtweaking.blu
     java.lang.String SPP_UUID -> b
     android.bluetooth.BluetoothDevice device -> a
     int connectionMode$4d9de554 -> c
-    boolean isBufferDynamic -> f
+    boolean isBufferDynamic -> g
     int bufferSize -> d
     void <init>(int) -> <init>
     void <init>() -> <init>
@@ -104,17 +435,7 @@ com.techtweaking.bluetoothcontroller.Bridge -> com.techtweaking.bluetoothcontrol
     android.bluetooth.BluetoothDevice access$200(com.techtweaking.bluetoothcontroller.Bridge) -> a
     void <clinit>() -> <clinit>
 com.techtweaking.bluetoothcontroller.Bridge$1 -> com.techtweaking.bluetoothcontroller.b:
-    int trialsCount -> j
-    int time -> k
-    java.util.UUID uuid -> uuid
-    boolean willStop -> g
-    boolean isNeedDiscovery -> h
-    boolean isBrutalConnection -> i
-    boolean switchingBrutalNormal -> j
-    android.bluetooth.BluetoothDevice device -> a
-    com.techtweaking.bluetoothcontroller.BluetoothConnection btConnection -> a
-    void <init>(com.techtweaking.bluetoothcontroller.BluetoothConnection,int,int,boolean,boolean) -> <init>
-    void closeQuietly(java.io.Closeable) -> a
+    void closeQuietly(java.io.Closeable) -> closeQuietly
     void close_socket(android.bluetooth.BluetoothSocket) -> b
     void close_serverSocket(android.bluetooth.BluetoothServerSocket) -> a
     void clearFileDescriptor_ForServerSocket(android.bluetooth.BluetoothServerSocket) -> b
@@ -125,15 +446,18 @@ com.techtweaking.bluetoothcontroller.Bridge$BluetoothDevicePickerReceiver -> com
     void onReceive(android.content.Context,android.content.Intent) -> onReceive
     void <init>(com.techtweaking.bluetoothcontroller.Bridge,byte) -> <init>
 com.techtweaking.bluetoothcontroller.Bridge$BtStateReceiver -> com.techtweaking.bluetoothcontroller.d:
-    void <init>() -> <init>
-    void onReceive(android.content.Context,android.content.Intent) -> onReceive
+    com.techtweaking.bluetoothcontroller.Bridge this$0 -> b
     void <init>(com.techtweaking.bluetoothcontroller.Bridge) -> <init>
+    void onReceive(android.content.Context,android.content.Intent) -> onReceive
+    void <init>(com.techtweaking.bluetoothcontroller.Bridge,byte) -> <init>
 com.techtweaking.bluetoothcontroller.BtInterface -> com.techtweaking.bluetoothcontroller.e:
+    java.lang.String CREATE_RFcomm_Socket -> c
+    java.lang.String CREATE_INSECURE_RFcomm_Socket -> d
     android.bluetooth.BluetoothAdapter mBluetoothAdapter -> a
     com.techtweaking.bluetoothcontroller.BtInterface$DeviceDiscoveryReceiver_WhileConnecting deviceDiscoveryReceiverWhileConnecting -> a
     com.techtweaking.bluetoothcontroller.BtInterface$RSSI_DiscoveryReceiver rssi_DiscoveryReceiver -> a
-    boolean isConnecting -> k
-    com.techtweaking.bluetoothcontroller.Bridge$1 btConnectionForDiscovery$3021738e -> a
+    boolean isConnecting -> h
+    com.techtweaking.bluetoothcontroller.BtInterface$ConnectionTrial btConnectionForDiscovery -> a
     java.util.Queue btConnectionsQueue -> a
     android.util.SparseArray sparseTrials -> a
     java.lang.Object ConnectThreadLock -> b
@@ -143,19 +467,20 @@ com.techtweaking.bluetoothcontroller.BtInterface -> com.techtweaking.bluetoothco
     void <init>() -> <init>
     com.techtweaking.bluetoothcontroller.BtInterface getInstance() -> a
     boolean cancelDiscovery() -> cancelDiscovery
-    void addConnectionTrial$62513983(com.techtweaking.bluetoothcontroller.Bridge$1) -> a
+    void addConnectionTrial(com.techtweaking.bluetoothcontroller.BtInterface$ConnectionTrial) -> a
     boolean findBluetoothDevice(com.techtweaking.bluetoothcontroller.BluetoothConnection) -> a
     boolean startDiscovery() -> startDiscovery
+    void initDiscovery() -> h
     void makeDiscoverable(int) -> makeDiscoverable
-    com.techtweaking.bluetoothcontroller.Bridge$1 access$100$a5d213(com.techtweaking.bluetoothcontroller.BtInterface) -> a
+    com.techtweaking.bluetoothcontroller.BtInterface$ConnectionTrial access$100(com.techtweaking.bluetoothcontroller.BtInterface) -> a
     android.bluetooth.BluetoothAdapter access$200(com.techtweaking.bluetoothcontroller.BtInterface) -> a
     java.lang.Object access$300(com.techtweaking.bluetoothcontroller.BtInterface) -> a
-    com.techtweaking.bluetoothcontroller.Bridge$1 access$102$6d8ee21f$64158c25(com.techtweaking.bluetoothcontroller.BtInterface) -> b
+    com.techtweaking.bluetoothcontroller.BtInterface$ConnectionTrial access$102$6d8ee21f(com.techtweaking.bluetoothcontroller.BtInterface) -> b
     com.techtweaking.bluetoothcontroller.BtInterface$DeviceDiscoveryReceiver_WhileConnecting access$400(com.techtweaking.bluetoothcontroller.BtInterface) -> a
     java.util.Queue access$500(com.techtweaking.bluetoothcontroller.BtInterface) -> a
     boolean access$602$1844105f(com.techtweaking.bluetoothcontroller.BtInterface) -> a
     android.util.SparseArray access$700(com.techtweaking.bluetoothcontroller.BtInterface) -> a
-    boolean access$800$482c0c57(com.techtweaking.bluetoothcontroller.BtInterface,com.techtweaking.bluetoothcontroller.Bridge$1) -> a
+    boolean access$800(com.techtweaking.bluetoothcontroller.BtInterface,com.techtweaking.bluetoothcontroller.BtInterface$ConnectionTrial) -> a
     void <clinit>() -> <clinit>
 com.techtweaking.bluetoothcontroller.BtInterface$1 -> com.techtweaking.bluetoothcontroller.f:
     com.techtweaking.bluetoothcontroller.BtInterface this$0 -> b
@@ -165,11 +490,11 @@ com.techtweaking.bluetoothcontroller.BtInterface$2 -> com.techtweaking.bluetooth
     int[] $SwitchMap$com$techtweaking$bluetoothcontroller$BluetoothConnection$ConnectionMode -> b
     void <clinit>() -> <clinit>
 com.techtweaking.bluetoothcontroller.BtInterface$AcceptThread -> com.techtweaking.bluetoothcontroller.h:
-    boolean willStop -> g
+    boolean willStop -> i
     android.bluetooth.BluetoothServerSocket mmServerSocket -> a
-    boolean willConnectOneDevice -> l
+    boolean willConnectOneDevice -> j
     java.util.UUID serverUUID -> a
-    int discoverable_Time_Duration -> l
+    int discoverable_Time_Duration -> j
     com.techtweaking.bluetoothcontroller.BtInterface this$0 -> b
     void <init>(com.techtweaking.bluetoothcontroller.BtInterface,java.util.UUID,int,boolean) -> <init>
     void abortServer() -> abortServer
@@ -179,23 +504,36 @@ com.techtweaking.bluetoothcontroller.BtInterface$AcceptThread -> com.techtweakin
 com.techtweaking.bluetoothcontroller.BtInterface$ConnectThread -> com.techtweaking.bluetoothcontroller.i:
     com.techtweaking.bluetoothcontroller.BtInterface this$0 -> b
     void <init>(com.techtweaking.bluetoothcontroller.BtInterface) -> <init>
-    android.bluetooth.BluetoothSocket createSocket$14ae5da2(boolean,com.techtweaking.bluetoothcontroller.Bridge$1) -> a
+    android.bluetooth.BluetoothSocket createSocket(boolean,com.techtweaking.bluetoothcontroller.BtInterface$ConnectionTrial) -> a
     void run() -> run
     void <init>(com.techtweaking.bluetoothcontroller.BtInterface,byte) -> <init>
-com.techtweaking.bluetoothcontroller.BtInterface$DeviceDiscoveryReceiver_WhileConnecting -> com.techtweaking.bluetoothcontroller.j:
+com.techtweaking.bluetoothcontroller.BtInterface$ConnectionTrial -> com.techtweaking.bluetoothcontroller.j:
+    int trialsCount -> k
+    int time -> l
+    java.util.UUID uuid -> uuid
+    boolean willStop -> i
+    boolean isNeedDiscovery -> k
+    boolean isBrutalConnection -> l
+    boolean switchingBrutalNormal -> m
+    android.bluetooth.BluetoothDevice device -> a
+    com.techtweaking.bluetoothcontroller.BluetoothConnection btConnection -> a
+    com.techtweaking.bluetoothcontroller.BtInterface this$0 -> b
+    void <init>(com.techtweaking.bluetoothcontroller.BtInterface,com.techtweaking.bluetoothcontroller.BluetoothConnection,int,int,boolean,boolean) -> <init>
+com.techtweaking.bluetoothcontroller.BtInterface$DeviceDiscoveryReceiver_WhileConnecting -> com.techtweaking.bluetoothcontroller.k:
     com.techtweaking.bluetoothcontroller.BtInterface this$0 -> b
     void <init>(com.techtweaking.bluetoothcontroller.BtInterface) -> <init>
     void onReceive(android.content.Context,android.content.Intent) -> onReceive
-com.techtweaking.bluetoothcontroller.BtInterface$NormalConnectThread -> com.techtweaking.bluetoothcontroller.k:
+com.techtweaking.bluetoothcontroller.BtInterface$NormalConnectThread -> com.techtweaking.bluetoothcontroller.l:
     android.bluetooth.BluetoothSocket mmSocket -> b
     com.techtweaking.bluetoothcontroller.BluetoothConnection btConnection -> a
     com.techtweaking.bluetoothcontroller.BtInterface this$0 -> b
     void <init>(com.techtweaking.bluetoothcontroller.BtInterface,com.techtweaking.bluetoothcontroller.BluetoothConnection,java.util.UUID,boolean,boolean) -> <init>
     void run() -> run
-com.techtweaking.bluetoothcontroller.BtInterface$RSSI_DiscoveryReceiver -> com.techtweaking.bluetoothcontroller.l:
-    void <init>() -> <init>
+com.techtweaking.bluetoothcontroller.BtInterface$RSSI_DiscoveryReceiver -> com.techtweaking.bluetoothcontroller.m:
+    com.techtweaking.bluetoothcontroller.BtInterface this$0 -> b
+    void <init>(com.techtweaking.bluetoothcontroller.BtInterface) -> <init>
     void onReceive(android.content.Context,android.content.Intent) -> onReceive
-com.techtweaking.bluetoothcontroller.BtReader -> com.techtweaking.bluetoothcontroller.m:
+com.techtweaking.bluetoothcontroller.BtReader -> com.techtweaking.bluetoothcontroller.n:
     byte[] empty -> a
     com.techtweaking.bluetoothcontroller.BtReader instance -> a
     void <init>() -> <init>
@@ -208,29 +546,31 @@ com.techtweaking.bluetoothcontroller.BtReader -> com.techtweaking.bluetoothcontr
     void setPacketSize(int,int,int) -> a
     void setEndByte(int,int,byte) -> a
     void <clinit>() -> <clinit>
-com.techtweaking.bluetoothcontroller.BtReader$BtElement -> com.techtweaking.bluetoothcontroller.n:
-    boolean isDynamicSize -> m
+com.techtweaking.bluetoothcontroller.BtReader$BtElement -> com.techtweaking.bluetoothcontroller.o:
+    boolean isDynamicSize -> n
     android.bluetooth.BluetoothSocket socket -> a
     java.io.InputStream inputStream -> a
     java.lang.Object ReadWriteBufferKey -> c
     int id -> id
-    boolean stopReading -> n
+    boolean stopReading -> o
     com.techtweaking.libextra.CircularArrayList buffer -> a
+    com.techtweaking.bluetoothcontroller.BtReader this$0 -> b
     byte[] PollArray(int,int) -> a
     byte[] PollPacket(int) -> a
     byte[] PollAllPackets() -> a
     void setPacketSize(int) -> setPacketSize
     void setEndByte(byte) -> setEndByte
     int Capacity() -> a
-    void Resize() -> h
+    void Resize() -> i
     boolean AddByte(byte) -> a
-    void <init>(android.bluetooth.BluetoothSocket,java.io.InputStream,int,int,boolean) -> <init>
-com.techtweaking.bluetoothcontroller.BtReader$BtReceiver -> com.techtweaking.bluetoothcontroller.o:
+    void <init>(com.techtweaking.bluetoothcontroller.BtReader,android.bluetooth.BluetoothSocket,java.io.InputStream,int,int,boolean) -> <init>
+com.techtweaking.bluetoothcontroller.BtReader$BtReceiver -> com.techtweaking.bluetoothcontroller.p:
     com.techtweaking.bluetoothcontroller.BtReader$ReadingThreadData rtd -> a
-    void <init>(com.techtweaking.bluetoothcontroller.BtReader$ReadingThreadData) -> <init>
+    com.techtweaking.bluetoothcontroller.BtReader this$0 -> b
+    void <init>(com.techtweaking.bluetoothcontroller.BtReader,com.techtweaking.bluetoothcontroller.BtReader$ReadingThreadData) -> <init>
     void run() -> run
-com.techtweaking.bluetoothcontroller.BtReader$ReadingThreadData -> com.techtweaking.bluetoothcontroller.p:
-    boolean isReading -> o
+com.techtweaking.bluetoothcontroller.BtReader$ReadingThreadData -> com.techtweaking.bluetoothcontroller.q:
+    boolean isReading -> p
     int ThreadID -> m
     android.util.SparseArray map -> b
     java.lang.Object key -> d
@@ -242,23 +582,24 @@ com.techtweaking.bluetoothcontroller.BtReader$ReadingThreadData -> com.techtweak
     int NumberOfReaders() -> b
     void RemoveReader(int) -> a
     void StartSingletonThread(com.techtweaking.bluetoothcontroller.BtReader$BtElement) -> a
-    void StartThread() -> i
-    void DoneReading() -> j
+    void StartThread() -> j
+    void DoneReading() -> k
     boolean IsReading() -> a
-com.techtweaking.bluetoothcontroller.BtReader$ReadingThreads -> com.techtweaking.bluetoothcontroller.q:
+com.techtweaking.bluetoothcontroller.BtReader$ReadingThreads -> com.techtweaking.bluetoothcontroller.s:
     android.util.SparseArray dictionary -> c
     java.lang.Object key -> d
     void Add(int,com.techtweaking.bluetoothcontroller.BtReader$ReadingThreadData) -> a
     com.techtweaking.bluetoothcontroller.BtReader$ReadingThreadData Get(int) -> a
     void Remove(int) -> b
     void <clinit>() -> <clinit>
-com.techtweaking.bluetoothcontroller.BtReader$SingleBtReceiver -> com.techtweaking.bluetoothcontroller.s:
+com.techtweaking.bluetoothcontroller.BtReader$SingleBtReceiver -> com.techtweaking.bluetoothcontroller.t:
     com.techtweaking.bluetoothcontroller.BtReader$BtElement element -> a
-    void <init>(com.techtweaking.bluetoothcontroller.BtReader$BtElement) -> <init>
+    com.techtweaking.bluetoothcontroller.BtReader this$0 -> b
+    void <init>(com.techtweaking.bluetoothcontroller.BtReader,com.techtweaking.bluetoothcontroller.BtReader$BtElement) -> <init>
     void run() -> run
-com.techtweaking.bluetoothcontroller.BtSender -> com.techtweaking.bluetoothcontroller.t:
+com.techtweaking.bluetoothcontroller.BtSender -> com.techtweaking.bluetoothcontroller.u:
     com.techtweaking.bluetoothcontroller.BtSender instance -> a
-    boolean isSending -> p
+    boolean isSending -> q
     java.util.Queue outMessages -> b
     java.lang.Object lock1 -> e
     void <init>() -> <init>
@@ -267,31 +608,37 @@ com.techtweaking.bluetoothcontroller.BtSender -> com.techtweaking.bluetoothcontr
     java.util.Queue access$200(com.techtweaking.bluetoothcontroller.BtSender) -> a
     boolean access$302$9c511ed(com.techtweaking.bluetoothcontroller.BtSender) -> a
     void <clinit>() -> <clinit>
-com.techtweaking.bluetoothcontroller.BtSender$BtSenderThread -> com.techtweaking.bluetoothcontroller.u:
+com.techtweaking.bluetoothcontroller.BtSender$BtSenderThread -> com.techtweaking.bluetoothcontroller.v:
     com.techtweaking.bluetoothcontroller.BtSender this$0 -> b
     void <init>(com.techtweaking.bluetoothcontroller.BtSender) -> <init>
     void run() -> run
     void <init>(com.techtweaking.bluetoothcontroller.BtSender,byte) -> <init>
-com.techtweaking.bluetoothcontroller.BtSender$Job -> com.techtweaking.bluetoothcontroller.v:
+com.techtweaking.bluetoothcontroller.BtSender$Job -> com.techtweaking.bluetoothcontroller.w:
+    boolean isClose -> r
     byte[] msg -> b
     java.io.BufferedOutputStream bufferedOutputStream -> a
     com.techtweaking.bluetoothcontroller.BluetoothConnection btConnection -> a
-    void <init>(java.io.BufferedOutputStream,byte[],com.techtweaking.bluetoothcontroller.BluetoothConnection) -> <init>
+    com.techtweaking.bluetoothcontroller.BtSender this$0 -> b
+    void <init>(com.techtweaking.bluetoothcontroller.BtSender,java.io.BufferedOutputStream,byte[],com.techtweaking.bluetoothcontroller.BluetoothConnection) -> <init>
 com.techtweaking.bluetoothcontroller.ForwardingActivity -> com.techtweaking.bluetoothcontroller.ForwardingActivity:
-    boolean serverIntent -> q
+    boolean serverIntent -> s
     int serverTime -> n
+    boolean RSSI_Discovery_intent -> t
     void <init>() -> <init>
     void onCreate(android.os.Bundle) -> onCreate
+    void onRequestPermissionsResult(int,java.lang.String[],int[]) -> onRequestPermissionsResult
     void onActivityResult(int,int,android.content.Intent) -> onActivityResult
+    void startActivity() -> l
     void makeDiscoverable(int) -> makeDiscoverable
+    void askLocationPermission() -> m
     void <clinit>() -> <clinit>
-com.techtweaking.bluetoothcontroller.PluginToUnity -> com.techtweaking.bluetoothcontroller.w:
+com.techtweaking.bluetoothcontroller.PluginToUnity -> com.techtweaking.bluetoothcontroller.x:
     android.bluetooth.BluetoothSocket socket -> a
-    java.lang.String UNITY_GAME_OBJECT_NAME -> c
+    java.lang.String UNITY_GAME_OBJECT_NAME -> e
     void change_UNITY_GAME_OBJECT_NAME(java.lang.String) -> b
     java.lang.String access$000() -> a
     void <clinit>() -> <clinit>
-com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages -> com.techtweaking.bluetoothcontroller.x:
+com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages -> com.techtweaking.bluetoothcontroller.y:
     com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages CONNECTED -> a
     com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages DISCONNECTED -> b
     com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages NOT_FOUND -> c
@@ -310,6 +657,8 @@ com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages -> com.techtw
     com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages SERVER_FINISHED_LISTENING -> p
     com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages DISCOVERED_DEVICE -> q
     com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages ACTION_DISCOVERY_FINISHED -> r
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages USER_REJECT_LOCATION_PERMISSION -> s
+    com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages DISCOVERY_STARTED -> t
     java.lang.String value -> value
     com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages[] $VALUES -> a
     com.techtweaking.bluetoothcontroller.PluginToUnity$ControlMessages[] values() -> values
@@ -324,11 +673,23 @@ com.techtweaking.bluetoothcontroller.R -> com.techtweaking.bluetoothcontroller.R
     void <init>() -> <init>
 com.techtweaking.bluetoothcontroller.R$attr -> com.techtweaking.bluetoothcontroller.R$attr:
     void <init>() -> <init>
+com.techtweaking.bluetoothcontroller.R$color -> com.techtweaking.bluetoothcontroller.R$color:
+    void <init>() -> <init>
+com.techtweaking.bluetoothcontroller.R$dimen -> com.techtweaking.bluetoothcontroller.R$dimen:
+    void <init>() -> <init>
 com.techtweaking.bluetoothcontroller.R$drawable -> com.techtweaking.bluetoothcontroller.R$drawable:
+    void <init>() -> <init>
+com.techtweaking.bluetoothcontroller.R$id -> com.techtweaking.bluetoothcontroller.R$id:
+    void <init>() -> <init>
+com.techtweaking.bluetoothcontroller.R$integer -> com.techtweaking.bluetoothcontroller.R$integer:
+    void <init>() -> <init>
+com.techtweaking.bluetoothcontroller.R$layout -> com.techtweaking.bluetoothcontroller.R$layout:
     void <init>() -> <init>
 com.techtweaking.bluetoothcontroller.R$string -> com.techtweaking.bluetoothcontroller.R$string:
     void <init>() -> <init>
 com.techtweaking.bluetoothcontroller.R$style -> com.techtweaking.bluetoothcontroller.R$style:
+    void <init>() -> <init>
+com.techtweaking.bluetoothcontroller.R$styleable -> com.techtweaking.bluetoothcontroller.R$styleable:
     void <init>() -> <init>
 com.techtweaking.libextra.CircularArrayList -> com.techtweaking.a.a:
     int n -> o
@@ -345,6 +706,8 @@ com.techtweaking.libextra.CircularArrayList -> com.techtweaking.a.a:
     void <init>(int) -> <init>
     int wrapIndex(int) -> a
     int size() -> size
+    void setEndByte(byte) -> setEndByte
+    void setPacketSize(int) -> setPacketSize
     byte[] pollArray(int) -> b
     byte[] pollPacket(int) -> c
     void IntToBytes(byte[],int,int) -> a
