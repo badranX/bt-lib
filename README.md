@@ -10,11 +10,9 @@
 
 The repository contains two folders, one an AndroidStudio project and the other is a Unity Project. In the AndroidStudio project you need to run the task doRelease/doDebug from gradle. It will compile and move the required files to the Unity project.
 
-**On Windows:**
-gradlew task-name
+**On Windows:** `gradlew doRelease`
 
-**On Mac or Linux:**
-./gradlew task-name
+**On Mac or Linux:** `./gradlew doRelease`
 
 Read: https://developer.android.com/studio/build/building-cmdline
 
